@@ -77,7 +77,7 @@ export default function ReservationsPageComponent() {
       <main>
         <section className="la-shell border-b border-[rgba(197,155,85,0.22)] pb-9 tablet:pb-10 desktop:pb-12">
           <div className="grid gap-12 min-[1100px]:grid-cols-[0.78fr_1.22fr] min-[1100px]:items-center">
-            <div className="max-w-[400px]">
+            <div>
               <h1 className="la-home__display text-[58px] leading-[0.88] tracking-[-0.035em] text-[var(--la-burgundy)] tablet:text-[72px] desktop:text-[94px]">
                 Réserver
                 <br />
@@ -186,6 +186,7 @@ export default function ReservationsPageComponent() {
 
         <VenueShowcaseComponent
           title="Avant ou après votre venue"
+          description="Trois espaces pour prolonger votre moment aux Artistes."
           items={venueItems}
           contentClassName="la-home__framed-content px-5 pb-6 pt-10 tablet:px-7 desktop:px-8"
         />
