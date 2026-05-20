@@ -1,13 +1,18 @@
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
 import NavComponent from "@/components/_shared/nav/nav.component";
 import FooterComponent from "@/components/_shared/footer/footer.component";
 import BannerComponent from "@/components/_shared/banner/banner.component";
 import SeoHeadComponent from "@/components/_shared/seo/seo-head.component";
 import SectionHeadingComponent from "@/components/_shared/section-heading.component";
 import RevealOnScrollComponent from "@/components/_shared/motion/reveal-on-scroll.component";
-import GraphicElementComponent from "@/components/_shared/graphic-element.component";
 import { buildStaticPageProps } from "@/_assets/utils/page-props.utils";
+
+const navigationItems = [
+  { label: "Accueil", href: "/" },
+  { label: "Carte & Menus", href: "/menus" },
+  { label: "Actualités", href: "/news" },
+  { label: "Contact", href: "/contact" },
+];
 
 function LegalSection({ title, children, last = false }) {
   return (
@@ -27,26 +32,8 @@ function LegalSection({ title, children, last = false }) {
 }
 
 export default function LegalesPage({ seoRestaurantData = null }) {
-  const heroRef = useRef(null);
-  const [showScrolledNav, setShowScrolledNav] = useState(false);
   const title = "Mentions légales - Les Artistes";
   const description = "Consultez les mentions légales du site Les Artistes.";
-
-  useEffect(() => {
-    const heroEl = heroRef.current;
-    if (!heroEl) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setShowScrolledNav(entry.intersectionRatio <= 0.1);
-      },
-      { threshold: [0, 0.05, 0.1, 0.25, 0.5, 0.75, 1] },
-    );
-
-    observer.observe(heroEl);
-
-    return () => observer.disconnect();
-  }, []);
 
   return (
     <>
@@ -63,41 +50,16 @@ export default function LegalesPage({ seoRestaurantData = null }) {
       />
 
       <div className="relative">
-        <NavComponent
-          isVisible={!showScrolledNav}
-          scrolled={false}
-          logoSrc="/img/logo.webp"
-        />
+        <NavComponent items={navigationItems} />
 
-        <NavComponent
-          isVisible={showScrolledNav}
-          scrolled={true}
-          logoSrc="/img/logo.webp"
+        <BannerComponent
+          eyebrow="Informations"
+          title="Mentions légales"
+          description="Les informations d’identification du site, de son hébergement et du cadre général d’utilisation sont regroupées ici."
+          imgUrl="hero/header.webp"
         />
-
-        <div ref={heroRef}>
-          <BannerComponent
-            eyebrow="Informations"
-            title="Mentions légales"
-            description="Les informations d’identification du site, de son hébergement et du cadre général d’utilisation sont regroupées ici."
-            imgUrl="hero/header.webp"
-          />
-        </div>
 
         <section className="relative overflow-hidden bg-[var(--site-cream)] px-5 py-20 tablet:px-8 tablet:py-24 desktop:px-[90px] desktop:py-[110px]">
-          <GraphicElementComponent
-            src="/img/elements/2.webp"
-            className="left-[-42px] top-[140px] hidden h-[170px] w-[170px] opacity-30 desktop:block"
-            sizes="170px"
-            disableMotion
-          />
-          <GraphicElementComponent
-            src="/img/elements/4.webp"
-            className="bottom-[120px] right-[-38px] hidden h-[160px] w-[160px] opacity-30 desktop:block"
-            sizes="160px"
-            disableMotion
-          />
-
           <div className="relative z-10 mx-auto max-w-[1400px]">
             <SectionHeadingComponent
               eyebrow="Cadre légal"

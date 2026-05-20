@@ -147,6 +147,34 @@ export function buildContactInfos(restaurant) {
   ];
 }
 
+export function buildSiteContactSummary(restaurant) {
+  const contactInfos = buildContactInfos(restaurant);
+  const contactByKey = Object.fromEntries(
+    contactInfos.map((item) => [item.key, item]),
+  );
+
+  const address =
+    contactByKey.address?.value && contactByKey.address.value !== "-"
+      ? contactByKey.address.value
+      : "4 rue Fitz-James, 87000 Limoges";
+  const phone =
+    contactByKey.phone?.value && contactByKey.phone.value !== "-"
+      ? contactByKey.phone.value
+      : "05 55 34 12 43";
+  const email =
+    contactByKey.email?.value && contactByKey.email.value !== "-"
+      ? contactByKey.email.value
+      : "contact@lesartistes-limoges.fr";
+
+  return {
+    address,
+    phone,
+    phoneHref: contactByKey.phone?.href || "tel:0555341243",
+    email,
+    emailHref: contactByKey.email?.href || "mailto:contact@lesartistes-limoges.fr",
+  };
+}
+
 export function buildContactSchedules(restaurant) {
   if (!restaurant) {
     return orderedDays.map((day) => ({

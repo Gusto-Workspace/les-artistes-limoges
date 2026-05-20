@@ -1,213 +1,160 @@
+import Image from "next/image";
 import Link from "next/link";
 import { useContext } from "react";
-import {
-  Facebook,
-  Instagram,
-  Linkedin,
-  Mail,
-  MapPin,
-  Music2,
-  Phone,
-  Youtube,
-} from "lucide-react";
+import { Facebook, Instagram } from "lucide-react";
 import { GlobalContext } from "@/contexts/global.context";
-import {
-  getRestaurantBrandParts,
-  getRestaurantLocationLabel,
-  getSocialLinks,
-} from "@/_assets/utils/site-display.utils";
+import { buildSiteContactSummary } from "@/_assets/utils/contact.utils";
+import { getSocialLinks } from "@/_assets/utils/site-display.utils";
 
-function formatAddress(address) {
-  return [address?.line1, [address?.zipCode, address?.city].filter(Boolean).join(" ")]
-    .filter(Boolean)
-    .join(", ");
-}
+const defaultLinks = [
+  { label: "Accueil", href: "/" },
+  { label: "Carte & Menus", href: "/menus" },
+  { label: "Réserver", href: "/reservations" },
+  { label: "Contact", href: "/contact" },
+];
 
-export default function FooterComponent() {
-  const { restaurantContext } = useContext(GlobalContext);
-  const restaurantData = restaurantContext?.restaurantData;
-  const brand = getRestaurantBrandParts();
-  const socialLinks = getSocialLinks(restaurantData);
+const socialFallback = [
+  { label: "Facebook", href: "", icon: "facebook" },
+  { label: "Instagram", href: "", icon: "instagram" },
+];
+
+function SocialItem({ item }) {
   const iconByPlatform = {
     facebook: Facebook,
     instagram: Instagram,
-    tiktok: Music2,
-    youtube: Youtube,
-    linkedin: Linkedin,
   };
-  const footerLinks = [
-    { label: "Accueil", href: "/" },
-    { label: "Menus", href: "/menus" },
-    { label: "Actualités", href: "/news" },
-    { label: "Réservations", href: "/reservations" },
-    { label: "Contact", href: "/contact" },
-  ];
-  const contactItems = [
-    {
-      key: "location",
-      label: "Ville",
-      value: getRestaurantLocationLabel(restaurantData) || "Limoges",
-      icon: MapPin,
-    },
-    {
-      key: "phone",
-      label: "Téléphone",
-      value: restaurantData?.phone || "Renseignement à venir",
-      href: restaurantData?.phone
-        ? `tel:${String(restaurantData.phone).replace(/[^\d+]/g, "")}`
-        : "",
-      icon: Phone,
-    },
-    {
-      key: "email",
-      label: "Email",
-      value: restaurantData?.email || "Renseignement à venir",
-      href: restaurantData?.email ? `mailto:${restaurantData.email}` : "",
-      icon: Mail,
-    },
-  ];
-  const address = formatAddress(restaurantData?.address);
+  const Icon = iconByPlatform[item.icon] || Facebook;
+  const className = "la-home__social";
+
+  if (!item.href) {
+    return (
+      <span className={className} aria-hidden="true">
+        <Icon size={15} strokeWidth={1.9} />
+      </span>
+    );
+  }
 
   return (
-    <footer className="relative overflow-hidden bg-[#121214] px-5 pb-10 pt-20 text-[var(--site-cream)] tablet:px-8 tablet:pb-12 desktop:px-[90px]">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(203,96,56,0.22),transparent_26%),radial-gradient(circle_at_bottom_right,rgba(255,255,255,0.08),transparent_20%)]" />
-      <div className="absolute inset-0 opacity-[0.16] [background-image:linear-gradient(rgba(245,239,231,0.24)_1px,transparent_1px),linear-gradient(90deg,rgba(245,239,231,0.24)_1px,transparent_1px)] [background-size:22px_22px]" />
+    <a
+      href={item.href}
+      target="_blank"
+      rel="noreferrer"
+      aria-label={item.label}
+      className={className}
+    >
+      <Icon size={15} strokeWidth={1.9} />
+    </a>
+  );
+}
 
-      <div className="relative mx-auto max-w-[1500px]">
-        <div className="grid gap-12 border-b border-[rgba(245,239,231,0.14)] pb-12 desktop:grid-cols-[0.95fr_1.05fr] desktop:gap-16">
-          <div className="max-w-[520px]">
-            <Link href="/" className="inline-flex items-center gap-4">
-              <div className="flex h-14 w-14 items-center justify-center rounded-[20px] border border-[rgba(245,239,231,0.16)] bg-white/10 text-[12px] font-semibold uppercase tracking-[0.16em] text-[var(--site-cream)]">
-                LA
-              </div>
+export default function FooterComponent({ links = defaultLinks }) {
+  const { restaurantContext } = useContext(GlobalContext);
+  const restaurantData = restaurantContext?.restaurantData;
+  const { phone, phoneHref, email } = buildSiteContactSummary(restaurantData);
+  const socialLinks = getSocialLinks(restaurantData).filter((item) =>
+    ["facebook", "instagram"].includes(item.icon),
+  );
+  const footerSocialLinks = socialFallback.map(
+    (item) =>
+      socialLinks.find((socialItem) => socialItem.icon === item.icon) || item,
+  );
 
-              <div>
-                <p className="nav-font text-[10px] text-[rgba(245,239,231,0.64)]">
-                  Restaurant
-                </p>
-                <p className="yeseva-one-regular mt-1 text-[32px] leading-[0.92]">
-                  {brand.main}{" "}
-                  <span className="script-font text-[36px] text-[var(--site-orange)]">
-                    {brand.accent}
-                  </span>
-                </p>
-              </div>
-            </Link>
+  return (
+    <footer className="pt-2">
+      <div className="la-shell">
+        <div className="grid gap-8 border-t border-[rgba(197,155,85,0.22)] py-8 min-[960px]:grid-cols-[1.15fr_0.95fr_0.8fr_0.6fr] min-[960px]:gap-0">
+          <div className="min-[960px]:pr-8">
+            <Image
+              src="/img/logo.png"
+              alt="Les Artistes"
+              width={230}
+              height={104}
+              className="h-auto w-[190px]"
+            />
 
-            <p className="mt-6 text-[16px] leading-[1.85] text-[rgba(245,239,231,0.76)]">
-              Nouvelle base de site pour présenter la maison, ses menus, ses
-              actualités, ses réservations et ses informations pratiques dans
-              une interface plus sobre et plus éditoriale.
-            </p>
-
-            {address ? (
-              <p className="mt-4 text-[13px] uppercase tracking-[0.18em] text-[rgba(245,239,231,0.5)]">
-                {address}
-              </p>
-            ) : null}
+            <div className="mt-6 flex items-center gap-3">
+              {footerSocialLinks.map((item) => (
+                <SocialItem key={`${item.label}-${item.icon}`} item={item} />
+              ))}
+            </div>
           </div>
 
-          <div className="grid gap-8 tablet:grid-cols-[0.95fr_1.05fr]">
-            <div>
-              <p className="nav-font text-[11px] text-[rgba(245,239,231,0.58)]">
-                Navigation
-              </p>
-              <div className="mt-5 flex flex-col gap-3">
-                {footerLinks.map((item) => (
-                  <Link
-                    key={item.href}
+          <div className="min-[960px]:border-l min-[960px]:border-[rgba(197,155,85,0.16)] min-[960px]:px-8">
+            <h3 className="la-home__footer-heading">Les Artistes</h3>
+            <p className="mt-4 text-[17px] leading-[1.52] text-[rgba(86,57,44,0.9)]">
+              4 rue Fitz-James
+              <br />
+              87000 Limoges
+              <br />À côté de l’Opéra
+            </p>
+            <p className="mt-4 text-[17px] leading-[1.52] text-[rgba(86,57,44,0.9)]">
+              <a href={phoneHref}>{phone}</a>
+              <br />
+              <a href={`mailto:${email}`}>{email}</a>
+            </p>
+          </div>
+
+          <div className="min-[960px]:border-l min-[960px]:border-[rgba(197,155,85,0.16)] min-[960px]:px-8">
+            <h3 className="la-home__footer-heading">Liens rapides</h3>
+            <div className="mt-4 flex flex-col gap-3 text-[17px] leading-none text-[rgba(86,57,44,0.9)]">
+              {links.map((item) =>
+                item.anchor ? (
+                  <a
+                    key={item.label}
                     href={item.href}
-                    className="yeseva-one-regular text-[28px] leading-none transition hover:text-[var(--site-orange)]"
+                    className="transition-opacity hover:opacity-72"
+                  >
+                    {item.label}
+                  </a>
+                ) : (
+                  <Link
+                    key={item.label}
+                    href={item.href}
+                    className="transition-opacity hover:opacity-72"
                   >
                     {item.label}
                   </Link>
-                ))}
-              </div>
+                ),
+              )}
             </div>
+          </div>
 
-            <div>
-              <p className="nav-font text-[11px] text-[rgba(245,239,231,0.58)]">
-                Coordonnées
+          <div className="min-[960px]:border-l min-[960px]:border-[rgba(197,155,85,0.16)] min-[960px]:pl-8">
+            <div className="la-home__footer-badge">
+              <Image
+                src="/img/pictos/5.png"
+                alt=""
+                width={54}
+                height={32}
+                className="mx-auto h-auto w-[46px]"
+              />
+              <p className="mt-4 la-home__footer-heading text-center text-[17px]">
+                Brasserie
+                <br />
+                Bar
+                <br />
+                Glacier
               </p>
-              <div className="mt-5 space-y-4">
-                {contactItems.map((item) => {
-                  const Icon = item.icon;
-                  const content = item.href ? (
-                    <a href={item.href} className="transition hover:text-white">
-                      {item.value}
-                    </a>
-                  ) : (
-                    item.value
-                  );
-
-                  return (
-                    <div
-                      key={item.key}
-                      className="rounded-[20px] border border-[rgba(245,239,231,0.12)] bg-white/6 px-4 py-4"
-                    >
-                      <div className="flex items-start gap-3">
-                        <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[rgba(245,239,231,0.14)] bg-white/8 text-[var(--site-orange)]">
-                          <Icon size={16} strokeWidth={1.8} />
-                        </div>
-                        <div>
-                          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[rgba(245,239,231,0.54)]">
-                            {item.label}
-                          </p>
-                          <p className="mt-2 text-[15px] leading-[1.7] text-[rgba(245,239,231,0.9)]">
-                            {content}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
             </div>
           </div>
         </div>
+      </div>
 
-        <div className="flex flex-col gap-8 py-8 text-center desktop:flex-row desktop:items-center desktop:justify-between desktop:text-left">
-          <div className="flex flex-col items-center gap-4 desktop:items-start">
-            <p className="text-[14px] leading-[1.7] text-[rgba(245,239,231,0.72)]">
-              © {new Date().getFullYear()} {brand.full}. Tous droits réservés.{" "}
-              <a
-                href="https://gusto-manager.com"
-                target="_blank"
-                rel="noreferrer"
-                className="transition hover:text-white"
-              >
-                Propulsé par Gusto Manager
-              </a>
-            </p>
-            <div className="flex flex-col items-center gap-2 text-[12px] font-medium tracking-[0.16em] text-[rgba(245,239,231,0.76)] desktop:flex-row desktop:items-center desktop:gap-3">
-              <Link href="/legales" className="transition hover:text-white">
-                Mentions légales
-              </Link>
-              <span className="hidden desktop:inline">•</span>
-              <Link href="/policy" className="transition hover:text-white">
-                Politique de confidentialité
-              </Link>
-            </div>
-          </div>
-
-          <div className="flex flex-wrap items-center justify-center gap-4 desktop:justify-end">
-            {socialLinks.map((item) => {
-              const Icon = iconByPlatform[item.icon] || Music2;
-
-              return (
-                <a
-                  key={item.label}
-                  href={item.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label={item.label}
-                  className="flex h-11 w-11 items-center justify-center rounded-full border border-[rgba(245,239,231,0.18)] bg-white/8 text-[var(--site-cream)] transition hover:-translate-y-[1px] hover:border-[rgba(245,239,231,0.3)] hover:bg-white/12 hover:text-white"
-                >
-                  <Icon size={18} strokeWidth={1.8} />
-                </a>
-              );
-            })}
-          </div>
+      <div className="bg-[var(--la-burgundy)] text-[#fbf4ea]">
+        <div className="la-shell flex flex-col gap-3 py-4 text-center min-[960px]:flex-row min-[960px]:items-center min-[960px]:justify-center min-[960px]:gap-14">
+          <p className="text-[15px]">© Les Artistes - Limoges</p>
+          <Link
+            href="/legales"
+            className="text-[15px] transition-opacity hover:opacity-72"
+          >
+            Mentions légales
+          </Link>
+          <Link
+            href="/policy"
+            className="text-[15px] transition-opacity hover:opacity-72"
+          >
+            Politique de confidentialité
+          </Link>
         </div>
       </div>
     </footer>

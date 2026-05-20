@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { ArrowRight, CalendarDays, Home, Newspaper, Phone } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
 import NavComponent from "@/components/_shared/nav/nav.component";
 import FooterComponent from "@/components/_shared/footer/footer.component";
 import BannerComponent from "@/components/_shared/banner/banner.component";
@@ -8,6 +7,13 @@ import RevealOnScrollComponent from "@/components/_shared/motion/reveal-on-scrol
 import SectionHeadingComponent from "@/components/_shared/section-heading.component";
 import SeoHeadComponent from "@/components/_shared/seo/seo-head.component";
 import { buildStaticPageProps } from "@/_assets/utils/page-props.utils";
+
+const navigationItems = [
+  { label: "Accueil", href: "/" },
+  { label: "Carte & Menus", href: "/menus" },
+  { label: "Actualités", href: "/news" },
+  { label: "Contact", href: "/contact" },
+];
 
 const quickLinks = [
   {
@@ -81,27 +87,6 @@ function QuickLinkCard({ item, index }) {
 }
 
 export default function NotFoundPage() {
-  const heroRef = useRef(null);
-  const [showScrolledNav, setShowScrolledNav] = useState(false);
-
-  useEffect(() => {
-    const heroEl = heroRef.current;
-    if (!heroEl) return undefined;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setShowScrolledNav(entry.intersectionRatio <= 0.1);
-      },
-      {
-        threshold: [0, 0.05, 0.1, 0.25, 0.5, 0.75, 1],
-      },
-    );
-
-    observer.observe(heroEl);
-
-    return () => observer.disconnect();
-  }, []);
-
   return (
     <>
       <SeoHeadComponent
@@ -113,17 +98,14 @@ export default function NotFoundPage() {
       />
 
       <div className="relative bg-[var(--site-cream)]">
-        <NavComponent isVisible={!showScrolledNav} scrolled={false} />
-        <NavComponent isVisible={showScrolledNav} scrolled />
+        <NavComponent items={navigationItems} />
 
         <main>
-          <div ref={heroRef}>
-            <BannerComponent
-              eyebrow="Erreur 404"
-              title="Cette page n’existe plus."
-              description="L’adresse demandée est introuvable ou a changé. Les accès principaux du site restent disponibles juste en dessous."
-            />
-          </div>
+          <BannerComponent
+            eyebrow="Erreur 404"
+            title="Cette page n’existe plus."
+            description="L’adresse demandée est introuvable ou a changé. Les accès principaux du site restent disponibles juste en dessous."
+          />
 
           <section className="site-shell px-5 py-20 tablet:px-8 tablet:py-24 desktop:px-[90px] desktop:py-[110px]">
             <div className="mx-auto max-w-[1450px]">

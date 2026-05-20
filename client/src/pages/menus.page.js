@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext } from "react";
 
 // COMPONENTS
 import NavComponent from "@/components/_shared/nav/nav.component";
@@ -11,28 +11,15 @@ import { buildStaticPageProps } from "@/_assets/utils/page-props.utils";
 // CONTEXT
 import { GlobalContext } from "@/contexts/global.context";
 
+const navigationItems = [
+  { label: "Accueil", href: "/" },
+  { label: "Carte & Menus", href: "/menus", active: true },
+  { label: "Actualités", href: "/news" },
+  { label: "Contact", href: "/contact" },
+];
+
 export default function MenusPage({ seoRestaurantData = null }) {
   const { restaurantContext } = useContext(GlobalContext);
-  const heroRef = useRef(null);
-  const [showScrolledNav, setShowScrolledNav] = useState(false);
-
-  useEffect(() => {
-    const heroEl = heroRef.current;
-    if (!heroEl) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setShowScrolledNav(entry.intersectionRatio <= 0.1);
-      },
-      {
-        threshold: [0, 0.05, 0.1, 0.25, 0.5, 0.75, 1],
-      },
-    );
-
-    observer.observe(heroEl);
-
-    return () => observer.disconnect();
-  }, []);
 
   return (
     <>
@@ -49,26 +36,14 @@ export default function MenusPage({ seoRestaurantData = null }) {
       />
 
       <div className="relative">
-        <NavComponent
-          isVisible={!showScrolledNav}
-          scrolled={false}
-          logoSrc="/img/logo.webp"
-        />
+        <NavComponent items={navigationItems} />
 
-        <NavComponent
-          isVisible={showScrolledNav}
-          scrolled={true}
-          logoSrc="/img/logo.webp"
+        <BannerComponent
+          title="Menus"
+          eyebrow="La carte"
+          description="La page rassemble les plats, les menus et les formules visibles sur le site, dans une structure plus claire et plus directe."
+          imgUrl="menu-inspired/header_menu.webp"
         />
-
-        <div ref={heroRef}>
-          <BannerComponent
-            title="Menus"
-            eyebrow="La carte"
-            description="La page rassemble les plats, les menus et les formules visibles sur le site, dans une structure plus claire et plus directe."
-            imgUrl="menu-inspired/header_menu.webp"
-          />
-        </div>
 
         <ListMenusComponent restaurantData={restaurantContext.restaurantData} />
 
