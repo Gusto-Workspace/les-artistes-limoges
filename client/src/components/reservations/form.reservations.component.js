@@ -1,17 +1,50 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { format } from "date-fns";
+import Image from "next/image";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  addDays,
+  differenceInCalendarDays,
+  format,
+  startOfToday,
+} from "date-fns";
+import { fr } from "date-fns/locale";
 import { useRouter } from "next/router";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
-import { Loader2, ChevronDown } from "lucide-react";
-import RevealOnScrollComponent from "../_shared/motion/reveal-on-scroll.component";
-import SectionHeadingComponent from "../_shared/section-heading.component";
+import { ChevronRight, Loader2, X } from "lucide-react";
+import { buildContactInfos } from "@/_assets/utils/contact.utils";
 import {
   formatReservationDateForApi,
   getAvailableReservationTimes,
-  isReservationDateClosed,
   parseReservationDateValue,
 } from "@/utils/reservations";
+
+const RESERVATION_TIME_OPTIONS = [
+  "12:00",
+  "12:15",
+  "12:30",
+  "12:45",
+  "13:00",
+  "13:15",
+  "13:30",
+  "13:45",
+  "14:00",
+  "19:00",
+  "19:15",
+  "19:30",
+  "19:45",
+  "20:00",
+  "20:15",
+  "20:30",
+  "20:45",
+  "21:00",
+];
+
+const peopleOptions = Array.from({ length: 12 }, (_, index) =>
+  String(index + 1),
+);
+
+const PENDING_BANK_HOLD_STORAGE_KEY = "gm_pending_bank_hold";
+
 export default function FormReservationComponent({
   apiBaseUrl,
   restaurant,
@@ -19,9 +52,11 @@ export default function FormReservationComponent({
   dataLoading,
 }) {
   const router = useRouter();
+  const today = useMemo(() => startOfToday(), []);
+  const initialDate = useMemo(() => today, [today]);
   const [reservationData, setReservationData] = useState({
-    reservationDate: new Date(),
-    reservationTime: "",
+    reservationDate: initialDate,
+    reservationTime: "19:30",
     numberOfGuests: "2",
     customerFirstName: "",
     customerLastName: "",
@@ -30,9 +65,15 @@ export default function FormReservationComponent({
     commentary: "",
     table: "",
   });
+  const quickDateOptions = useMemo(
+    () => getQuickDateOptions(reservationData.reservationDate, today),
+    [reservationData.reservationDate, today],
+  );
   const [availableTimes, setAvailableTimes] = useState([]);
-  const [resolvedAvailabilitySelectionKey, setResolvedAvailabilitySelectionKey] =
-    useState("");
+  const [
+    resolvedAvailabilitySelectionKey,
+    setResolvedAvailabilitySelectionKey,
+  ] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
@@ -42,6 +83,7 @@ export default function FormReservationComponent({
   const [reservationsListLoading, setReservationsListLoading] = useState(false);
   const [hasAppliedQueryPrefill, setHasAppliedQueryPrefill] = useState(false);
   const [pendingPrefilledTime, setPendingPrefilledTime] = useState("");
+  const [showCalendarModal, setShowCalendarModal] = useState(false);
   const parameters =
     restaurant?.reservationsSettings ||
     restaurant?.reservations?.parameters ||
@@ -51,44 +93,62 @@ export default function FormReservationComponent({
     if (typeof crypto !== "undefined" && crypto.randomUUID) {
       return crypto.randomUUID();
     }
+
     return `resa_${Date.now()}_${Math.random().toString(36).slice(2)}`;
   });
-  const PENDING_BANK_HOLD_STORAGE_KEY = "gm_pending_bank_hold";
   const [pendingBankHoldReservation, setPendingBankHoldReservation] =
     useState(null);
   const [showPendingBankHoldModal, setShowPendingBankHoldModal] =
     useState(false);
   const [isCancelingPendingBankHold, setIsCancelingPendingBankHold] =
     useState(false);
+  const contactInfos = buildContactInfos(restaurant);
+  const contactByKey = Object.fromEntries(
+    contactInfos.map((item) => [item.key, item]),
+  );
+  const address =
+    contactByKey.address?.value && contactByKey.address.value !== "-"
+      ? contactByKey.address.value
+      : "4 rue Fitz-James, 87000 Limoges";
+  const phone =
+    contactByKey.phone?.value && contactByKey.phone.value !== "-"
+      ? contactByKey.phone.value
+      : "05 55 34 12 43";
+  const phoneHref = contactByKey.phone?.href || "tel:0555341243";
+
   const fetchReservationsList = useCallback(async () => {
     if (!apiBaseUrl || !restaurant?._id) {
       setReservationsList([]);
       return [];
     }
+
     try {
       setReservationsListLoading(true);
       const res = await fetch(
         `${apiBaseUrl}/public/restaurants/${restaurant._id}/reservations`,
       );
       const data = await res.json().catch(() => ({}));
+
       if (!res.ok) {
         throw new Error(
           data?.message || "Impossible de charger les réservations.",
         );
       }
+
       const nextReservations = Array.isArray(data?.reservations)
         ? data.reservations
         : [];
       setReservationsList(nextReservations);
       return nextReservations;
-    } catch (error) {
-      console.error("[fetchReservationsList]", error);
+    } catch (fetchError) {
+      console.error("[fetchReservationsList]", fetchError);
       setReservationsList([]);
       return [];
     } finally {
       setReservationsListLoading(false);
     }
   }, [apiBaseUrl, restaurant?._id]);
+
   useEffect(() => {
     setReservationData((prev) => ({ ...prev, table: manage ? "auto" : "" }));
   }, [manage]);
@@ -114,7 +174,7 @@ export default function FormReservationComponent({
     setReservationData((prev) => ({
       ...prev,
       reservationDate: nextDate || prev.reservationDate,
-      reservationTime: nextTime || "",
+      reservationTime: nextTime || prev.reservationTime,
       numberOfGuests: nextGuests || prev.numberOfGuests,
     }));
     setPendingPrefilledTime(nextTime || "");
@@ -132,37 +192,46 @@ export default function FormReservationComponent({
       try {
         const raw = localStorage.getItem(PENDING_BANK_HOLD_STORAGE_KEY);
         if (!raw) return;
+
         const parsed = JSON.parse(raw);
         if (!parsed?.reservationId || !parsed?.restaurantId) {
           localStorage.removeItem(PENDING_BANK_HOLD_STORAGE_KEY);
           return;
         }
+
         if (String(parsed.restaurantId) !== String(restaurant?._id)) {
           return;
         }
+
         const res = await fetch(
           `${apiBaseUrl}/reservations/${parsed.reservationId}`,
         );
+
         if (!res.ok) {
           localStorage.removeItem(PENDING_BANK_HOLD_STORAGE_KEY);
           return;
         }
+
         const data = await res.json();
         const reservation = data?.reservation;
+
         if (!reservation) {
           localStorage.removeItem(PENDING_BANK_HOLD_STORAGE_KEY);
           return;
         }
+
         const isAwaiting =
           String(reservation.status) === "AwaitingBankHold" &&
           Boolean(reservation?.bankHold?.enabled);
         const isExpired =
           reservation?.bankHold?.expiresAt &&
           new Date(reservation.bankHold.expiresAt).getTime() <= Date.now();
+
         if (!isAwaiting || isExpired) {
           localStorage.removeItem(PENDING_BANK_HOLD_STORAGE_KEY);
           return;
         }
+
         setPendingBankHoldReservation({
           reservationId: String(reservation._id),
           restaurantId: String(reservation.restaurant_id),
@@ -173,15 +242,17 @@ export default function FormReservationComponent({
           expiresAt: reservation?.bankHold?.expiresAt || null,
         });
         setShowPendingBankHoldModal(true);
-      } catch (error) {
-        console.error("[restorePendingBankHold]", error);
+      } catch (restoreError) {
+        console.error("[restorePendingBankHold]", restoreError);
         localStorage.removeItem(PENDING_BANK_HOLD_STORAGE_KEY);
       }
     }
+
     if (restaurant?._id && apiBaseUrl) {
       restorePendingBankHold();
     }
   }, [apiBaseUrl, restaurant?._id]);
+
   useEffect(() => {
     if (!restaurant?._id || !reservationData.reservationDate || dataLoading) {
       setAvailableTimes([]);
@@ -189,6 +260,7 @@ export default function FormReservationComponent({
       setIsLoading(Boolean(dataLoading));
       return;
     }
+
     if (reservationsListLoading) {
       setIsLoading(true);
       return;
@@ -206,6 +278,7 @@ export default function FormReservationComponent({
         numberOfGuests: reservationData.numberOfGuests,
         restaurant,
         reservationsList,
+        manualTimes: RESERVATION_TIME_OPTIONS,
       }),
     );
     setResolvedAvailabilitySelectionKey(nextSelectionKey);
@@ -213,11 +286,12 @@ export default function FormReservationComponent({
   }, [
     dataLoading,
     restaurant,
-    reservationData.reservationDate,
     reservationData.numberOfGuests,
+    reservationData.reservationDate,
     reservationsList,
     reservationsListLoading,
   ]);
+
   useEffect(() => {
     if (
       !pendingPrefilledTime ||
@@ -238,6 +312,7 @@ export default function FormReservationComponent({
       setPendingPrefilledTime("");
       return;
     }
+
     if (availableTimes.includes(pendingPrefilledTime)) {
       setInvalidFields((prev) => {
         if (!prev.reservationTime) return prev;
@@ -259,7 +334,7 @@ export default function FormReservationComponent({
       reservationTime: true,
     }));
     setError(
-      "Le créneau transmis par la booking bar n’est plus disponible. Merci d’en choisir un autre.",
+      "Le créneau transmis n’est plus disponible. Merci d’en choisir un autre.",
     );
     setPendingPrefilledTime("");
   }, [
@@ -274,17 +349,39 @@ export default function FormReservationComponent({
     reservationData.reservationDate,
     reservationData.reservationTime,
   ]);
-  function formatTimeDisplay(time) {
-    const [h, m] = time.split(":");
-    return `${h}h${m}`;
-  }
-  function handleInputChange(e) {
-    const { name, value } = e.target;
+
+  useEffect(() => {
+    if (!showCalendarModal) return undefined;
+
+    const previousOverflow = document.body.style.overflow;
+    const previousPaddingRight = document.body.style.paddingRight;
+    const computedPaddingRight =
+      Number.parseFloat(window.getComputedStyle(document.body).paddingRight) ||
+      0;
+    const scrollbarWidth =
+      window.innerWidth - document.documentElement.clientWidth;
+
+    document.body.style.overflow = "hidden";
+
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = `${computedPaddingRight + scrollbarWidth}px`;
+    }
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.body.style.paddingRight = previousPaddingRight;
+    };
+  }, [showCalendarModal]);
+
+  function handleInputChange(event) {
+    const { name, type, value, checked } = event.target;
+    const nextValue = type === "checkbox" ? checked : value;
+
     setError(null);
     setSuccessMessage("");
     setReservationData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: nextValue,
       ...(name === "numberOfGuests" ? { reservationTime: "" } : {}),
     }));
     setInvalidFields((prev) => {
@@ -302,13 +399,45 @@ export default function FormReservationComponent({
       return nextInvalidFields;
     });
   }
-  function handleDateChange(d) {
+
+  function handleGuestsSelect(value) {
     setError(null);
     setSuccessMessage("");
     setReservationData((prev) => ({
       ...prev,
-      reservationDate: d,
+      numberOfGuests: value,
       reservationTime: "",
+    }));
+    setInvalidFields((prev) => {
+      const nextInvalidFields = { ...prev };
+      delete nextInvalidFields.numberOfGuests;
+      delete nextInvalidFields.reservationTime;
+      return nextInvalidFields;
+    });
+  }
+
+  function handleDateChange(nextDate) {
+    setError(null);
+    setSuccessMessage("");
+    setReservationData((prev) => ({
+      ...prev,
+      reservationDate: nextDate,
+      reservationTime: "",
+    }));
+    setInvalidFields((prev) => {
+      const nextInvalidFields = { ...prev };
+      delete nextInvalidFields.reservationTime;
+      return nextInvalidFields;
+    });
+    setShowCalendarModal(false);
+  }
+
+  function handleTimeSelect(value) {
+    setError(null);
+    setSuccessMessage("");
+    setReservationData((prev) => ({
+      ...prev,
+      reservationTime: value,
     }));
     setInvalidFields((prev) => {
       if (!prev.reservationTime) return prev;
@@ -318,16 +447,15 @@ export default function FormReservationComponent({
       return nextInvalidFields;
     });
   }
-  function disableClosedDays({ date, view }) {
-    if (view !== "month") return false;
-    return isReservationDateClosed({ reservationDate: date, restaurant });
-  }
+
   function handleResumePendingBankHold() {
     if (!pendingBankHoldReservation?.reservationId) return;
     window.location.href = `/reservations/${pendingBankHoldReservation.reservationId}/bank-hold`;
   }
+
   async function handleCancelPendingBankHold() {
     if (!pendingBankHoldReservation?.reservationId) return;
+
     try {
       setIsCancelingPendingBankHold(true);
       const res = await fetch(
@@ -335,30 +463,34 @@ export default function FormReservationComponent({
         { method: "POST", headers: { "Content-Type": "application/json" } },
       );
       const data = await res.json().catch(() => ({}));
+
       if (!res.ok) {
         throw new Error(
           data?.message || "Impossible d’annuler la réservation en attente.",
         );
       }
+
       localStorage.removeItem(PENDING_BANK_HOLD_STORAGE_KEY);
       setPendingBankHoldReservation(null);
       setShowPendingBankHoldModal(false);
       await fetchReservationsList();
-    } catch (err) {
+    } catch (cancelError) {
       setError(
-        err?.message || "Impossible d’annuler la réservation en attente.",
+        cancelError?.message ||
+          "Impossible d’annuler la réservation en attente.",
       );
     } finally {
       setIsCancelingPendingBankHold(false);
     }
   }
-  async function handleSubmit(e) {
-    e.preventDefault();
+
+  async function handleSubmit(event) {
+    event.preventDefault();
     setError(null);
     setSuccessMessage("");
-    const nextInvalidFields = getMissingRequiredReservationFields(
-      reservationData,
-    );
+
+    const nextInvalidFields =
+      getMissingRequiredReservationFields(reservationData);
 
     if (Object.keys(nextInvalidFields).length > 0) {
       setInvalidFields((prev) => ({
@@ -367,6 +499,7 @@ export default function FormReservationComponent({
       }));
       return;
     }
+
     if (!availableTimes.includes(reservationData.reservationTime)) {
       setInvalidFields((prev) => ({
         ...prev,
@@ -378,6 +511,7 @@ export default function FormReservationComponent({
 
     setInvalidFields({});
     setIsSubmitting(true);
+
     let tablePayload = null;
     if (manage) {
       if (reservationData.table && reservationData.table !== "auto") {
@@ -386,6 +520,7 @@ export default function FormReservationComponent({
     } else {
       tablePayload = reservationData.table || null;
     }
+
     const payload = {
       reservationDate: formatReservationDateForApi(
         reservationData.reservationDate,
@@ -401,6 +536,7 @@ export default function FormReservationComponent({
       returnUrl: `${window.location.origin}/reservations`,
       idempotencyKey,
     };
+
     try {
       const res = await fetch(
         `${apiBaseUrl}/restaurants/${restaurant._id}/reservations`,
@@ -410,10 +546,12 @@ export default function FormReservationComponent({
           body: JSON.stringify(payload),
         },
       );
+
       if (!res.ok) {
-        const j = await res.json().catch(() => ({}));
-        throw new Error(j.message || "Erreur lors de la réservation");
+        const json = await res.json().catch(() => ({}));
+        throw new Error(json.message || "Erreur lors de la réservation");
       }
+
       const data = await res.json();
       if (data?.requiresAction && data?.redirectUrl && data?.reservationId) {
         localStorage.setItem(
@@ -432,6 +570,7 @@ export default function FormReservationComponent({
         window.location.href = data.redirectUrl;
         return;
       }
+
       await fetchReservationsList();
       onBooked?.(data.restaurant || restaurant);
       setReservationData((prev) => ({
@@ -446,40 +585,55 @@ export default function FormReservationComponent({
       }));
       setInvalidFields({});
       setSuccessMessage(
-        "Votre réservation a bien été effectuée. Nous avons bien reçu votre demande.",
+        "Votre réservation a bien été enregistrée. Nous avons bien reçu votre demande.",
       );
+
       if (router.query.reservationDate || router.query.reservationTime) {
         await router.replace("/reservations", undefined, { shallow: true });
       }
-    } catch (err) {
-      setError(err.message || "Une erreur est survenue");
+    } catch (submitError) {
+      setError(submitError.message || "Une erreur est survenue");
     } finally {
       setIsSubmitting(false);
     }
   }
-  const peopleOptions = useMemo(() => {
-    return Array.from({ length: 12 }, (_, i) => String(i + 1));
-  }, []);
-  const isReservationFormComplete = useMemo(() => {
-    return (
+
+  const formattedDateSecondary = getDateSecondaryLabel(
+    reservationData.reservationDate,
+  );
+  const summaryDate = getSummaryDateLabel(reservationData.reservationDate);
+  const summaryGuests = formatGuestsLabel(reservationData.numberOfGuests);
+  const summaryTime = reservationData.reservationTime
+    ? formatTimeDisplay(reservationData.reservationTime)
+    : "À sélectionner";
+  const summaryLocation = "Salle principale";
+  const selectedDateKey = reservationData.reservationDate
+    ? formatReservationDateForApi(reservationData.reservationDate)
+    : "";
+  const isCustomDateSelection = !quickDateOptions.some(
+    (date) => formatReservationDateForApi(date) === selectedDateKey,
+  );
+  const isReservationFormComplete = useMemo(
+    () =>
       Boolean(reservationData.numberOfGuests) &&
       Boolean(reservationData.reservationTime) &&
       Boolean(reservationData.customerFirstName.trim()) &&
       Boolean(reservationData.customerLastName.trim()) &&
       Boolean(reservationData.customerEmail.trim()) &&
-      Boolean(reservationData.customerPhone.trim())
-    );
-  }, [
-    reservationData.customerEmail,
-    reservationData.customerFirstName,
-    reservationData.customerLastName,
-    reservationData.customerPhone,
-    reservationData.numberOfGuests,
-    reservationData.reservationTime,
-  ]);
+      Boolean(reservationData.customerPhone.trim()),
+    [
+      reservationData.customerEmail,
+      reservationData.customerFirstName,
+      reservationData.customerLastName,
+      reservationData.customerPhone,
+      reservationData.numberOfGuests,
+      reservationData.reservationTime,
+    ],
+  );
+
   return (
     <>
-      {showPendingBankHoldModal && pendingBankHoldReservation && (
+      {showPendingBankHoldModal && pendingBankHoldReservation ? (
         <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-[rgba(39,20,12,0.55)] px-4">
           <div className="site-card w-full max-w-[620px] rounded-[30px] p-6 tablet:p-8">
             <p className="script-font text-[38px] leading-none text-[var(--site-orange-deep)]">
@@ -541,231 +695,249 @@ export default function FormReservationComponent({
             </div>
           </div>
         </div>
-      )}
-      <section className="site-shell px-5 py-20 tablet:px-8 tablet:py-24 desktop:px-[90px] desktop:py-[110px]">
-        <div className="mx-auto max-w-[1500px]">
-          <SectionHeadingComponent
-            eyebrow="Réservation"
-            title="Préparez votre venue"
-            description="Choisissez votre date, votre horaire et renseignez vos informations pour finaliser votre réservation."
-          />
+      ) : null}
 
-          <div className="mx-auto mt-14 max-w-[1380px]">
-            {!dataLoading ? (
-              <form onSubmit={handleSubmit} className="flex flex-col gap-8">
-                <RevealOnScrollComponent
-                  variant="left"
-                  className="site-card rounded-[30px] p-5 tablet:max-w-[360px] tablet:p-6"
-                >
-                  <label className="mb-3 block text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--site-orange-deep)] tablet:text-[12px] tablet:tracking-[0.32em]">
-                    Personnes
-                  </label>
-                  <div className="relative">
-                    <select
-                      name="numberOfGuests"
-                      value={reservationData.numberOfGuests}
-                      onChange={handleInputChange}
-                      aria-invalid={invalidFields.numberOfGuests}
-                      className={`site-select h-[56px] appearance-none px-4 pr-11 text-[15px] tablet:px-5 tablet:pr-12 tablet:text-[17px] ${invalidFields.numberOfGuests ? "border-[#c55050] bg-[#fff4f1] focus:border-[#c55050]" : ""}`}
+      {showCalendarModal ? (
+        <div className="la-reservation__calendar-overlay">
+          <div className="la-reservation__calendar-shell">
+            <button
+              type="button"
+              onClick={() => setShowCalendarModal(false)}
+              className="la-reservation__calendar-close"
+              aria-label="Fermer le calendrier"
+            >
+              <X size={18} strokeWidth={1.9} />
+            </button>
+
+            <p className="la-home__eyebrow">Choisir une date</p>
+            <h3 className="la-reservation__calendar-title">
+              Sélectionnez votre jour de venue
+            </h3>
+
+            <div className="mt-6">
+              <Calendar
+                onChange={(value) => {
+                  if (value instanceof Date) {
+                    handleDateChange(value);
+                  }
+                }}
+                value={reservationData.reservationDate}
+                minDate={startOfToday()}
+                locale="fr-FR"
+                className="reservation-calendar reservation-calendar--la"
+              />
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      <section
+        id="reservation-form"
+        className="la-shell pb-10 pt-1 tablet:pb-12 desktop:pb-14"
+      >
+        <div className="la-reservation__panel relative overflow-hidden px-5 py-6 tablet:px-7 tablet:py-8 desktop:px-8 desktop:py-9">
+          {!dataLoading ? (
+            <form
+              onSubmit={handleSubmit}
+              className="grid gap-10 desktop:grid-cols-[minmax(0,_2fr)_minmax(0,_1fr)] desktop:gap-0"
+            >
+              <div className="desktop:pr-10">
+                <h2 className="la-reservation__panel-title">
+                  Votre réservation
+                </h2>
+
+                <div className="mt-8 space-y-6">
+                  <FieldGroup
+                    label="A. Nombre de personnes"
+                    invalid={invalidFields.numberOfGuests}
+                  >
+                    <HorizontalChoiceScroller
+                      invalid={invalidFields.numberOfGuests}
+                      arrowLabel="Voir plus de personnes"
+                      watchKey={peopleOptions.join("|")}
                     >
-                      {peopleOptions.map((value) => (
-                        <option key={value} value={value}>
-                          {value} {Number(value) > 1 ? "personnes" : "personne"}
-                        </option>
-                      ))}
-                    </select>
-                    <ChevronDown
-                      size={18}
-                      strokeWidth={1.4}
-                      className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[var(--site-ink-soft)]"
-                    />
-                  </div>
-                </RevealOnScrollComponent>
-
-                <div className="grid gap-6 desktop:grid-cols-[1fr_1fr]">
-                  <RevealOnScrollComponent
-                    variant="left"
-                    className="site-card rounded-[30px] p-5 tablet:p-6 desktop:p-7"
-                  >
-                    <div className="mb-5">
-                      <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--site-orange-deep)] tablet:text-[12px] tablet:tracking-[0.32em]">
-                        Calendrier
-                      </p>
-                      <h3 className="yeseva-one-regular mt-3 text-[38px] leading-[0.92] text-[var(--site-ink)] tablet:text-[46px]">
-                        Choisissez votre date
-                      </h3>
-                    </div>
-                    <div className="reservation-calendar-wrapper overflow-hidden">
-                      <Calendar
-                        onChange={handleDateChange}
-                        value={reservationData.reservationDate}
-                        view="month"
-                        locale="fr-FR"
-                        tileDisabled={disableClosedDays}
-                        minDate={new Date()}
-                        className="reservation-calendar w-full border-none bg-transparent"
-                      />
-                    </div>
-                  </RevealOnScrollComponent>
-
-                  <RevealOnScrollComponent
-                    delay={120}
-                    variant="right"
-                    className={`site-card relative rounded-[30px] p-5 tablet:p-6 desktop:p-7 ${
-                      invalidFields.reservationTime
-                        ? "border-[#c55050] bg-[#fff4f1]"
-                        : ""
-                    }`}
-                  >
-                    <div className="mb-5 flex items-start justify-between gap-4">
-                      <div>
-                        <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--site-orange-deep)] tablet:text-[12px] tablet:tracking-[0.32em]">
-                          Disponibilités
-                        </p>
-                        <h3 className="yeseva-one-regular mt-3 text-[38px] leading-[0.92] text-[var(--site-ink)] tablet:text-[46px]">
-                          Sélectionnez un horaire
-                        </h3>
-                      </div>
-                      {isLoading && (
-                        <div className="absolute left-1/2 top-[80%] flex -translate-x-1/2 -translate-y-1/2 items-center gap-2 text-[13px] text-[var(--site-ink-soft)] tablet:top-1/2 tablet:text-[14px]">
-                          <Loader2 size={16} className="animate-spin" />
-                          Chargement...
-                        </div>
-                      )}
-                    </div>
-                    {!isLoading && availableTimes.length > 0 ? (
-                      <div className="grid grid-cols-2 gap-3 tablet:grid-cols-3 desktop:grid-cols-4">
-                        {availableTimes.map((time) => {
+                      <div className="la-reservation__choice-rail">
+                        {peopleOptions.map((value) => {
                           const isActive =
-                            reservationData.reservationTime === time;
+                            reservationData.numberOfGuests === value;
+
                           return (
                             <button
-                              key={time}
+                              key={value}
                               type="button"
-                              onClick={() => {
-                                setError(null);
-                                setSuccessMessage("");
-                                setInvalidFields((prev) => {
-                                  if (!prev.reservationTime) return prev;
-
-                                  const nextInvalidFields = { ...prev };
-                                  delete nextInvalidFields.reservationTime;
-                                  return nextInvalidFields;
-                                });
-                                setReservationData((prev) => ({
-                                  ...prev,
-                                  reservationTime: time,
-                                }));
-                              }}
-                              disabled={!reservationData.numberOfGuests}
-                              className={`min-w-0 rounded-[14px] border px-3 py-3 text-[14px] transition tablet:px-4 tablet:text-[15px] ${
-                                isActive
-                                  ? "border-[var(--site-orange)] bg-[var(--site-orange)] text-white"
-                                  : "border-[var(--site-line)] bg-white/90 text-[var(--site-ink)] hover:border-[var(--site-orange)] hover:text-[var(--site-orange-deep)]"
-                              }`}
+                              onClick={() => handleGuestsSelect(value)}
+                              aria-pressed={isActive}
+                              className={`la-reservation__choice-chip ${isActive ? "is-active" : ""}`}
                             >
-                              {formatTimeDisplay(time)}
+                              {value}
                             </button>
                           );
                         })}
                       </div>
-                    ) : (
-                      !isLoading && (
-                        <p className="text-[15px] leading-[1.8] text-[var(--site-ink-soft)] tablet:text-[17px]">
-                          Aucun créneau disponible pour cette date.
-                        </p>
-                      )
-                    )}
-                  </RevealOnScrollComponent>
-                </div>
+                    </HorizontalChoiceScroller>
+                  </FieldGroup>
 
-                <RevealOnScrollComponent
-                  delay={180}
-                  variant="up"
-                  className="site-card rounded-[30px] p-5 tablet:p-6 desktop:p-7"
-                >
-                  <div className="mb-7 tablet:mb-8">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--site-orange-deep)] tablet:text-[12px] tablet:tracking-[0.32em]">
-                      Vos informations
-                    </p>
-                    <h3 className="yeseva-one-regular mt-3 text-[38px] leading-[0.92] text-[var(--site-ink)] tablet:text-[46px]">
-                      Finalisez la réservation
-                    </h3>
-                  </div>
-                  <div className="grid gap-5 tablet:grid-cols-2">
-                    <Field
-                      label="Prénom*"
-                      fieldId="reservation-customer-first-name"
-                      name="customerFirstName"
-                      value={reservationData.customerFirstName}
-                      onChange={handleInputChange}
-                      type="text"
-                      invalid={invalidFields.customerFirstName}
-                    />
-                    <Field
-                      label="Nom*"
-                      fieldId="reservation-customer-last-name"
-                      name="customerLastName"
-                      value={reservationData.customerLastName}
-                      onChange={handleInputChange}
-                      type="text"
-                      invalid={invalidFields.customerLastName}
-                    />
-                    <Field
-                      label="Email*"
-                      fieldId="reservation-customer-email"
-                      name="customerEmail"
-                      value={reservationData.customerEmail}
-                      onChange={handleInputChange}
-                      type="email"
-                      invalid={invalidFields.customerEmail}
-                    />
-                    <Field
-                      label="Téléphone*"
-                      fieldId="reservation-customer-phone"
-                      name="customerPhone"
-                      value={reservationData.customerPhone}
-                      onChange={handleInputChange}
-                      type="tel"
-                      invalid={invalidFields.customerPhone}
-                    />
-                    <div className="tablet:col-span-2">
-                      <label
-                        htmlFor="reservation-commentary"
-                        className="mb-3 block text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--site-orange-deep)] tablet:text-[12px] tablet:tracking-[0.32em]"
+                  <FieldGroup label="B. Date" invalid={false}>
+                    <div className="la-reservation__date-rail custom-scrollbar">
+                      {quickDateOptions.map((date) => {
+                        const optionKey = formatReservationDateForApi(date);
+                        const isActive = optionKey === selectedDateKey;
+
+                        return (
+                          <button
+                            key={optionKey}
+                            type="button"
+                            onClick={() => handleDateChange(date)}
+                            aria-pressed={isActive}
+                            className={`la-reservation__choice-chip la-reservation__choice-chip--date ${isActive ? "is-active" : ""}`}
+                          >
+                            {getQuickDateChipLabel(date, today)}
+                          </button>
+                        );
+                      })}
+
+                      <button
+                        type="button"
+                        onClick={() => setShowCalendarModal(true)}
+                        className={`la-reservation__calendar-trigger ${isCustomDateSelection ? "is-active" : ""}`}
+                        aria-label="Choisir une autre date"
                       >
-                        Commentaire
-                      </label>
-                      <textarea
-                        id="reservation-commentary"
-                        name="commentary"
-                        value={reservationData.commentary}
+                        <Image
+                          src="/img/pictos/17.png"
+                          alt=""
+                          aria-hidden="true"
+                          width={18}
+                          height={18}
+                          className="h-[18px] w-[18px] shrink-0"
+                        />
+                      </button>
+                    </div>
+                    {isCustomDateSelection ? (
+                      <p className="la-reservation__helper">
+                        Date choisie : {formattedDateSecondary}
+                      </p>
+                    ) : null}
+                  </FieldGroup>
+
+                  <FieldGroup
+                    label="C. Horaire"
+                    invalid={invalidFields.reservationTime}
+                  >
+                    <HorizontalChoiceScroller
+                      invalid={invalidFields.reservationTime}
+                      arrowLabel="Voir plus d'horaires"
+                      watchKey={`${availableTimes.join("|")}|${isLoading}|${reservationsListLoading}`}
+                    >
+                      {isLoading || reservationsListLoading ? (
+                        <div className="la-reservation__choice-loading">
+                          <Loader2 size={17} className="animate-spin" />
+                          Chargement des créneaux...
+                        </div>
+                      ) : (
+                        <div className="la-reservation__choice-rail">
+                          {availableTimes.map((time) => {
+                            const isActive =
+                              reservationData.reservationTime === time;
+
+                            return (
+                              <button
+                                key={time}
+                                type="button"
+                                onClick={() => handleTimeSelect(time)}
+                                aria-pressed={isActive}
+                                className={`la-reservation__choice-chip la-reservation__choice-chip--time ${isActive ? "is-active" : ""}`}
+                              >
+                                {formatTimeDisplay(time)}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </HorizontalChoiceScroller>
+                    {!isLoading &&
+                    !reservationsListLoading &&
+                    !availableTimes.length ? (
+                      <p className="la-reservation__helper">
+                        Aucun créneau disponible pour cette date.
+                      </p>
+                    ) : null}
+                  </FieldGroup>
+
+                  <div>
+                    <p className="la-reservation__step-title">
+                      D. Vos informations
+                    </p>
+                    <div className="mt-4 grid gap-4 tablet:grid-cols-2">
+                      <TextField
+                        fieldId="reservation-customer-first-name"
+                        name="customerFirstName"
+                        value={reservationData.customerFirstName}
                         onChange={handleInputChange}
-                        rows={5}
-                        className="site-textarea w-full resize-none px-4 py-4 text-[15px] text-[var(--site-ink)] tablet:px-5 tablet:text-[16px]"
-                        placeholder="Une demande particulière ?"
+                        placeholder="Prénom"
+                        invalid={invalidFields.customerFirstName}
                       />
+                      <TextField
+                        fieldId="reservation-customer-last-name"
+                        name="customerLastName"
+                        value={reservationData.customerLastName}
+                        onChange={handleInputChange}
+                        placeholder="Nom"
+                        invalid={invalidFields.customerLastName}
+                      />
+                      <TextField
+                        fieldId="reservation-customer-email"
+                        name="customerEmail"
+                        type="email"
+                        value={reservationData.customerEmail}
+                        onChange={handleInputChange}
+                        placeholder="E-mail"
+                        invalid={invalidFields.customerEmail}
+                      />
+                      <TextField
+                        fieldId="reservation-customer-phone"
+                        name="customerPhone"
+                        type="tel"
+                        value={reservationData.customerPhone}
+                        onChange={handleInputChange}
+                        placeholder="Téléphone"
+                        invalid={invalidFields.customerPhone}
+                      />
+                      <div className="tablet:col-span-2">
+                        <textarea
+                          id="reservation-commentary"
+                          name="commentary"
+                          value={reservationData.commentary}
+                          onChange={handleInputChange}
+                          rows={4}
+                          className="la-reservation__textarea"
+                          placeholder="Demandes particulières (facultatif)"
+                        />
+                      </div>
                     </div>
                   </div>
-                  {error && (
-                    <div className="mt-6 rounded-[18px] border border-red-200 bg-red-50 px-4 py-3 text-[14px] text-red-700 tablet:text-[15px]">
+
+                  {error ? (
+                    <div className="la-reservation__alert la-reservation__alert--error">
                       {error}
                     </div>
-                  )}
-                  {successMessage && (
-                    <div className="mt-6 rounded-[18px] border border-[var(--site-line)] bg-[#edf4e8] px-4 py-3 text-[14px] text-[#2f5c1a] tablet:text-[15px]">
+                  ) : null}
+
+                  {successMessage ? (
+                    <div className="la-reservation__alert la-reservation__alert--success">
                       {successMessage}
                     </div>
-                  )}
-                  <div className="mt-8 flex justify-start tablet:justify-end">
+                  ) : null}
+
+                  <div className="la-reservation__submit-wrap pt-1">
                     <button
                       type="submit"
                       disabled={
                         !isReservationFormComplete ||
                         isLoading ||
+                        reservationsListLoading ||
                         isSubmitting
                       }
-                      className="site-button w-full disabled:cursor-not-allowed disabled:opacity-50 tablet:w-auto tablet:min-w-[220px] tablet:text-[13px] tablet:tracking-[0.28em]"
+                      className="la-button la-button--primary la-reservation__submit-button disabled:cursor-not-allowed disabled:opacity-60"
                     >
                       {isSubmitting ? (
                         <span className="flex items-center gap-2">
@@ -773,51 +945,205 @@ export default function FormReservationComponent({
                           Envoi...
                         </span>
                       ) : (
-                        "Confirmer"
+                        "Confirmer la réservation"
                       )}
                     </button>
                   </div>
-                </RevealOnScrollComponent>
-              </form>
-            ) : (
-              <p className="flex h-[320px] w-full items-center justify-center gap-2 text-[var(--site-ink-soft)] tablet:h-[400px]">
-                Chargement <Loader2 size={18} className="animate-spin" />
-              </p>
-            )}
-          </div>
+                </div>
+              </div>
+
+              <div className="desktop:border-l desktop:border-[rgba(197,155,85,0.22)] desktop:pl-10">
+                <h2 className="la-reservation__panel-title">Récapitulatif</h2>
+
+                <div className="mt-8 space-y-6">
+                  <SummaryRow
+                    iconSrc="/img/pictos/14.png"
+                    label="Restaurant"
+                    value="Les Artistes"
+                  />
+                  <SummaryRow
+                    iconSrc="/img/pictos/15.png"
+                    label="Adresse"
+                    value={address}
+                  />
+                  <SummaryRow
+                    iconSrc="/img/pictos/16.png"
+                    label="Personnes"
+                    value={summaryGuests}
+                  />
+                  <SummaryRow
+                    iconSrc="/img/pictos/17.png"
+                    label="Date"
+                    value={summaryDate}
+                  />
+                  <SummaryRow
+                    iconSrc="/img/pictos/26.png"
+                    label="Horaire"
+                    value={summaryTime}
+                  />
+                </div>
+
+                <div className="la-reservation__advice-box mt-8">
+                  <p>
+                    Réservation conseillée,
+                    <br />
+                    notamment les soirs de spectacle.
+                  </p>
+                </div>
+              </div>
+            </form>
+          ) : (
+            <div className="flex min-h-[420px] items-center justify-center gap-3 text-[rgba(86,57,44,0.74)]">
+              Chargement des disponibilités
+              <Loader2 size={18} className="animate-spin" />
+            </div>
+          )}
         </div>
       </section>
     </>
   );
 }
-function Field({
-  label,
+
+function FieldGroup({ label, invalid = false, children }) {
+  return (
+    <div>
+      <p
+        className={`la-reservation__step-title ${invalid ? "text-[#a14646]" : ""}`}
+      >
+        {label}
+      </p>
+      <div className="mt-3">{children}</div>
+    </div>
+  );
+}
+
+function HorizontalChoiceScroller({
+  children,
+  invalid = false,
+  arrowLabel,
+  watchKey = "",
+}) {
+  const viewportRef = useRef(null);
+  const [hasOverflow, setHasOverflow] = useState(false);
+
+  const updateOverflowState = useCallback(() => {
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+
+    setHasOverflow(viewport.scrollWidth > viewport.clientWidth + 4);
+  }, []);
+
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(updateOverflowState);
+    return () => window.cancelAnimationFrame(frame);
+  }, [updateOverflowState, watchKey]);
+
+  useEffect(() => {
+    const viewport = viewportRef.current;
+    if (!viewport) return undefined;
+
+    const handleResize = () => updateOverflowState();
+    const handleScroll = () => updateOverflowState();
+
+    viewport.addEventListener("scroll", handleScroll, { passive: true });
+
+    let resizeObserver;
+    if (typeof ResizeObserver !== "undefined") {
+      resizeObserver = new ResizeObserver(handleResize);
+      resizeObserver.observe(viewport);
+
+      if (viewport.firstElementChild) {
+        resizeObserver.observe(viewport.firstElementChild);
+      }
+    } else {
+      window.addEventListener("resize", handleResize);
+    }
+
+    return () => {
+      viewport.removeEventListener("scroll", handleScroll);
+      if (resizeObserver) {
+        resizeObserver.disconnect();
+      } else {
+        window.removeEventListener("resize", handleResize);
+      }
+    };
+  }, [updateOverflowState]);
+
+  function handleArrowClick() {
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+
+    const maxScrollLeft = viewport.scrollWidth - viewport.clientWidth;
+    const nextStep = Math.max(Math.round(viewport.clientWidth * 0.82), 180);
+
+    if (viewport.scrollLeft >= maxScrollLeft - 8) {
+      viewport.scrollTo({ left: 0, behavior: "smooth" });
+      return;
+    }
+
+    viewport.scrollBy({ left: nextStep, behavior: "smooth" });
+  }
+
+  return (
+    <div className="la-reservation__choice-row">
+      <div
+        ref={viewportRef}
+        className={`la-reservation__choice-viewport custom-scrollbar ${invalid ? "is-invalid" : ""}`}
+      >
+        {children}
+      </div>
+      {hasOverflow ? (
+        <button
+          type="button"
+          onClick={handleArrowClick}
+          className="la-reservation__scroll-arrow"
+          aria-label={arrowLabel}
+        >
+          <ChevronRight size={18} strokeWidth={1.9} />
+        </button>
+      ) : null}
+    </div>
+  );
+}
+
+function TextField({
   fieldId,
   name,
   value,
   onChange,
   type = "text",
-  placeholder = "",
+  placeholder,
   invalid = false,
 }) {
   return (
-    <div>
-      <label
-        htmlFor={fieldId}
-        className="mb-3 block text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--site-orange-deep)] tablet:text-[12px] tablet:tracking-[0.32em]"
-      >
-        {label}
-      </label>
-      <input
-        id={fieldId}
-        type={type}
-        name={name}
-        value={value}
-        onChange={onChange}
-        aria-invalid={invalid}
-        placeholder={placeholder}
-        className={`site-input h-[52px] px-4 text-[15px] text-[var(--site-ink)] tablet:h-[56px] tablet:px-5 tablet:text-[16px] ${invalid ? "border-[#c55050] bg-[#fff4f1] focus:border-[#c55050]" : ""}`}
+    <input
+      id={fieldId}
+      type={type}
+      name={name}
+      value={value}
+      onChange={onChange}
+      aria-invalid={invalid}
+      placeholder={placeholder}
+      className={`la-reservation__input ${invalid ? "is-invalid" : ""}`}
+    />
+  );
+}
+
+function SummaryRow({ iconSrc, label, value }) {
+  return (
+    <div className="la-reservation__summary-row">
+      <Image
+        src={iconSrc}
+        alt=""
+        aria-hidden="true"
+        width={28}
+        height={28}
+        className="la-reservation__summary-icon"
       />
+      <div className="la-reservation__summary-copy">
+        <p className="la-reservation__summary-label">{label}</p>
+        <p className="la-reservation__summary-value">{value}</p>
+      </div>
     </div>
   );
 }
@@ -870,4 +1196,77 @@ function normalizeReservationTimeValue(value) {
 
 function getAvailabilitySelectionKey({ reservationDate, numberOfGuests }) {
   return `${formatReservationDateForApi(reservationDate)}|${String(numberOfGuests || "").trim()}`;
+}
+
+function formatTimeDisplay(time) {
+  const [hour, minute] = String(time || "").split(":");
+  return `${hour}h${minute}`;
+}
+
+function formatGuestsLabel(value) {
+  const guests = Number(value || 0);
+  if (!guests) {
+    return "À sélectionner";
+  }
+
+  return `${guests} ${guests > 1 ? "personnes" : "personne"}`;
+}
+
+function capitalizeFirstLetter(value) {
+  if (!value) return "";
+  return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
+function getDatePrimaryLabel(value) {
+  const parsedDate = parseReservationDateValue(value);
+  if (!parsedDate) return "Choisir une date";
+
+  const offset = differenceInCalendarDays(parsedDate, startOfToday());
+  if (offset === 0) return "Aujourd’hui";
+  if (offset === 1) return "Demain";
+  if (offset === 2) return "J+2";
+
+  return capitalizeFirstLetter(format(parsedDate, "EEE d", { locale: fr }));
+}
+
+function getDateSecondaryLabel(value) {
+  const parsedDate = parseReservationDateValue(value);
+  if (!parsedDate) return "";
+
+  return capitalizeFirstLetter(
+    format(parsedDate, "EEEE d MMMM", { locale: fr }),
+  );
+}
+
+function getSummaryDateLabel(value) {
+  const parsedDate = parseReservationDateValue(value);
+  if (!parsedDate) return "À sélectionner";
+
+  return capitalizeFirstLetter(
+    format(parsedDate, "EEE d MMM", { locale: fr }),
+  );
+}
+
+function getQuickDateChipLabel(value, today) {
+  const parsedDate = parseReservationDateValue(value);
+  if (!parsedDate) return "Date";
+
+  const offset = differenceInCalendarDays(parsedDate, today);
+  if (offset === 0) return "Aujourd’hui";
+  if (offset === 1) return "Demain";
+
+  return capitalizeFirstLetter(format(parsedDate, "EEE d", { locale: fr }));
+}
+
+function getQuickDateOptions(selectedDate, today) {
+  const parsedSelectedDate = parseReservationDateValue(selectedDate) || today;
+  const safeSelectedDate =
+    differenceInCalendarDays(parsedSelectedDate, today) < 0
+      ? today
+      : parsedSelectedDate;
+  const selectedOffset = differenceInCalendarDays(safeSelectedDate, today);
+  const startDate =
+    selectedOffset <= 2 ? today : addDays(safeSelectedDate, -2);
+
+  return Array.from({ length: 5 }, (_, index) => addDays(startDate, index));
 }

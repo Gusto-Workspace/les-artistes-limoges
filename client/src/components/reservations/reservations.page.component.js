@@ -1,14 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useContext } from "react";
-import { Facebook, Instagram, MapPin } from "lucide-react";
+import { Facebook, Instagram } from "lucide-react";
 import { GlobalContext } from "@/contexts/global.context";
 import { buildContactInfos } from "@/_assets/utils/contact.utils";
 import { getSocialLinks } from "@/_assets/utils/site-display.utils";
-import HomeActionLink from "./home-action-link.component";
+import HomeActionLink from "../home/home-action-link.component";
+import FormReservationsComponent from "./form.reservations.component";
 
 const navigationItems = [
-  { label: "Accueil", href: "/", active: true },
+  { label: "Accueil", href: "/" },
   { label: "Carte & Menus", href: "/menus" },
   { label: "Contact", href: "/contact" },
 ];
@@ -16,9 +17,15 @@ const navigationItems = [
 const featureItems = [
   {
     title: "À côté de l’Opéra",
-    description: "L’adresse idéale avant ou après vos spectacles.",
+    description: "L’adresse idéale avant ou après le spectacle.",
     iconSrc: "/img/pictos/1.png",
     iconAlt: "Pictogramme opéra",
+  },
+  {
+    title: "Service continu",
+    description: "Une brasserie ouverte pour tous les moments de la journée.",
+    iconSrc: "/img/pictos/20.png",
+    iconAlt: "Pictogramme horloge",
   },
   {
     title: "Terrasse",
@@ -27,71 +34,36 @@ const featureItems = [
     iconAlt: "Pictogramme terrasse",
   },
   {
-    title: "Brasserie & Bar",
-    description: "Cuisine maison, vins choisis et cocktails de caractère.",
-    iconSrc: "/img/pictos/3.png",
-    iconAlt: "Pictogramme cocktail",
-  },
-  {
-    title: "Salle à l’étage",
-    description: "Un espace chaleureux pour manger en toute tranquillité.",
+    title: "Salle cosy à l’étage",
+    description: "Un espace chaleureux pour déjeuner ou dîner.",
     iconSrc: "/img/pictos/4.png",
     iconAlt: "Pictogramme fauteuil",
   },
 ];
 
-const dishItems = [
+const venueItems = [
   {
-    title: "Carpaccio de tomates, fenouil & olives",
-    subtitle: "Fraîcheur & saison",
-    image: "/img/dishes/5.png",
-    imageAlt: "Carpaccio de tomates, fenouil et olives",
-  },
-  {
-    title: "Tartare de bœuf préparé au couteau",
-    subtitle: "Classique intemporel",
-    image: "/img/dishes/2.png",
-    imageAlt: "Tartare de bœuf",
-  },
-  {
-    title: "Blanquette de veau, écrasé de pommes de terre",
-    subtitle: "Généreux & gourmand",
-    image: "/img/dishes/3.png",
-    imageAlt: "Blanquette de veau",
-  },
-  {
-    title: "Coupe glacée maison",
-    subtitle: "Glacier artisanal",
-    image: "/img/dishes/4.png",
-    imageAlt: "Coupe glacée maison",
-  },
-];
-
-const ambienceItems = [
-  {
-    title: "La Terrasse",
-    description:
-      "Un coin de soleil en cœur de ville pour vos déjeuners et apéritifs.",
+    title: "La terrasse",
+    description: "Pour un déjeuner au soleil ou un apéritif en ville.",
     image: "/img/photos/1.png",
     imageAlt: "La terrasse des Artistes",
   },
   {
-    title: "La Salle Principale",
-    description: "L’ambiance brasserie : vivante, accueillante et authentique.",
+    title: "La salle principale",
+    description: "L’ambiance brasserie, vivante et accueillante.",
     image: "/img/photos/2.png",
-    imageAlt: "La salle principale",
+    imageAlt: "La salle principale des Artistes",
   },
   {
-    title: "L’Étage Cosy",
-    description:
-      "À l’étage, une salle intime et chaleureuse pour vos repas en toute tranquillité.",
+    title: "L’étage cosy",
+    description: "Une salle plus calme pour un repas en toute tranquillité.",
     image: "/img/photos/3.png",
-    imageAlt: "La salle cosy à l'étage",
+    imageAlt: "L'étage cosy des Artistes",
   },
 ];
 
 const footerLinks = [
-    { label: "Accueil", href: "/" },
+  { label: "Accueil", href: "/" },
   { label: "Carte & Menus", href: "/menus" },
   { label: "Réserver", href: "/reservations" },
   { label: "Contact", href: "/contact" },
@@ -154,22 +126,18 @@ function HeroOrnament() {
   );
 }
 
-function HomeNavLink({ item }) {
-  const content = (
-    <span className="la-home__nav-link">
-      {item.label}
-      <span
-        className={`la-home__nav-underline ${item.active ? "is-active" : ""}`}
-        aria-hidden="true"
-      />
-    </span>
+function ReservationsNavLink({ item }) {
+  return (
+    <Link href={item.href}>
+      <span className="la-home__nav-link">
+        {item.label}
+        <span
+          className={`la-home__nav-underline ${item.active ? "is-active" : ""}`}
+          aria-hidden="true"
+        />
+      </span>
+    </Link>
   );
-
-  if (item.anchor) {
-    return <a href={item.href}>{content}</a>;
-  }
-
-  return <Link href={item.href}>{content}</Link>;
 }
 
 function SocialItem({ item }) {
@@ -202,7 +170,7 @@ function SocialItem({ item }) {
   );
 }
 
-export default function HomePageComponent() {
+export default function ReservationsPageComponent() {
   const { restaurantContext } = useContext(GlobalContext);
   const restaurantData = restaurantContext?.restaurantData;
   const contactInfos = buildContactInfos(restaurantData);
@@ -231,7 +199,7 @@ export default function HomePageComponent() {
   );
 
   return (
-    <div className="la-home">
+    <div className="la-home la-reservations">
       <header className="la-shell pt-7 tablet:pt-8 desktop:pt-10">
         <div className="flex flex-col gap-6 min-[1160px]:flex-row min-[1160px]:items-center min-[1160px]:justify-between">
           <Link href="/" aria-label="Les Artistes">
@@ -248,7 +216,7 @@ export default function HomePageComponent() {
           <div className="flex flex-col gap-5 min-[1160px]:flex-1 min-[1160px]:items-center min-[1160px]:justify-center min-[1160px]:gap-0">
             <nav className="flex flex-wrap items-center gap-x-7 gap-y-3 min-[1160px]:justify-center">
               {navigationItems.map((item) => (
-                <HomeNavLink key={item.label} item={item} />
+                <ReservationsNavLink key={item.label} item={item} />
               ))}
             </nav>
 
@@ -268,47 +236,48 @@ export default function HomePageComponent() {
       </header>
 
       <main>
-        <section className="la-shell border-b border-[rgba(197,155,85,0.22)] pb-9 tablet:pb-10  ">
+        <section className="la-shell border-b border-[rgba(197,155,85,0.22)] pb-9 tablet:pb-10 desktop:pb-12">
           <div className="grid gap-12 min-[1100px]:grid-cols-[0.78fr_1.22fr] min-[1100px]:items-center">
-            <div>
-              <h1 className="la-home__display text-[58px] leading-[0.88] tracking-[-0.035em] text-[var(--la-burgundy)] tablet:text-[72px] desktop:text-[102px]">
-                La brasserie
-                <br />
-                des sorties
+            <div className="max-w-[400px]">
+              <h1 className="la-home__display text-[58px] leading-[0.88] tracking-[-0.035em] text-[var(--la-burgundy)] tablet:text-[72px] desktop:text-[94px]">
+                Réserver
                 <br />
                 <span className="la-home__script text-[0.8em] text-[var(--la-gold)]">
-                  à Limoges
+                  votre table
                 </span>
               </h1>
 
               <p className="mt-7 text-[18px] leading-[1.48] text-[rgba(86,57,44,0.88)] desktop:text-[19px]">
-                À deux pas de l’Opéra, Les Artistes vous accueillent du déjeuner
-                au dîner et pour vos envies de dernière minute : un verre, une
-                coupe glacée, un moment avant ou après le spectacle.
+                Pour un déjeuner, un dîner, un verre avant l’Opéra ou un moment
+                gourmand, réservez votre table chez Les Artistes en quelques
+                clics.
               </p>
 
               <div className="mt-7 flex items-center gap-3 text-[17px] text-[rgba(86,57,44,0.9)]">
-                <MapPin
-                  size={20}
-                  strokeWidth={2}
-                  className="shrink-0 text-[var(--la-gold)]"
+                <Image
+                  src="/img/pictos/24.png"
+                  alt=""
+                  aria-hidden="true"
+                  width={18}
+                  height={18}
+                  className="h-[18px] w-[18px] shrink-0"
                 />
                 <span>{address}</span>
               </div>
 
               <div className="mt-9 flex flex-col gap-4 min-[560px]:flex-row">
                 <HomeActionLink
-                  href="/reservations"
+                  href="#reservation-form"
                   className="min-[560px]:min-w-[220px]"
                 >
-                  Réserver une table
+                  Réserver en ligne
                 </HomeActionLink>
                 <HomeActionLink
-                  href="/menus"
+                  href={phoneHref}
                   secondary
-                  className="min-[560px]:min-w-[220px]"
+                  className="min-[560px]:min-w-[180px]"
                 >
-                  Découvrir la carte
+                  Nous appeler
                 </HomeActionLink>
               </div>
             </div>
@@ -339,8 +308,8 @@ export default function HomePageComponent() {
                       style={{ aspectRatio: "0.82 / 1" }}
                     >
                       <Image
-                        src="/img/photos/4.webp"
-                        alt="floor"
+                        src="/img/hero/2.png"
+                        alt="La façade des Artistes"
                         fill
                         sizes="(max-width: 719px) 100vw, 220px"
                         className="object-cover"
@@ -354,8 +323,8 @@ export default function HomePageComponent() {
                       style={{ aspectRatio: "0.84 / 1" }}
                     >
                       <Image
-                        src="/img/hero/2.png"
-                        alt="Façade des Artistes"
+                        src="/img/photos/3.png"
+                        alt="La salle des Artistes"
                         fill
                         sizes="(max-width: 719px) 100vw, 252px"
                         className="object-cover"
@@ -370,109 +339,48 @@ export default function HomePageComponent() {
 
         <section className="la-shell py-10 tablet:py-12 desktop:py-14">
           <div className="grid border-y border-[rgba(197,155,85,0.2)] min-[900px]:grid-cols-4">
-            {featureItems.map((item, index) => {
-              return (
-                <article
-                  key={item.title}
-                  className={`flex flex-col items-center px-6 py-8 text-center ${
-                    index > 0
-                      ? "border-t border-[rgba(197,155,85,0.18)] min-[900px]:border-l min-[900px]:border-t-0"
-                      : ""
-                  }`}
-                >
-                  {item.iconSrc ? (
-                    <Image
-                      src={item.iconSrc}
-                      alt={item.iconAlt}
-                      width={80}
-                      height={80}
-                      className="mb-5 h-auto w-[62px]"
-                    />
-                  ) : null}
-
-                  <h2 className="la-home__feature-title">{item.title}</h2>
-                  <p className="mt-3 max-w-[210px] text-[16px] leading-[1.38] text-[rgba(86,57,44,0.86)] text-balance">
-                    {item.description}
-                  </p>
-                </article>
-              );
-            })}
+            {featureItems.map((item, index) => (
+              <article
+                key={item.title}
+                className={`flex flex-col items-center px-6 py-8 text-center ${
+                  index > 0
+                    ? "border-t border-[rgba(197,155,85,0.18)] min-[900px]:border-l min-[900px]:border-t-0"
+                    : ""
+                }`}
+              >
+                <Image
+                  src={item.iconSrc}
+                  alt={item.iconAlt}
+                  width={80}
+                  height={80}
+                  className="mb-5 h-auto w-[62px]"
+                />
+                <h2 className="la-home__feature-title">{item.title}</h2>
+                <p className="mt-3 max-w-[210px] text-[16px] leading-[1.38] text-[rgba(86,57,44,0.86)]">
+                  {item.description}
+                </p>
+              </article>
+            ))}
           </div>
         </section>
 
-        <section
-          id="cuisine"
-          className="la-shell pb-10 pt-1 tablet:pb-12 desktop:pb-14"
-        >
-          <div className="la-home__framed-section la-home__framed-section--with-button la-home__framed-section--title-absolute la-home__framed-section--cuisine">
-            <div className="la-home__framed-heading la-home__framed-heading--absolute la-home__framed-heading--cuisine text-center">
-              <p className="la-home__eyebrow">Les incontournables</p>
-              <h2 className="la-home__section-title">
-                Notre cuisine de brasserie
-              </h2>
-            </div>
+        <FormReservationsComponent
+          apiBaseUrl={process.env.NEXT_PUBLIC_API_URL}
+          restaurant={restaurantData}
+          dataLoading={restaurantContext.dataLoading}
+        />
 
-            <div className="la-home__framed-content la-home__framed-content--with-button px-3 pt-10 tablet:px-6 desktop:px-7">
-              <div className="grid gap-6 min-[640px]:grid-cols-2 desktop:grid-cols-4">
-                {dishItems.map((item) => (
-                  <article
-                    key={item.title}
-                    className="la-home__dish-card text-center"
-                  >
-                    <div
-                      className="la-home__dish-media relative overflow-hidden"
-                      style={{ aspectRatio: "0.95 / 1" }}
-                    >
-                      <Image
-                        src={item.image}
-                        alt={item.imageAlt}
-                        fill
-                        sizes="(max-width: 639px) 100vw, (max-width: 1279px) 50vw, 25vw"
-                        className="la-home__dish-image"
-                      />
-                    </div>
-
-                    <h3 className="mt-5 text-[21px] leading-[1.12] text-[var(--la-burgundy)]">
-                      {item.title}
-                    </h3>
-                    <p className="mt-3 la-home__eyebrow text-[15px] text-[var(--la-gold)]">
-                      {item.subtitle}
-                    </p>
-                  </article>
-                ))}
-              </div>
-
-              <div className="la-home__frame-button">
-                <HomeActionLink
-                  href="/menus"
-                  secondary
-                  className="min-w-[320px] max-w-full"
-                >
-                  Découvrir la carte & les menus
-                </HomeActionLink>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section
-          id="brasserie"
-          className="la-shell pb-10 pt-2 tablet:pb-12 desktop:pb-14"
-        >
+        <section className="la-shell pb-10 pt-3 tablet:pb-12 desktop:pb-14">
           <div className="la-home__framed-section la-home__framed-section--title-absolute la-home__framed-section--experience">
-            <div className="la-home__framed-heading la-home__framed-heading--absolute la-home__framed-heading--experience text-center">
+            <div className="la-home__framed-heading la-home__framed-heading--absolute text-center">
               <h2 className="la-home__section-title">
-                Une expérience conviviale
+                Avant ou après votre venue
               </h2>
-              <p className="mt-2 text-[18px] leading-[1.45] text-[rgba(86,57,44,0.88)]">
-                Trois ambiances, une même envie : vous faire passer un bon
-                moment.
-              </p>
             </div>
 
-            <div className="la-home__framed-content px-5 pb-6 tablet:px-7 desktop:px-8">
+            <div className="la-home__framed-content px-5 pb-6 pt-10 tablet:px-7 desktop:px-8">
               <div className="grid gap-6 desktop:grid-cols-3">
-                {ambienceItems.map((item) => (
+                {venueItems.map((item) => (
                   <article key={item.title} className="text-center">
                     <div
                       className="relative overflow-hidden bg-white"
@@ -542,7 +450,7 @@ export default function HomePageComponent() {
                   />
                 </div>
               </div>
-              <div className="flex flex-col gap-6 w-full min-[900px]:items-start">
+              <div className="flex w-full flex-col gap-6 min-[900px]:items-start">
                 <h2 className="la-home__section-title text-left leading-[0.92]">
                   Réservez votre table
                   <br />
@@ -618,25 +526,15 @@ export default function HomePageComponent() {
             <div className="min-[960px]:border-l min-[960px]:border-[rgba(197,155,85,0.16)] min-[960px]:px-8">
               <h3 className="la-home__footer-heading">Liens rapides</h3>
               <div className="mt-4 flex flex-col gap-3 text-[17px] leading-none text-[rgba(86,57,44,0.9)]">
-                {footerLinks.map((item) =>
-                  item.anchor ? (
-                    <a
-                      key={item.label}
-                      href={item.href}
-                      className="transition-opacity hover:opacity-72"
-                    >
-                      {item.label}
-                    </a>
-                  ) : (
-                    <Link
-                      key={item.label}
-                      href={item.href}
-                      className="transition-opacity hover:opacity-72"
-                    >
-                      {item.label}
-                    </Link>
-                  ),
-                )}
+                {footerLinks.map((item) => (
+                  <Link
+                    key={item.label}
+                    href={item.href}
+                    className="transition-opacity hover:opacity-72"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
               </div>
             </div>
 
@@ -659,23 +557,23 @@ export default function HomePageComponent() {
               </div>
             </div>
           </div>
-        </div>
 
-        <div className="bg-[var(--la-burgundy)] text-[#fbf4ea]">
-          <div className="la-shell flex flex-col gap-3 py-4 text-center min-[960px]:flex-row min-[960px]:items-center min-[960px]:justify-center min-[960px]:gap-14">
-            <p className="text-[15px]">© Les Artistes - Limoges</p>
-            <Link
-              href="/legales"
-              className="text-[15px] transition-opacity hover:opacity-72"
-            >
-              Mentions légales
-            </Link>
-            <Link
-              href="/policy"
-              className="text-[15px] transition-opacity hover:opacity-72"
-            >
-              Politique de confidentialité
-            </Link>
+          <div className="border-t border-[rgba(197,155,85,0.18)] py-4">
+            <div className="flex flex-col gap-3 text-center text-[14px] text-[rgba(86,57,44,0.82)] min-[860px]:flex-row min-[860px]:items-center min-[860px]:justify-center min-[860px]:gap-10">
+              <span>© Les Artistes – Limoges</span>
+              <Link
+                href="/legales"
+                className="transition-opacity hover:opacity-72"
+              >
+                Mentions légales
+              </Link>
+              <Link
+                href="/policy"
+                className="transition-opacity hover:opacity-72"
+              >
+                Politique de confidentialité
+              </Link>
+            </div>
           </div>
         </div>
       </footer>

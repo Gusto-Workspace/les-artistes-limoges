@@ -68,6 +68,11 @@ function TrackVisits() {
 }
 
 function App({ Component, pageProps }) {
+  const shouldRenderVercelAnalytics =
+    process.env.NEXT_PUBLIC_VERCEL_ENV ||
+    process.env.VERCEL ||
+    process.env.VERCEL_ENV;
+
   return (
     <div
       className={`${sora.variable} ${bricolageGrotesque.variable} ${cormorantGaramond.variable} font-root`}
@@ -75,7 +80,7 @@ function App({ Component, pageProps }) {
       <GlobalProvider>
         <TrackVisits />
         <Component {...pageProps} />
-        <Analytics />
+        {shouldRenderVercelAnalytics ? <Analytics /> : null}
       </GlobalProvider>
     </div>
   );

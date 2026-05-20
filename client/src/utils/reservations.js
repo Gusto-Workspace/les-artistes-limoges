@@ -277,6 +277,7 @@ export function getAvailableReservationTimes({
   numberOfGuests,
   restaurant,
   reservationsList = [],
+  manualTimes = null,
 }) {
   const parsedDate = parseReservationDateValue(reservationDate);
   if (!restaurant?._id || !parsedDate) return [];
@@ -292,20 +293,27 @@ export function getAvailableReservationTimes({
   const dayHours = parameters.same_hours_as_restaurant
     ? openingHours[dayIndex]
     : parameters.reservation_hours?.[dayIndex];
+  const hasManualTimes =
+    Array.isArray(manualTimes) && manualTimes.filter(Boolean).length > 0;
 
   if (
-    !dayHours ||
-    dayHours.isClosed ||
-    !Array.isArray(dayHours.hours) ||
-    dayHours.hours.length === 0
+    !hasManualTimes &&
+    (!dayHours ||
+      dayHours.isClosed ||
+      !Array.isArray(dayHours.hours) ||
+      dayHours.hours.length === 0)
   ) {
     return [];
   }
 
   const interval = parameters.interval || 30;
-  let times = dayHours.hours.flatMap(({ open, close }) =>
-    generateTimeOptions(open, close, interval),
-  );
+  let times = hasManualTimes
+    ? manualTimes
+        .map((time) => String(time || "").trim())
+        .filter((time) => /^\d{2}:\d{2}$/.test(time))
+    : dayHours.hours.flatMap(({ open, close }) =>
+        generateTimeOptions(open, close, interval),
+      );
 
   if (isToday(parsedDate)) {
     const now = new Date();
