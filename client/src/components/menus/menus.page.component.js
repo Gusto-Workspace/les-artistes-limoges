@@ -726,7 +726,7 @@ export default function MenusPageComponent({ initialRestaurantData = null }) {
                 <div className="relative overflow-hidden border border-[rgba(197,155,85,0.16)] bg-white/70 shadow-[0_20px_40px_rgba(82,49,33,0.12)] min-[1100px]:ml-[85px]">
                   <div className="relative" style={{ aspectRatio: "0.94 / 1" }}>
                     <Image
-                      src="/img/hero/1.png"
+                      src="/img/photos/floor-1/1.png"
                       alt="Le bar des Artistes"
                       fill
                       sizes="(max-width: 1099px) 100vw, 720px"
@@ -737,31 +737,31 @@ export default function MenusPageComponent({ initialRestaurantData = null }) {
                 </div>
 
                 <div className="mt-5 grid gap-5 min-[720px]:grid-cols-2 min-[1100px]:mt-0">
-                  <div className="la-home__overlay-photo relative overflow-hidden bg-white min-[1100px]:absolute min-[1100px]:left-0 min-[1100px]:top-[290px] min-[1100px]:w-[214px]">
+                  <div className="la-home__overlay-photo relative overflow-hidden bg-white min-[1100px]:absolute min-[1100px]:left-[12px] min-[1100px]:top-[258px] min-[1100px]:w-[210px]">
                     <div
                       className="relative"
                       style={{ aspectRatio: "0.82 / 1" }}
                     >
                       <Image
-                        src="/img/dishes/1.png"
-                        alt="Suggestion de carpaccio"
+                        src="/img/photos/floor-1/2.png"
+                        alt="L'étage des Artistes"
                         fill
-                        sizes="(max-width: 719px) 100vw, 214px"
+                        sizes="(max-width: 719px) 100vw, 210px"
                         className="object-cover"
                       />
                     </div>
                   </div>
 
-                  <div className="la-home__overlay-photo relative overflow-hidden bg-white min-[1100px]:absolute min-[1100px]:bottom-[14px] min-[1100px]:right-[-18px] min-[1100px]:w-[248px]">
+                  <div className="la-home__overlay-photo relative overflow-hidden bg-white min-[1100px]:absolute min-[1100px]:bottom-[28px] min-[1100px]:right-[-6px] min-[1100px]:w-[240px]">
                     <div
                       className="relative"
                       style={{ aspectRatio: "0.84 / 1" }}
                     >
                       <Image
-                        src="/img/hero/2.png"
-                        alt="Façade des Artistes"
+                        src="/img/photos/outside/1.png"
+                        alt="L'entrée des Artistes"
                         fill
-                        sizes="(max-width: 719px) 100vw, 248px"
+                        sizes="(max-width: 719px) 100vw, 240px"
                         className="object-cover"
                       />
                     </div>

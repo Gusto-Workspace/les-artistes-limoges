@@ -168,8 +168,8 @@ export default function HomePageComponent() {
                       style={{ aspectRatio: "0.82 / 1" }}
                     >
                       <Image
-                        src="/img/dishes/5.png"
-                        alt="Carpaccio des Artistes"
+                        src="/img/photos/outside/5.png"
+                        alt="La terrasse des Artistes"
                         fill
                         sizes="(max-width: 719px) 100vw, 220px"
                         className="object-cover"
@@ -183,8 +183,8 @@ export default function HomePageComponent() {
                       style={{ aspectRatio: "0.84 / 1" }}
                     >
                       <Image
-                        src="/img/hero/2.png"
-                        alt="Façade des Artistes"
+                        src="/img/photos/floor-0/3.png"
+                        alt="La salle principale des Artistes"
                         fill
                         sizes="(max-width: 719px) 100vw, 252px"
                         className="object-cover"
