@@ -213,9 +213,11 @@ export default function HomePageComponent() {
           <div className="la-home__framed-section la-home__framed-section--with-button la-home__framed-section--title-absolute la-home__framed-section--cuisine">
             <div className="la-home__framed-heading la-home__framed-heading--absolute la-home__framed-heading--cuisine text-center">
               <p className="la-home__eyebrow">Les incontournables</p>
-              <h2 className="la-home__section-title">
-                Notre cuisine de brasserie
-              </h2>
+              <div className="la-home__framed-title-row la-home__framed-title-row--with-lines">
+                <h2 className="la-home__section-title">
+                  Notre cuisine de brasserie
+                </h2>
+              </div>
             </div>
 
             <div className="la-home__framed-content la-home__framed-content--with-button px-3 pt-10 tablet:px-6 desktop:px-7">

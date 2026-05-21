@@ -15,29 +15,9 @@ import { buildContactInfos } from "@/_assets/utils/contact.utils";
 import {
   formatReservationDateForApi,
   getAvailableReservationTimes,
+  isReservationDateClosed,
   parseReservationDateValue,
 } from "@/utils/reservations";
-
-const RESERVATION_TIME_OPTIONS = [
-  "12:00",
-  "12:15",
-  "12:30",
-  "12:45",
-  "13:00",
-  "13:15",
-  "13:30",
-  "13:45",
-  "14:00",
-  "19:00",
-  "19:15",
-  "19:30",
-  "19:45",
-  "20:00",
-  "20:15",
-  "20:30",
-  "20:45",
-  "21:00",
-];
 
 const peopleOptions = Array.from({ length: 12 }, (_, index) =>
   String(index + 1),
@@ -56,7 +36,7 @@ export default function FormReservationComponent({
   const initialDate = useMemo(() => today, [today]);
   const [reservationData, setReservationData] = useState({
     reservationDate: initialDate,
-    reservationTime: "19:30",
+    reservationTime: "",
     numberOfGuests: "2",
     customerFirstName: "",
     customerLastName: "",
@@ -75,6 +55,7 @@ export default function FormReservationComponent({
     setResolvedAvailabilitySelectionKey,
   ] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [showDelayedTimeLoading, setShowDelayedTimeLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState("");
@@ -278,7 +259,6 @@ export default function FormReservationComponent({
         numberOfGuests: reservationData.numberOfGuests,
         restaurant,
         reservationsList,
-        manualTimes: RESERVATION_TIME_OPTIONS,
       }),
     );
     setResolvedAvailabilitySelectionKey(nextSelectionKey);
@@ -373,6 +353,23 @@ export default function FormReservationComponent({
     };
   }, [showCalendarModal]);
 
+  useEffect(() => {
+    const isTimesLoading = isLoading || reservationsListLoading;
+
+    if (!isTimesLoading) {
+      setShowDelayedTimeLoading(false);
+      return undefined;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      setShowDelayedTimeLoading(true);
+    }, 1000);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [isLoading, reservationsListLoading]);
+
   function handleInputChange(event) {
     const { name, type, value, checked } = event.target;
     const nextValue = type === "checkbox" ? checked : value;
@@ -403,6 +400,9 @@ export default function FormReservationComponent({
   function handleGuestsSelect(value) {
     setError(null);
     setSuccessMessage("");
+    setAvailableTimes([]);
+    setResolvedAvailabilitySelectionKey("");
+    setIsLoading(true);
     setReservationData((prev) => ({
       ...prev,
       numberOfGuests: value,
@@ -419,6 +419,9 @@ export default function FormReservationComponent({
   function handleDateChange(nextDate) {
     setError(null);
     setSuccessMessage("");
+    setAvailableTimes([]);
+    setResolvedAvailabilitySelectionKey("");
+    setIsLoading(true);
     setReservationData((prev) => ({
       ...prev,
       reservationDate: nextDate,
@@ -607,6 +610,7 @@ export default function FormReservationComponent({
     ? formatTimeDisplay(reservationData.reservationTime)
     : "À sélectionner";
   const summaryLocation = "Salle principale";
+  const isTimesLoading = isLoading || reservationsListLoading;
   const selectedDateKey = reservationData.reservationDate
     ? formatReservationDateForApi(reservationData.reservationDate)
     : "";
@@ -723,6 +727,13 @@ export default function FormReservationComponent({
                 }}
                 value={reservationData.reservationDate}
                 minDate={startOfToday()}
+                tileDisabled={({ date, view }) =>
+                  view === "month" &&
+                  isReservationDateClosed({
+                    reservationDate: date,
+                    restaurant,
+                  })
+                }
                 locale="fr-FR"
                 className="reservation-calendar reservation-calendar--la"
               />
@@ -826,10 +837,16 @@ export default function FormReservationComponent({
                     <HorizontalChoiceScroller
                       invalid={invalidFields.reservationTime}
                       arrowLabel="Voir plus d'horaires"
-                      watchKey={`${availableTimes.join("|")}|${isLoading}|${reservationsListLoading}`}
+                      showArrow={
+                        !isTimesLoading && availableTimes.length > 0
+                      }
+                      watchKey={`${availableTimes.join("|")}|${isTimesLoading}|${showDelayedTimeLoading}`}
                     >
-                      {isLoading || reservationsListLoading ? (
-                        <div className="la-reservation__choice-loading">
+                      {isTimesLoading ? (
+                        <div
+                          className={`la-reservation__choice-loading ${showDelayedTimeLoading ? "" : "is-placeholder"}`}
+                          aria-hidden={!showDelayedTimeLoading}
+                        >
                           <Loader2 size={17} className="animate-spin" />
                           Chargement des créneaux...
                         </div>
@@ -854,10 +871,8 @@ export default function FormReservationComponent({
                         </div>
                       )}
                     </HorizontalChoiceScroller>
-                    {!isLoading &&
-                    !reservationsListLoading &&
-                    !availableTimes.length ? (
-                      <p className="la-reservation__helper">
+                    {!isTimesLoading && !availableTimes.length ? (
+                      <p className="la-reservation__helper h-[46px] flex flex-col justify-center">
                         Aucun créneau disponible pour cette date.
                       </p>
                     ) : null}
@@ -1021,6 +1036,7 @@ function HorizontalChoiceScroller({
   children,
   invalid = false,
   arrowLabel,
+  showArrow = true,
   watchKey = "",
 }) {
   const viewportRef = useRef(null);
@@ -1092,7 +1108,7 @@ function HorizontalChoiceScroller({
       >
         {children}
       </div>
-      {hasOverflow ? (
+      {showArrow && hasOverflow ? (
         <button
           type="button"
           onClick={handleArrowClick}

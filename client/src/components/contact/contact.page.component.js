@@ -3,6 +3,7 @@ import { useContext } from "react";
 import { MapPin } from "lucide-react";
 import { GlobalContext } from "@/contexts/global.context";
 import {
+  buildContactSchedules,
   buildSiteContactSummary,
   getMapEmbedSrc,
 } from "@/_assets/utils/contact.utils";
@@ -69,16 +70,6 @@ const venueItems = [
   },
 ];
 
-const contactOpeningHours = [
-  { day: "Lundi", hours: "10:00–23:30" },
-  { day: "Mardi", hours: "10:00–23:30" },
-  { day: "Mercredi", hours: "10:00–00:00" },
-  { day: "Jeudi", hours: "10:00–00:00" },
-  { day: "Vendredi", hours: "10:00–01:00" },
-  { day: "Samedi", hours: "10:00–01:00" },
-  { day: "Dimanche", hours: "10:00–23:30" },
-];
-
 function buildMapLink(address) {
   const query = address || "Les Artistes Limoges";
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
@@ -89,6 +80,7 @@ export default function ContactPageComponent() {
   const restaurantData = restaurantContext?.restaurantData;
   const { address, phone, phoneHref, email } =
     buildSiteContactSummary(restaurantData);
+  const openingSchedules = buildContactSchedules(restaurantData);
   const mapLink = buildMapLink(address);
   const mapSrc = getMapEmbedSrc(restaurantData);
 
@@ -298,7 +290,7 @@ export default function ContactPageComponent() {
                     <div className="la-contact__practical-copy">
                       <p className="la-contact__practical-label">Horaires</p>
                       <div className="la-contact__hours-list">
-                        {contactOpeningHours.map((item) => (
+                        {openingSchedules.map((item) => (
                           <div key={item.day} className="la-contact__hours-row">
                             <p className="la-contact__hours-day">{item.day}</p>
                             <p className="la-contact__hours-time">
