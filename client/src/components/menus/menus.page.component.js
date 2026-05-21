@@ -698,17 +698,7 @@ export default function MenusPageComponent({ initialRestaurantData = null }) {
                 À deux pas de l’Opéra, au cœur de Limoges.
               </p>
 
-              <div className="mt-7 flex items-center gap-3 text-[17px] text-[rgba(86,57,44,0.9)]">
-                <Image
-                  src="/img/pictos/24.png"
-                  alt=""
-                  aria-hidden="true"
-                  width={18}
-                  height={18}
-                  className="h-[18px] w-[18px] shrink-0"
-                />
-                <span>{address}</span>
-              </div>
+             
 
               <div className="mt-9 flex flex-col gap-4 min-[560px]:flex-row">
                 <ActionLinkComponent

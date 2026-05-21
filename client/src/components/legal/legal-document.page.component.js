@@ -49,6 +49,8 @@ export default function LegalDocumentPageComponent({
 }) {
   const { restaurantContext } = useContext(GlobalContext);
   const restaurantData = restaurantContext?.restaurantData;
+  const restaurantName =
+    String(restaurantData?.name || "").trim() || "Les Artistes";
   const { address, phone, phoneHref, email, emailHref } =
     buildSiteContactSummary(restaurantData);
 
@@ -142,7 +144,7 @@ export default function LegalDocumentPageComponent({
                       style={{ aspectRatio: "0.84 / 1" }}
                     >
                       <Image
-                        src="/img/photos/2.png"
+                        src="/img/photos/floor-0/3.png"
                         alt="La salle principale des Artistes"
                         fill
                         sizes="(max-width: 719px) 100vw, 252px"
@@ -171,7 +173,9 @@ export default function LegalDocumentPageComponent({
                     <div className="space-y-4">
                       <div className="la-legal__summary-row">
                         <p className="la-legal__summary-label">Établissement</p>
-                        <p className="la-legal__summary-value">Les Artistes</p>
+                        <p className="la-legal__summary-value">
+                          {restaurantName}
+                        </p>
                       </div>
                       <div className="la-legal__summary-row">
                         <p className="la-legal__summary-label">Adresse</p>

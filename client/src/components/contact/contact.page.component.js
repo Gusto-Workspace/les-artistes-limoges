@@ -53,19 +53,19 @@ const venueItems = [
   {
     title: "La terrasse",
     description: "Pour un déjeuner au soleil ou un apéritif en ville.",
-    image: "/img/photos/1.png",
+    image: "/img/photos/outside/5.png",
     imageAlt: "La terrasse des Artistes",
   },
   {
     title: "La salle principale",
     description: "L’ambiance brasserie, vivante et accueillante.",
-    image: "/img/photos/2.png",
+    image: "/img/photos/floor-0/3.png",
     imageAlt: "La salle principale des Artistes",
   },
   {
     title: "L’étage cosy",
     description: "Une ambiance feutrée pour un repas en toute tranquillité.",
-    image: "/img/photos/3.png",
+    image: "/img/photos/floor-1/2.png",
     imageAlt: "L'étage cosy des Artistes",
   },
 ];
@@ -108,15 +108,6 @@ export default function ContactPageComponent() {
                 une demande particulière ? L’équipe des Artistes vous répond
                 avec plaisir.
               </p>
-
-              <div className="mt-7 flex items-center gap-3 text-[17px] text-[rgba(86,57,44,0.9)]">
-                <MapPin
-                  size={20}
-                  strokeWidth={2}
-                  className="shrink-0 text-[var(--la-gold)]"
-                />
-                <span>{address}</span>
-              </div>
 
               <div className="mt-9 flex flex-col gap-4 min-[560px]:flex-row">
                 <ActionLinkComponent
@@ -176,7 +167,7 @@ export default function ContactPageComponent() {
                       style={{ aspectRatio: "0.84 / 1" }}
                     >
                       <Image
-                        src="/img/photos/3.png"
+                        src="/img/photos/floor-0/3.png"
                         alt="La salle des Artistes"
                         fill
                         sizes="(max-width: 719px) 100vw, 252px"

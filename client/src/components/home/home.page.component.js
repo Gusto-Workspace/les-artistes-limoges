@@ -76,20 +76,20 @@ const ambienceItems = [
     title: "La Terrasse",
     description:
       "Un coin de soleil en cœur de ville pour vos déjeuners et apéritifs.",
-    image: "/img/photos/1.png",
+    image: "/img/photos/outside/5.png",
     imageAlt: "La terrasse des Artistes",
   },
   {
     title: "La Salle Principale",
     description: "L’ambiance brasserie : vivante, accueillante et authentique.",
-    image: "/img/photos/2.png",
+    image: "/img/photos/floor-0/3.png",
     imageAlt: "La salle principale",
   },
   {
     title: "L’Étage Cosy",
     description:
       "À l’étage, une salle intime et chaleureuse pour vos repas en toute tranquillité.",
-    image: "/img/photos/3.png",
+    image: "/img/photos/floor-1/2.png",
     imageAlt: "La salle cosy à l'étage",
   },
 ];
@@ -123,14 +123,7 @@ export default function HomePageComponent() {
                 coupe glacée, un moment avant ou après le spectacle.
               </p>
 
-              <div className="mt-7 flex items-center gap-3 text-[17px] text-[rgba(86,57,44,0.9)]">
-                <MapPin
-                  size={20}
-                  strokeWidth={2}
-                  className="shrink-0 text-[var(--la-gold)]"
-                />
-                <span>{address}</span>
-              </div>
+              
 
               <div className="mt-9 flex flex-col gap-4 min-[560px]:flex-row">
                 <ActionLinkComponent
@@ -175,7 +168,7 @@ export default function HomePageComponent() {
                       style={{ aspectRatio: "0.82 / 1" }}
                     >
                       <Image
-                        src="/img/photos/4.webp"
+                        src="/img/dishes/5.png"
                         alt="Carpaccio des Artistes"
                         fill
                         sizes="(max-width: 719px) 100vw, 220px"

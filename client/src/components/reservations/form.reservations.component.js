@@ -609,7 +609,6 @@ export default function FormReservationComponent({
   const summaryTime = reservationData.reservationTime
     ? formatTimeDisplay(reservationData.reservationTime)
     : "À sélectionner";
-  const summaryLocation = "Salle principale";
   const isTimesLoading = isLoading || reservationsListLoading;
   const selectedDateKey = reservationData.reservationDate
     ? formatReservationDateForApi(reservationData.reservationDate)
