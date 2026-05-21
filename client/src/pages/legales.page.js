@@ -1,47 +1,168 @@
 import Link from "next/link";
-import NavComponent from "@/components/_shared/nav/nav.component";
-import FooterComponent from "@/components/_shared/footer/footer.component";
-import BannerComponent from "@/components/_shared/banner/banner.component";
+import LegalDocumentPageComponent from "@/components/legal/legal-document.page.component";
 import SeoHeadComponent from "@/components/_shared/seo/seo-head.component";
-import SectionHeadingComponent from "@/components/_shared/section-heading.component";
-import RevealOnScrollComponent from "@/components/_shared/motion/reveal-on-scroll.component";
 import { buildStaticPageProps } from "@/_assets/utils/page-props.utils";
 
-const navigationItems = [
-  { label: "Accueil", href: "/" },
-  { label: "Carte & Menus", href: "/menus" },
-  { label: "Actualités", href: "/news" },
-  { label: "Contact", href: "/contact" },
+const summaryItems = [
+  {
+    label: "Édition",
+    value: "Site édité pour le restaurant Les Artistes à Limoges.",
+  },
+  {
+    label: "Hébergement",
+    value: "Infrastructure Vercel Inc. pour la diffusion du site.",
+  },
+  {
+    label: "Validation à prévoir",
+    value:
+      "Les identifiants juridiques définitifs de l’exploitant doivent être confirmés avant publication finale.",
+  },
 ];
 
-function LegalSection({ title, children, last = false }) {
-  return (
-    <section
-      className={`py-6 tablet:py-7 desktop:py-8 ${
-        last ? "" : "border-b border-[var(--site-line)]"
-      }`}
-    >
-      <h2 className="yeseva-one-regular text-[24px] leading-[1.04] text-[var(--site-ink)] tablet:text-[30px]">
-        {title}
-      </h2>
-      <div className="mt-4 space-y-3 text-[15px] leading-[1.85] text-[var(--site-ink-soft)] tablet:text-[16px] desktop:text-[17px]">
-        {children}
-      </div>
-    </section>
-  );
-}
+const sections = [
+  {
+    id: "legal-editor",
+    title: "Éditeur du site",
+    content: (
+      <>
+        <p>
+          Le présent site internet est édité pour le restaurant{" "}
+          <strong>Les Artistes</strong>.
+        </p>
+        <p>
+          Les éléments d’identification complets de l’exploitant tels que la
+          raison sociale, le SIRET, le RCS, le numéro de TVA, l’adresse
+          juridique et les coordonnées administratives doivent être validés et
+          complétés par l’établissement avant publication définitive.
+        </p>
+      </>
+    ),
+  },
+  {
+    id: "legal-publication",
+    title: "Direction de la publication",
+    content: (
+      <>
+        <p>
+          La direction de la publication est assurée par la personne ou la
+          société en charge de l’exploitation du restaurant, sous réserve d’une
+          désignation interne différente au moment de la publication
+          définitive.
+        </p>
+      </>
+    ),
+  },
+  {
+    id: "legal-hosting",
+    title: "Hébergement",
+    content: (
+      <>
+        <p>
+          Le site est hébergé par <strong>Vercel Inc.</strong>.
+        </p>
+        <ul>
+          <li>
+            Adresse : 440 N Barranca Avenue #4133, Covina, CA 91723, États-Unis
+          </li>
+          <li>
+            Site web :{" "}
+            <Link href="https://vercel.com" target="_blank" rel="noreferrer">
+              vercel.com
+            </Link>
+          </li>
+        </ul>
+      </>
+    ),
+  },
+  {
+    id: "legal-purpose",
+    title: "Objet du site",
+    content: (
+      <>
+        <p>
+          Le site a pour objet de présenter le restaurant Les Artistes, sa
+          carte, ses menus, ses informations pratiques, son service de
+          réservation ainsi que sa page de contact.
+        </p>
+      </>
+    ),
+  },
+  {
+    id: "legal-ip",
+    title: "Propriété intellectuelle",
+    content: (
+      <>
+        <p>
+          L’ensemble des contenus présents sur le site, notamment les textes,
+          photographies, graphismes, logos, éléments d’identité visuelle,
+          structure des pages et développements, est protégé par les règles
+          applicables en matière de propriété intellectuelle.
+        </p>
+        <p>
+          Toute reproduction, adaptation, diffusion ou exploitation, totale ou
+          partielle, sans autorisation préalable écrite, est interdite sauf
+          disposition légale impérative contraire.
+        </p>
+      </>
+    ),
+  },
+  {
+    id: "legal-liability",
+    title: "Responsabilité",
+    content: (
+      <>
+        <p>
+          Malgré le soin apporté à la mise à jour des contenus, certaines
+          informations peuvent évoluer, devenir inexactes ou nécessiter une
+          validation complémentaire. L’utilisateur reste responsable de l’usage
+          qu’il fait des informations consultées sur le site.
+        </p>
+        <p>
+          L’éditeur ne peut être tenu responsable des indisponibilités
+          temporaires du service, d’un dysfonctionnement technique ou du
+          contenu des sites tiers accessibles via des liens externes.
+        </p>
+      </>
+    ),
+  },
+  {
+    id: "legal-privacy",
+    title: "Données personnelles",
+    content: (
+      <>
+        <p>
+          Les modalités de collecte, d’utilisation et de conservation des
+          données personnelles éventuellement traitées via le site sont
+          décrites dans la{" "}
+          <Link href="/policy">politique de confidentialité</Link>.
+        </p>
+      </>
+    ),
+  },
+  {
+    id: "legal-law",
+    title: "Droit applicable",
+    content: (
+      <>
+        <p>
+          Les présentes mentions légales sont soumises au droit français. Sous
+          réserve des règles d’ordre public applicables, tout litige relatif au
+          site relève des juridictions territorialement compétentes du ressort
+          de l’exploitant.
+        </p>
+      </>
+    ),
+  },
+];
 
 export default function LegalesPage({ seoRestaurantData = null }) {
-  const title = "Mentions légales - Les Artistes";
-  const description = "Consultez les mentions légales du site Les Artistes.";
-
   return (
     <>
       <SeoHeadComponent
-        title={title}
-        description={description}
+        title="Les Artistes | Mentions légales"
+        description="Consultez les mentions légales du site Les Artistes : édition, hébergement, propriété intellectuelle et cadre d’utilisation."
         path="/legales"
-        image="/img/hero/header.webp"
+        image="/img/brand/og-les-artistes.svg"
         breadcrumbs={[
           { name: "Accueil", path: "/" },
           { name: "Mentions légales", path: "/legales" },
@@ -49,153 +170,16 @@ export default function LegalesPage({ seoRestaurantData = null }) {
         restaurantData={seoRestaurantData}
       />
 
-      <div className="relative">
-        <NavComponent items={navigationItems} />
-
-        <BannerComponent
-          eyebrow="Informations"
-          title="Mentions légales"
-          description="Les informations d’identification du site, de son hébergement et du cadre général d’utilisation sont regroupées ici."
-          imgUrl="hero/header.webp"
-        />
-
-        <section className="relative overflow-hidden bg-[var(--site-cream)] px-5 py-20 tablet:px-8 tablet:py-24 desktop:px-[90px] desktop:py-[110px]">
-          <div className="relative z-10 mx-auto max-w-[1400px]">
-            <SectionHeadingComponent
-              eyebrow="Cadre légal"
-              title="Mentions légales"
-              description="Cette page présente les principales informations administratives, techniques et juridiques liées au site."
-            />
-
-            <RevealOnScrollComponent
-              delay={120}
-              variant="soft"
-              className="site-card mx-auto mt-14 max-w-[980px] rounded-[34px] p-6 tablet:p-8 desktop:p-12"
-            >
-              <div className="mt-8">
-                <LegalSection title="Éditeur du site">
-                  <p>
-                    Le présent site internet est édité pour le restaurant{" "}
-                    <strong className="text-[var(--site-ink)]">
-                      Les Artistes
-                    </strong>
-                    .
-                  </p>
-                  <p>
-                    Les éléments d’identification complets de l’exploitant
-                    tels que la raison sociale, le SIRET, le RCS, le numéro de
-                    TVA, l’adresse juridique et les coordonnées administratives
-                    doivent être validés et complétés par l’établissement.
-                  </p>
-                </LegalSection>
-
-                <LegalSection title="Direction de la publication">
-                  <p>
-                    La direction de la publication est assurée par la personne
-                    ou la société en charge de l’exploitation du restaurant,
-                    sous réserve d’une désignation interne différente au moment
-                    de la publication définitive.
-                  </p>
-                </LegalSection>
-
-                <LegalSection title="Hébergement">
-                  <p>
-                    Le site est hébergé par{" "}
-                    <strong className="text-[var(--site-ink)]">
-                      Vercel Inc.
-                    </strong>
-                    .
-                  </p>
-                  <ul className="ml-5 list-disc space-y-2">
-                    <li>
-                      Adresse : 440 N Barranca Avenue #4133, Covina, CA 91723,
-                      États-Unis
-                    </li>
-                    <li>
-                      Site web :{" "}
-                      <Link
-                        href="https://vercel.com"
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-[var(--site-orange-deep)] underline underline-offset-4 transition hover:text-[var(--site-ink)]"
-                      >
-                        vercel.com
-                      </Link>
-                    </li>
-                  </ul>
-                </LegalSection>
-
-                <LegalSection title="Objet du site">
-                  <p>
-                    Le site a pour objet de présenter le restaurant Les
-                    Artistes, sa carte, ses menus, ses informations pratiques,
-                    ses actualités lorsqu’elles sont publiées, son service de
-                    réservation ainsi que sa page de contact.
-                  </p>
-                </LegalSection>
-
-                <LegalSection title="Propriété intellectuelle">
-                  <p>
-                    L’ensemble des contenus présents sur le site, notamment les
-                    textes, photographies, graphismes, logos, éléments
-                    d’identité visuelle, structure des pages et développements,
-                    est protégé par les règles applicables en matière de
-                    propriété intellectuelle.
-                  </p>
-                  <p>
-                    Toute reproduction, adaptation, diffusion ou exploitation,
-                    totale ou partielle, sans autorisation préalable écrite,
-                    est interdite sauf disposition légale impérative contraire.
-                  </p>
-                </LegalSection>
-
-                <LegalSection title="Responsabilité">
-                  <p>
-                    Malgré le soin apporté à la mise à jour des contenus,
-                    certaines informations peuvent évoluer, devenir inexactes
-                    ou nécessiter une validation complémentaire. L’utilisateur
-                    reste responsable de l’usage qu’il fait des informations
-                    consultées sur le site.
-                  </p>
-                  <p>
-                    L’éditeur ne peut être tenu responsable des indisponibilités
-                    temporaires du service, d’un dysfonctionnement technique ou
-                    du contenu des sites tiers accessibles via des liens
-                    externes.
-                  </p>
-                </LegalSection>
-
-                <LegalSection title="Données personnelles">
-                  <p>
-                    Les modalités de collecte, d’utilisation et de conservation
-                    des données personnelles éventuellement traitées via le site
-                    sont décrites dans la{" "}
-                    <Link
-                      href="/policy"
-                      className="text-[var(--site-orange-deep)] underline underline-offset-4 transition hover:text-[var(--site-ink)]"
-                    >
-                      politique de confidentialité
-                    </Link>
-                    .
-                  </p>
-                </LegalSection>
-
-                <LegalSection title="Droit applicable" last>
-                  <p>
-                    Les présentes mentions légales sont soumises au droit
-                    français. Sous réserve des règles d’ordre public
-                    applicables, tout litige relatif au site relève des
-                    juridictions territorialement compétentes du ressort de
-                    l’exploitant.
-                  </p>
-                </LegalSection>
-              </div>
-            </RevealOnScrollComponent>
-          </div>
-        </section>
-
-        <FooterComponent />
-      </div>
+      <LegalDocumentPageComponent
+        title="Mentions"
+        highlight="légales"
+        description="Les informations d’identification du site, de son hébergement et du cadre général d’utilisation sont regroupées ici."
+        panelEyebrow="Cadre légal"
+        panelTitle="Informations administratives"
+        panelDescription="Cette page présente les principales informations administratives, techniques et juridiques liées au site Les Artistes."
+        summaryItems={summaryItems}
+        sections={sections}
+      />
     </>
   );
 }

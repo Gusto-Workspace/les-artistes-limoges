@@ -18,35 +18,35 @@ const categoryTabs = [
   {
     id: "formule",
     label: "Formules",
-    iconSrc: "/img/pictos/10.png",
+    iconSrc: "/img/pictos/37.png",
     iconAlt: "Pictogramme formule du midi",
     href: "#menu-formule",
   },
   {
     id: "partager",
     label: "À partager",
-    iconSrc: "/img/pictos/9.png",
+    iconSrc: "/img/pictos/38.png",
     iconAlt: "Pictogramme à partager",
     href: "#menu-section-partager",
   },
   {
     id: "brasserie",
     label: "Viandes & mer",
-    iconSrc: "/img/pictos/21.png",
+    iconSrc: "/img/pictos/34.png",
     iconAlt: "Pictogramme brasserie",
     href: "#menu-section-viandes",
   },
   {
     id: "burgers",
     label: "Burgers & salades",
-    iconSrc: "/img/pictos/6.png",
+    iconSrc: "/img/pictos/35.png",
     iconAlt: "Pictogramme burgers et salades",
     href: "#menu-section-burgers",
   },
   {
     id: "desserts",
     label: "Desserts",
-    iconSrc: "/img/pictos/11.png",
+    iconSrc: "/img/pictos/36.png",
     iconAlt: "Pictogramme desserts",
     href: "#menu-section-desserts",
   },
@@ -613,7 +613,7 @@ export default function MenusPageComponent() {
           </div>
         </section>
 
-        <section
+        {/* <section
           id="menu-highlights"
           className="la-shell pb-10 pt-1 tablet:pb-12 desktop:pb-14"
         >
@@ -632,7 +632,7 @@ export default function MenusPageComponent() {
               </div>
             </div>
           </div>
-        </section>
+        </section> */}
 
         <section className="la-shell pb-8 pt-1 tablet:pb-10 desktop:pb-12">
           <div className="la-menu__sections-stack">
