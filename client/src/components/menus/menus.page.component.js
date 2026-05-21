@@ -54,31 +54,32 @@ const categoryTabs = [
 
 const highlightItems = [
   {
-    title: "Carpaccio de boeuf",
-    price: "15,50 €",
-    image: "/img/dishes/1.png",
-    imageAlt: "Carpaccio de boeuf",
-  },
-  {
-    title: "Tartare de boeuf limousin",
-    description: "Préparé ou poêlé à la demande.",
-    price: "18,00 €",
-    image: "/img/dishes/2.png",
-    imageAlt: "Tartare de boeuf limousin",
-  },
-  {
-    title: "Farandole marine",
+    title: "Entrées & à partager",
     description:
-      "Noix de St Jacques, gambas, pavé saumon, sauce tartare.",
-    price: "29,00 €",
-    image: "/img/dishes/3.png",
-    imageAlt: "Farandole marine",
+      "Planches, tartines, saumon, camembert rôti et assiettes à partager selon l’envie du moment.",
+    image: "/img/dishes/1.png",
+    imageAlt: "Entrées et assiettes à partager",
   },
   {
-    title: "Profiterole chantilly",
-    price: "7,50 €",
+    title: "Viandes de brasserie",
+    description:
+      "Pièces limousines, tartares, volaille, canard et assiettes généreuses dans l’esprit maison.",
+    image: "/img/dishes/2.png",
+    imageAlt: "Viandes de brasserie",
+  },
+  {
+    title: "Mer, salades & burgers",
+    description:
+      "Poissons, gambas, burgers gourmands, salades composées et options plus légères.",
+    image: "/img/dishes/3.png",
+    imageAlt: "Mer, salades et burgers",
+  },
+  {
+    title: "Desserts & douceurs",
+    description:
+      "Crèmes, mousses, gaufres, crêpes et glaces pour finir sur une note gourmande.",
     image: "/img/dishes/4.png",
-    imageAlt: "Profiterole chantilly",
+    imageAlt: "Desserts et douceurs",
   },
 ];
 
@@ -406,7 +407,9 @@ function HighlightCard({ item }) {
             {item.description}
           </p>
         ) : null}
-        <p className="la-menu__spotlight-price">{item.price}</p>
+        {item.price ? (
+          <p className="la-menu__spotlight-price">{item.price}</p>
+        ) : null}
       </div>
     </article>
   );
@@ -617,11 +620,11 @@ export default function MenusPageComponent() {
           <div className="la-home__framed-section la-home__framed-section--title-absolute la-menu__framed-section">
             <div className="la-home__framed-heading la-home__framed-heading--absolute la-menu__title-band">
               <div className="la-home__framed-title-row la-home__framed-title-row--with-lines la-menu__title-band">
-                <h2 className="la-home__section-title">Les incontournables</h2>
+                <h2 className="la-home__section-title">Aperçu de la carte</h2>
               </div>
             </div>
 
-            <div className="la-home__framed-content px-3 pb-6 pt-8 tablet:px-5 desktop:px-7">
+            <div className="la-home__framed-content px-3 pb-6 pt-4 tablet:px-5 desktop:px-7">
               <div className="grid gap-5 min-[700px]:grid-cols-2 desktop:grid-cols-4">
                 {highlightItems.map((item) => (
                   <HighlightCard key={item.title} item={item} />
@@ -717,7 +720,7 @@ export default function MenusPageComponent() {
               </div>
             </div>
 
-            <div className="la-home__framed-content px-4 pb-4 pt-8 tablet:px-6 desktop:px-8">
+            <div className="la-home__framed-content px-4 pb-4 pt-4 tablet:px-6 desktop:px-8">
               <div className="grid min-[900px]:grid-cols-4">
                 {qualityItems.map((item, index) => (
                   <QualityCard key={item.title} item={item} index={index} />

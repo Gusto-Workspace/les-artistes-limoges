@@ -14,7 +14,9 @@ export default function VenueShowcaseComponent({
     <section id={sectionId} className={sectionClassName}>
       <div className={framedSectionClassName}>
         <div
-          className={`la-home__framed-heading la-home__framed-heading--absolute text-center ${headingClassName}`.trim()}
+          className={`la-home__framed-heading la-home__framed-heading--absolute text-center ${
+            description ? "la-home__framed-heading--with-description" : ""
+          } ${headingClassName}`.trim()}
         >
           <div className="la-home__framed-title-row la-home__framed-title-row--with-lines">
             <h2 className="la-home__section-title">{title}</h2>

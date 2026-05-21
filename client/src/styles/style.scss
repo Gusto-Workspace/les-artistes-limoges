@@ -396,6 +396,12 @@ a {
   transform: translateX(-50%);
 }
 
+.la-home__framed-heading--with-description {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .la-home__framed-title-row {
   position: relative;
   display: inline-flex;
@@ -435,13 +441,12 @@ a {
 .la-home__framed-section--cuisine {
   --la-frame-line-top: 72px;
   --la-frame-heading-top: 20px;
-  --la-frame-section-padding-top: 132px;
 }
 
 .la-home__framed-section--experience {
-  --la-frame-line-top: 50px;
-  --la-frame-heading-top: 18px;
-  --la-frame-section-padding-top: 118px;
+  --la-frame-line-top: 72px;
+  --la-frame-heading-top: 20px;
+  --la-frame-section-padding-top: 146px;
 }
 
 .la-home__framed-content {
@@ -450,7 +455,7 @@ a {
 }
 
 .la-home__framed-content--with-button {
-  padding-bottom: 112px;
+  padding-bottom: 56px;
 }
 
 .la-home__dish-card {
@@ -1739,7 +1744,6 @@ a {
 
   .la-home__framed-section--title-absolute {
     --la-frame-heading-top: 18px;
-    --la-frame-section-padding-top: 124px;
   }
 
   .la-home__framed-heading--absolute {
@@ -1749,13 +1753,12 @@ a {
   .la-home__framed-section--cuisine {
     --la-frame-line-top: 76px;
     --la-frame-heading-top: 22px;
-    --la-frame-section-padding-top: 138px;
   }
 
   .la-home__framed-section--experience {
-    --la-frame-line-top: 54px;
-    --la-frame-heading-top: 20px;
-    --la-frame-section-padding-top: 122px;
+    --la-frame-line-top: 59px;
+    --la-frame-heading-top: 22px;
+    --la-frame-section-padding-top: 146px;
   }
 
   .la-home__feature-title {

@@ -46,28 +46,28 @@ const featureItems = [
 
 const dishItems = [
   {
-    title: "Carpaccio de tomates, fenouil & olives",
-    subtitle: "Fraîcheur & saison",
+    title: "Entrées & à partager",
+    subtitle: "Planches, tartines & fraîcheur",
     image: "/img/dishes/5.png",
-    imageAlt: "Carpaccio de tomates, fenouil et olives",
+    imageAlt: "Entrées et assiettes à partager",
   },
   {
-    title: "Tartare de bœuf préparé au couteau",
-    subtitle: "Classique intemporel",
+    title: "Viandes de brasserie",
+    subtitle: "Classiques maison & pièces",
     image: "/img/dishes/2.png",
-    imageAlt: "Tartare de bœuf",
+    imageAlt: "Viandes de brasserie",
   },
   {
-    title: "Blanquette de veau, écrasé de pommes de terre",
-    subtitle: "Généreux & gourmand",
+    title: "Mer & traditions",
+    subtitle: "Poissons, gambas & assiettes",
     image: "/img/dishes/3.png",
-    imageAlt: "Blanquette de veau",
+    imageAlt: "Mer et traditions",
   },
   {
-    title: "Coupe glacée maison",
-    subtitle: "Glacier artisanal",
+    title: "Desserts & glaces",
+    subtitle: "Douceurs, gaufres & gourmandise",
     image: "/img/dishes/4.png",
-    imageAlt: "Coupe glacée maison",
+    imageAlt: "Desserts et glaces",
   },
 ];
 
@@ -212,7 +212,7 @@ export default function HomePageComponent() {
         >
           <div className="la-home__framed-section la-home__framed-section--with-button la-home__framed-section--title-absolute la-home__framed-section--cuisine">
             <div className="la-home__framed-heading la-home__framed-heading--absolute la-home__framed-heading--cuisine text-center">
-              <p className="la-home__eyebrow">Les incontournables</p>
+              <p className="la-home__eyebrow">La carte</p>
               <div className="la-home__framed-title-row la-home__framed-title-row--with-lines">
                 <h2 className="la-home__section-title">
                   Notre cuisine de brasserie
@@ -220,7 +220,7 @@ export default function HomePageComponent() {
               </div>
             </div>
 
-            <div className="la-home__framed-content la-home__framed-content--with-button px-3 pt-10 tablet:px-6 desktop:px-7">
+            <div className="la-home__framed-content la-home__framed-content--with-button px-3 tablet:px-6 desktop:px-7">
               <div className="grid gap-6 min-[640px]:grid-cols-2 desktop:grid-cols-4">
                 {dishItems.map((item) => (
                   <article
