@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { GlobalContext } from "@/contexts/global.context";
 import { buildSiteContactSummary } from "@/_assets/utils/contact.utils";
 import ActionLinkComponent from "@/components/_shared/action-link.component";
@@ -12,75 +12,6 @@ const navigationItems = [
   { label: "Accueil", href: "/" },
   { label: "Carte & Menus", href: "/menus", active: true },
   { label: "Contact", href: "/contact" },
-];
-
-const categoryTabs = [
-  {
-    id: "formule",
-    label: "Formules",
-    iconSrc: "/img/pictos/37.png",
-    iconAlt: "Pictogramme formule du midi",
-    href: "#menu-formule",
-  },
-  {
-    id: "partager",
-    label: "À partager",
-    iconSrc: "/img/pictos/38.png",
-    iconAlt: "Pictogramme à partager",
-    href: "#menu-section-partager",
-  },
-  {
-    id: "brasserie",
-    label: "Viandes & mer",
-    iconSrc: "/img/pictos/34.png",
-    iconAlt: "Pictogramme brasserie",
-    href: "#menu-section-viandes",
-  },
-  {
-    id: "burgers",
-    label: "Burgers & salades",
-    iconSrc: "/img/pictos/35.png",
-    iconAlt: "Pictogramme burgers et salades",
-    href: "#menu-section-burgers",
-  },
-  {
-    id: "desserts",
-    label: "Desserts",
-    iconSrc: "/img/pictos/36.png",
-    iconAlt: "Pictogramme desserts",
-    href: "#menu-section-desserts",
-  },
-];
-
-const highlightItems = [
-  {
-    title: "Entrées & à partager",
-    description:
-      "Planches, tartines, saumon, camembert rôti et assiettes à partager selon l’envie du moment.",
-    image: "/img/dishes/1.png",
-    imageAlt: "Entrées et assiettes à partager",
-  },
-  {
-    title: "Viandes de brasserie",
-    description:
-      "Pièces limousines, tartares, volaille, canard et assiettes généreuses dans l’esprit maison.",
-    image: "/img/dishes/2.png",
-    imageAlt: "Viandes de brasserie",
-  },
-  {
-    title: "Mer, salades & burgers",
-    description:
-      "Poissons, gambas, burgers gourmands, salades composées et options plus légères.",
-    image: "/img/dishes/3.png",
-    imageAlt: "Mer, salades et burgers",
-  },
-  {
-    title: "Desserts & douceurs",
-    description:
-      "Crèmes, mousses, gaufres, crêpes et glaces pour finir sur une note gourmande.",
-    image: "/img/dishes/4.png",
-    imageAlt: "Desserts et douceurs",
-  },
 ];
 
 const menuSections = [
@@ -366,13 +297,94 @@ const qualityItems = [
   },
 ];
 
-function MenuCategoryTab({ item, active, onClick }) {
+const categoryTabs = [
+  {
+    id: "formules",
+    label: "Formules",
+    iconSrc: "/img/pictos/37.png",
+    iconAlt: "Pictogramme formules",
+    href: "#menu-formule",
+    sectionIds: ["menu-formule", "menu-bambino"],
+  },
+  {
+    id: "entrees",
+    label: "Entrées & à partager",
+    iconSrc: "/img/pictos/38.png",
+    iconAlt: "Pictogramme entrées et à partager",
+    href: "#menu-section-partager",
+    sectionIds: ["menu-section-partager"],
+  },
+  {
+    id: "brasserie",
+    label: "Viandes & mer",
+    iconSrc: "/img/pictos/34.png",
+    iconAlt: "Pictogramme viandes et mer",
+    href: "#menu-section-viandes",
+    sectionIds: ["menu-section-viandes", "menu-section-mer"],
+  },
+  {
+    id: "snacking",
+    label: "Tartines, burgers & salades",
+    iconSrc: "/img/pictos/35.png",
+    iconAlt: "Pictogramme tartines, burgers et salades",
+    href: "#menu-section-tartines",
+    sectionIds: [
+      "menu-section-tartines",
+      "menu-section-burgers",
+      "menu-section-salades",
+    ],
+  },
+  {
+    id: "desserts",
+    label: "Desserts & douceurs",
+    iconSrc: "/img/pictos/36.png",
+    iconAlt: "Pictogramme desserts et douceurs",
+    href: "#menu-section-desserts",
+    sectionIds: ["menu-section-desserts", "menu-section-supplements"],
+  },
+];
+
+const lunchFormulaItems = [
+  {
+    description: "Entrée du jour, plat du jour et dessert du jour",
+    price: "15,10 €",
+  },
+  {
+    description: "Entrée du jour, plat du jour ou plat du jour et dessert du jour",
+    price: "12,50 €",
+  },
+  {
+    description: "Plat du jour",
+    price: "9,90 €",
+  },
+];
+
+const bambinoItems = [
+  {
+    description:
+      "Steak haché ou tenders de poulet, frites, glace, diabolo ou sirop à l’eau.",
+    price: "10,00 €",
+  },
+];
+
+const menuOffers = [
+  {
+    id: "menu-formule",
+    title: "Formule déjeuner",
+    subtitle: "Lundi au vendredi hors jours fériés.",
+    items: lunchFormulaItems,
+  },
+  {
+    id: "menu-bambino",
+    title: "Menu bambino",
+    subtitle: "Moins de 8 ans.",
+    items: bambinoItems,
+  },
+];
+
+function MenuCategoryTab({ item }) {
   return (
-    <a
-      href={item.href}
-      onClick={() => onClick(item.id)}
-      className={`la-menu__category-link ${active ? "is-active" : ""}`}
-    >
+    <article className="la-menu__category-link">
       <Image
         src={item.iconSrc}
         alt={item.iconAlt}
@@ -381,35 +393,32 @@ function MenuCategoryTab({ item, active, onClick }) {
         className="la-menu__category-icon"
       />
       <span className="la-menu__category-label">{item.label}</span>
-    </a>
+    </article>
   );
 }
 
-function HighlightCard({ item }) {
+function FormulaStrip({ id, title, subtitle, items }) {
   return (
-    <article className="la-menu__spotlight-card">
-      <div className="la-menu__spotlight-media">
-        <Image
-          src={item.image}
-          alt={item.imageAlt}
-          fill
-          sizes="(max-width: 767px) 100vw, (max-width: 1279px) 50vw, 25vw"
-          className="object-cover"
-        />
-      </div>
-
-      <div className="px-4 pb-6 pt-5 text-center">
-        <h3 className="text-[23px] leading-[1.14] text-[var(--la-burgundy)]">
-          {item.title}
-        </h3>
-        {item.description ? (
-          <p className="mx-auto mt-4 max-w-[280px] text-[16px] leading-[1.55] text-[rgba(86,57,44,0.86)]">
-            {item.description}
+    <article id={id} className="la-menu__lunch-strip">
+      <div>
+        <h2 className="la-contact__panel-title">{title}</h2>
+        {subtitle ? (
+          <p className="mt-3 text-[17px] leading-[1.45] text-[rgba(86,57,44,0.86)]">
+            {subtitle}
           </p>
         ) : null}
-        {item.price ? (
-          <p className="la-menu__spotlight-price">{item.price}</p>
-        ) : null}
+      </div>
+
+      <div className="la-menu__formula-list">
+        {items.map((item) => (
+          <div
+            key={`${title}-${item.description}-${item.price}`}
+            className="la-menu__formula-row"
+          >
+            <p className="la-menu__formula-description">{item.description}</p>
+            <p className="la-menu__formula-price">{item.price}</p>
+          </div>
+        ))}
       </div>
     </article>
   );
@@ -487,7 +496,6 @@ export default function MenusPageComponent() {
   const { restaurantContext } = useContext(GlobalContext);
   const restaurantData = restaurantContext?.restaurantData;
   const { address, phone, phoneHref } = buildSiteContactSummary(restaurantData);
-  const [activeCategory, setActiveCategory] = useState(categoryTabs[0].id);
 
   return (
     <div className="la-home la-menu">
@@ -533,7 +541,7 @@ export default function MenusPageComponent() {
                   Réserver une table
                 </ActionLinkComponent>
                 <ActionLinkComponent
-                  href="#menu-highlights"
+                  href="#menu-categories"
                   secondary
                   className="min-[560px]:min-w-[220px]"
                 >
@@ -603,12 +611,7 @@ export default function MenusPageComponent() {
         >
           <div className="la-menu__category-grid">
             {categoryTabs.map((item) => (
-              <MenuCategoryTab
-                key={item.id}
-                item={item}
-                active={activeCategory === item.id}
-                onClick={setActiveCategory}
-              />
+              <MenuCategoryTab key={item.id} item={item} />
             ))}
           </div>
         </section>
@@ -642,71 +645,17 @@ export default function MenusPageComponent() {
           </div>
         </section>
 
-        <section
-          id="menu-formule"
-          className="la-shell pb-10 pt-1 tablet:pb-12 desktop:pb-14"
-        >
-          <div className="la-menu__lunch-strip">
-            <div>
-              <h2 className="la-contact__panel-title">Formule déjeuner</h2>
-              <p className="mt-3 text-[17px] leading-[1.45] text-[rgba(86,57,44,0.86)]">
-                Lundi au vendredi hors jours fériés.
-              </p>
-            </div>
-
-            <div className="space-y-4 text-center">
-              <div>
-                <p className="la-home__feature-title text-[18px]">
-                  Formule déjeuner
-                </p>
-                <p className="mt-2 text-[17px] leading-[1.45] text-[rgba(86,57,44,0.86)]">
-                  Entrée du jour, plat du jour et dessert du jour
-                </p>
-              </div>
-
-              <div>
-                <p className="text-[17px] leading-[1.45] text-[rgba(86,57,44,0.86)]">
-                  Entrée du jour, plat du jour
-                  <br />
-                  ou plat du jour et dessert du jour
-                </p>
-              </div>
-
-              <div>
-                <p className="la-home__feature-title text-[18px]">
-                  Plat du jour
-                </p>
-              </div>
-            </div>
-
-            <div className="space-y-4 text-center">
-              <p className="la-menu__formula-price text-[2.35rem]">15,10 €</p>
-              <p className="la-menu__formula-price text-[2.35rem]">12,50 €</p>
-              <p className="la-menu__formula-price text-[2.35rem]">9,90 €</p>
-            </div>
-          </div>
-        </section>
-
         <section className="la-shell pb-10 pt-1 tablet:pb-12 desktop:pb-14">
-          <div className="la-menu__lunch-strip">
-            <div>
-              <h2 className="la-contact__panel-title">Menu bambino</h2>
-              <p className="mt-3 text-[17px] leading-[1.45] text-[rgba(86,57,44,0.86)]">
-                Moins de 8 ans.
-              </p>
-            </div>
-
-            <div className="text-center">
-              <p className="text-[17px] leading-[1.45] text-[rgba(86,57,44,0.86)]">
-                Steak haché ou tenders de poulet,
-                <br />
-                frites, glace, diabolo ou sirop à l’eau.
-              </p>
-            </div>
-
-            <div className="text-center">
-              <p className="la-menu__formula-price">10,00 €</p>
-            </div>
+          <div className="la-menu__offers-grid">
+            {menuOffers.map((item) => (
+              <FormulaStrip
+                key={item.id}
+                id={item.id}
+                title={item.title}
+                subtitle={item.subtitle}
+                items={item.items}
+              />
+            ))}
           </div>
         </section>
 
