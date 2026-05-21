@@ -17,7 +17,7 @@ export default function MenusPage({ seoRestaurantData = null }) {
         restaurantData={seoRestaurantData}
       />
 
-      <MenusPageComponent />
+      <MenusPageComponent initialRestaurantData={seoRestaurantData} />
     </>
   );
 }

@@ -1707,6 +1707,29 @@ a {
   background: rgba(255, 255, 255, 0.22);
 }
 
+.la-menu__section-marker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin: 0 auto 28px;
+  text-align: center;
+}
+
+.la-menu__section-marker-icon {
+  width: 36px;
+  height: auto;
+  opacity: 0.92;
+}
+
+.la-menu__section-marker-row {
+  margin: 0 auto;
+}
+
+.la-menu__section-marker-title {
+  font-size: clamp(2.2rem, 3vw, 3.35rem);
+}
+
 .la-menu__sections-stack {
   display: grid;
   gap: 24px;
@@ -1835,6 +1858,39 @@ a {
   color: rgba(86, 57, 44, 0.92);
   font-size: 18px;
   line-height: 1.45;
+}
+
+.la-menu__formula-copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.la-menu__formula-item-title {
+  margin: 0;
+  color: var(--la-gold);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.la-menu__formula-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.la-menu__formula-separator {
+  margin: 0;
+  color: rgba(86, 57, 44, 0.68);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  line-height: 1.2;
+  text-transform: uppercase;
 }
 
 .la-menu__formula-price {

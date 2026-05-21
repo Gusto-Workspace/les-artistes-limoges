@@ -2,6 +2,18 @@ import Image from "next/image";
 import { useContext } from "react";
 import { GlobalContext } from "@/contexts/global.context";
 import { buildSiteContactSummary } from "@/_assets/utils/contact.utils";
+import {
+  buildMenuBlocks,
+  getMenuPriceLabel,
+  getMenuTitle,
+  getVisibleMenus,
+  isMenuBlankLine,
+  isMenuSeparatorLabel,
+} from "@/_assets/utils/menu-display.utils";
+import {
+  getVisibleDishCategories,
+  getVisibleMenuCategories,
+} from "@/_assets/utils/site-display.utils";
 import ActionLinkComponent from "@/components/_shared/action-link.component";
 import FooterComponent from "@/components/_shared/footer/footer.component";
 import HeroOrnamentComponent from "@/components/_shared/hero-ornament.component";
@@ -14,7 +26,7 @@ const navigationItems = [
   { label: "Contact", href: "/contact" },
 ];
 
-const menuSections = [
+const fallbackCardSections = [
   {
     id: "menu-section-partager",
     title: "En entrée ou à partager",
@@ -324,9 +336,9 @@ const categoryTabs = [
   },
   {
     id: "snacking",
-    label: "Tartines, burgers & salades",
+    label: "Burgers & salades",
     iconSrc: "/img/pictos/35.png",
-    iconAlt: "Pictogramme tartines, burgers et salades",
+    iconAlt: "Pictogramme burgers et salades",
     href: "#menu-section-tartines",
     sectionIds: [
       "menu-section-tartines",
@@ -367,7 +379,7 @@ const bambinoItems = [
   },
 ];
 
-const menuOffers = [
+const fallbackMenuOffers = [
   {
     id: "menu-formule",
     title: "Formule déjeuner",
@@ -382,6 +394,117 @@ const menuOffers = [
   },
 ];
 
+function slugifyMenuValue(value, fallback = "section") {
+  const normalizedValue = String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+  return normalizedValue || fallback;
+}
+
+function buildRuntimeCardSections(restaurantData) {
+  const apiSections = getVisibleDishCategories(restaurantData).map(
+    (category, index) => ({
+      id: `menu-section-${slugifyMenuValue(category?.title, `api-${index + 1}`)}`,
+      title: category.title,
+      intro: category.description,
+      items: (category.items || []).map((item) => ({
+        name: item.name,
+        details: item.description,
+        price: item.price,
+      })),
+      showOrnament: true,
+    }),
+  );
+
+  return apiSections.length ? apiSections : fallbackCardSections;
+}
+
+function buildMenuOfferItemsFromBlocks(blocks = []) {
+  return blocks
+    .map((block) => {
+      const lines = (block.lines || [])
+        .filter((line) => !isMenuBlankLine(line))
+        .map((line) => ({
+          value: line,
+          isSeparator: isMenuSeparatorLabel(line),
+        }));
+
+      const hasReadableLines = lines.some((line) => !line.isSeparator);
+      const showTitle =
+        !block.price && String(block.title || "").trim() && block.title !== "Sélection";
+
+      return {
+        id: block.id,
+        title:
+          ((!block.price || !hasReadableLines) &&
+            String(block.title || "").trim() &&
+            block.title !== "Sélection")
+            ? block.title
+            : "",
+        lines,
+        price: block.price,
+        hasReadableLines,
+      };
+    })
+    .filter((item) => item.title || item.lines.length || item.price);
+}
+
+function buildRuntimeMenuOffers(restaurantData) {
+  const apiMenus = getVisibleMenus(restaurantData).map((menu, index) => {
+    const blocks = buildMenuBlocks(menu);
+    const items = buildMenuOfferItemsFromBlocks(blocks);
+    const fallbackPrice = getMenuPriceLabel(menu);
+    const fallbackDescription = String(menu?.description || "").trim();
+
+    return {
+      id: menu?._id || `menu-offer-${index + 1}`,
+      title: getMenuTitle(menu, index),
+      subtitle: fallbackDescription,
+      items:
+        items.length > 0
+          ? items
+          : [
+              {
+                id: `${menu?._id || `menu-offer-${index + 1}`}-price`,
+                title: "",
+                lines: fallbackDescription
+                  ? [{ value: fallbackDescription, isSeparator: false }]
+                  : [],
+                price: fallbackPrice,
+                hasReadableLines: Boolean(fallbackDescription),
+              },
+            ],
+    };
+  });
+
+  if (apiMenus.length) {
+    return apiMenus;
+  }
+
+  const apiMenuCategories = getVisibleMenuCategories(restaurantData).map(
+    (category, index) => ({
+      id: category?.id || `menu-category-offer-${index + 1}`,
+      title: category.title,
+      subtitle: category.description,
+      items: (category.items || []).map((item) => ({
+        id: item.id,
+        title: item.name,
+        lines: item.description
+          ? [{ value: item.description, isSeparator: false }]
+          : [],
+        price: item.price,
+        hasReadableLines: Boolean(item.description),
+      })),
+    }),
+  );
+
+  return apiMenuCategories.length ? apiMenuCategories : fallbackMenuOffers;
+}
+
 function MenuCategoryTab({ item }) {
   return (
     <article className="la-menu__category-link">
@@ -394,6 +517,27 @@ function MenuCategoryTab({ item }) {
       />
       <span className="la-menu__category-label">{item.label}</span>
     </article>
+  );
+}
+
+function MenuSectionMarker({ eyebrow, title }) {
+  return (
+    <div className="la-menu__section-marker">
+      <Image
+        src="/img/pictos/5.png"
+        alt=""
+        aria-hidden="true"
+        width={42}
+        height={24}
+        className="la-menu__section-marker-icon"
+      />
+      <p className="la-home__eyebrow">{eyebrow}</p>
+      <div className="la-home__framed-title-row la-home__framed-title-row--with-lines la-menu__section-marker-row">
+        <h2 className="la-home__section-title la-menu__section-marker-title">
+          {title}
+        </h2>
+      </div>
+    </div>
   );
 }
 
@@ -412,11 +556,42 @@ function FormulaStrip({ id, title, subtitle, items }) {
       <div className="la-menu__formula-list">
         {items.map((item) => (
           <div
-            key={`${title}-${item.description}-${item.price}`}
+            key={item.id || `${title}-${item.title || item.description}-${item.price}`}
             className="la-menu__formula-row"
           >
-            <p className="la-menu__formula-description">{item.description}</p>
-            <p className="la-menu__formula-price">{item.price}</p>
+            <div className="la-menu__formula-copy">
+              {item.title ? (
+                <p className="la-menu__formula-item-title">{item.title}</p>
+              ) : null}
+
+              {item.lines?.length ? (
+                <div className="la-menu__formula-lines">
+                  {item.lines.map((line, lineIndex) =>
+                    line.isSeparator ? (
+                      <p
+                        key={`${item.id || title}-sep-${lineIndex}`}
+                        className="la-menu__formula-separator"
+                      >
+                        {line.value}
+                      </p>
+                    ) : (
+                      <p
+                        key={`${item.id || title}-line-${lineIndex}`}
+                        className="la-menu__formula-description"
+                      >
+                        {line.value}
+                      </p>
+                    ),
+                  )}
+                </div>
+              ) : item.description ? (
+                <p className="la-menu__formula-description">{item.description}</p>
+              ) : null}
+            </div>
+
+            {item.price ? (
+              <p className="la-menu__formula-price">{item.price}</p>
+            ) : null}
           </div>
         ))}
       </div>
@@ -492,10 +667,12 @@ function QualityCard({ item, index }) {
   );
 }
 
-export default function MenusPageComponent() {
+export default function MenusPageComponent({ initialRestaurantData = null }) {
   const { restaurantContext } = useContext(GlobalContext);
-  const restaurantData = restaurantContext?.restaurantData;
+  const restaurantData = restaurantContext?.restaurantData || initialRestaurantData;
   const { address, phone, phoneHref } = buildSiteContactSummary(restaurantData);
+  const cardSections = buildRuntimeCardSections(restaurantData);
+  const menuOffers = buildRuntimeMenuOffers(restaurantData);
 
   return (
     <div className="la-home la-menu">
@@ -638,14 +815,16 @@ export default function MenusPageComponent() {
         </section> */}
 
         <section className="la-shell pb-8 pt-1 tablet:pb-10 desktop:pb-12">
+          <MenuSectionMarker eyebrow="Brasserie" title="La carte" />
           <div className="la-menu__sections-stack">
-            {menuSections.map((column) => (
+            {cardSections.map((column) => (
               <MenuListCard key={column.id} column={column} />
             ))}
           </div>
         </section>
 
         <section className="la-shell pb-10 pt-1 tablet:pb-12 desktop:pb-14">
+          <MenuSectionMarker eyebrow="Formules" title="Les menus" />
           <div className="la-menu__offers-grid">
             {menuOffers.map((item) => (
               <FormulaStrip
