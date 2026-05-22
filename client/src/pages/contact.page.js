@@ -6,10 +6,16 @@ export default function ContactPage({ seoRestaurantData = null }) {
   return (
     <>
       <SeoHeadComponent
-        title="Les Artistes | Contact"
-        description="Contactez Les Artistes à Limoges : formulaire, téléphone, horaires, informations pratiques et accès au restaurant."
+        title="Contact & accès | Les Artistes Limoges"
+        description="Contactez Les Artistes à Limoges : adresse près de l’Opéra, téléphone, horaires, formulaire de contact, accès et informations pratiques."
         path="/contact"
         image="/img/brand/og-les-artistes.svg"
+        pageSchemaType="ContactPage"
+        keywords={[
+          "contact Les Artistes Limoges",
+          "adresse Les Artistes Limoges",
+          "horaires brasserie Limoges",
+        ]}
         breadcrumbs={[
           { name: "Accueil", path: "/" },
           { name: "Contact", path: "/contact" },

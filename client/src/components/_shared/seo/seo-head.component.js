@@ -18,12 +18,44 @@ export default function SeoHead({
   noIndex = false,
   breadcrumbs = [],
   restaurantData = null,
+  pageSchemaType = "WebPage",
+  keywords = [],
 }) {
   const { restaurantContext } = useContext(GlobalContext);
   const restaurantSeoData = restaurantData || restaurantContext?.restaurantData;
   const baseUrl = normalizeBaseUrl(process.env.NEXT_PUBLIC_BASE_URL);
   const canonicalUrl = buildAbsoluteUrl(baseUrl, path);
-  const imageUrl = buildAbsoluteUrl(baseUrl, image);
+  const resolvedImage =
+    image === "/img/brand/og-les-artistes.svg" ? DEFAULT_SOCIAL_IMAGE : image;
+  const imageUrl = buildAbsoluteUrl(baseUrl, resolvedImage);
+  const city = restaurantSeoData?.address?.city || "Limoges";
+  const region = restaurantSeoData?.address?.region || "Nouvelle-Aquitaine";
+  const postalCode = restaurantSeoData?.address?.zipCode || "87000";
+  const latitude = Number(
+    restaurantSeoData?.geo?.latitude ??
+      restaurantSeoData?.latitude ??
+      restaurantSeoData?.address?.latitude,
+  );
+  const longitude = Number(
+    restaurantSeoData?.geo?.longitude ??
+      restaurantSeoData?.longitude ??
+      restaurantSeoData?.address?.longitude,
+  );
+  const hasGeoPosition =
+    Number.isFinite(latitude) && Number.isFinite(longitude);
+  const keywordContent = Array.from(
+    new Set(
+      [
+        "Les Artistes",
+        "restaurant Limoges",
+        "brasserie Limoges",
+        "bar Limoges",
+        "glacier Limoges",
+        "restaurant près Opéra Limoges",
+        ...keywords,
+      ].filter(Boolean),
+    ),
+  ).join(", ");
   const robots = noIndex
     ? "noindex, nofollow"
     : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1";
@@ -35,12 +67,14 @@ export default function SeoHead({
     canonicalUrl,
     imageUrl,
     breadcrumbs,
+    pageSchemaType,
   });
 
   return (
     <Head>
       <title>{title}</title>
       <meta name="description" content={description} />
+      <meta name="keywords" content={keywordContent} />
       <meta
         name="viewport"
         content="width=device-width, initial-scale=1, viewport-fit=cover"
@@ -49,8 +83,22 @@ export default function SeoHead({
       <meta name="author" content={DEFAULT_SITE_NAME} />
       <meta name="application-name" content={DEFAULT_SITE_NAME} />
       <meta name="apple-mobile-web-app-title" content={DEFAULT_SITE_NAME} />
-      <meta name="theme-color" content="#cb6038" />
-      <meta name="format-detection" content="telephone=yes, address=yes, email=yes" />
+      <meta name="theme-color" content="#6f202a" />
+      <meta
+        name="format-detection"
+        content="telephone=yes, address=yes, email=yes"
+      />
+      <meta name="geo.region" content="FR-87" />
+      <meta name="geo.placename" content={city} />
+      {hasGeoPosition ? (
+        <>
+          <meta name="geo.position" content={`${latitude};${longitude}`} />
+          <meta name="ICBM" content={`${latitude}, ${longitude}`} />
+        </>
+      ) : null}
+      <meta name="business:contact_data:locality" content={city} />
+      <meta name="business:contact_data:region" content={region} />
+      <meta name="business:contact_data:postal_code" content={postalCode} />
       {!noIndex ? <link rel="canonical" href={canonicalUrl} /> : null}
       {!noIndex ? (
         <>

@@ -62,8 +62,8 @@ export default function FooterComponent({ links = defaultLinks }) {
   return (
     <footer className="pt-2">
       <div className="la-shell">
-        <div className="grid gap-8 border-t border-[rgba(197,155,85,0.22)] py-8 min-[960px]:grid-cols-[1.15fr_0.95fr_0.8fr_0.6fr] min-[960px]:gap-0">
-          <div className="min-[960px]:pr-8">
+        <div className="grid gap-8 border-t border-[rgba(197,155,85,0.22)] py-8 text-center min-[960px]:grid-cols-[1.15fr_0.95fr_0.8fr_0.6fr] min-[960px]:gap-0">
+          <div className="flex flex-col items-center min-[960px]:px-8">
             <Image
               src="/img/logo.png"
               alt="Les Artistes"
@@ -72,14 +72,14 @@ export default function FooterComponent({ links = defaultLinks }) {
               className="h-auto w-[190px]"
             />
 
-            <div className="mt-6 flex items-center gap-3">
+            <div className="mt-6 flex items-center justify-center gap-3">
               {footerSocialLinks.map((item) => (
                 <SocialItem key={`${item.label}-${item.icon}`} item={item} />
               ))}
             </div>
           </div>
 
-          <div className="min-[960px]:border-l min-[960px]:border-[rgba(197,155,85,0.16)] min-[960px]:px-8">
+          <div className="flex flex-col items-center min-[960px]:border-l min-[960px]:border-[rgba(197,155,85,0.16)] min-[960px]:px-8">
             <h3 className="la-home__footer-heading">Les Artistes</h3>
             <p className="mt-4 text-[17px] leading-[1.52] text-[rgba(86,57,44,0.9)]">
               4 rue Fitz-James
@@ -94,9 +94,9 @@ export default function FooterComponent({ links = defaultLinks }) {
             </p>
           </div>
 
-          <div className="min-[960px]:border-l min-[960px]:border-[rgba(197,155,85,0.16)] min-[960px]:px-8">
+          <div className="flex flex-col items-center min-[960px]:border-l min-[960px]:border-[rgba(197,155,85,0.16)] min-[960px]:px-8">
             <h3 className="la-home__footer-heading">Liens rapides</h3>
-            <div className="mt-4 flex flex-col gap-3 text-[17px] leading-none text-[rgba(86,57,44,0.9)]">
+            <div className="mt-4 flex flex-col items-center gap-3 text-[17px] leading-none text-[rgba(86,57,44,0.9)]">
               {links.map((item) =>
                 item.anchor ? (
                   <a
@@ -119,7 +119,7 @@ export default function FooterComponent({ links = defaultLinks }) {
             </div>
           </div>
 
-          <div className="min-[960px]:border-l min-[960px]:border-[rgba(197,155,85,0.16)] min-[960px]:pl-8">
+          <div className="flex justify-center min-[960px]:border-l min-[960px]:border-[rgba(197,155,85,0.16)] min-[960px]:px-8">
             <div className="la-home__footer-badge">
               <Image
                 src="/img/pictos/5.png"

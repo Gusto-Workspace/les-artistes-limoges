@@ -21,10 +21,16 @@ export default function NewsPage({ seoRestaurantData = null }) {
   return (
     <>
       <SeoHeadComponent
-        title="Les Artistes | Actualités"
-        description="Retrouvez les actualités, annonces et nouveautés publiées sur le site Les Artistes à Limoges."
+        title="Actualités | Les Artistes Limoges"
+        description="Retrouvez les actualités des Artistes à Limoges : annonces de service, nouveautés de la carte, événements et prochains rendez-vous."
         path="/news"
         image="/img/brand/og-les-artistes.svg"
+        pageSchemaType="CollectionPage"
+        keywords={[
+          "actualités Les Artistes Limoges",
+          "événements restaurant Limoges",
+          "nouveautés brasserie Limoges",
+        ]}
         breadcrumbs={[
           { name: "Accueil", path: "/" },
           { name: "Actualités", path: "/news" },
@@ -75,8 +81,8 @@ export default function NewsPage({ seoRestaurantData = null }) {
                   <HeroOrnamentComponent />
                 </div>
 
-                <div className="relative mx-auto max-w-[860px] min-[1100px]:mr-0">
-                  <div className="relative overflow-hidden border border-[rgba(197,155,85,0.16)] bg-white/70 shadow-[0_20px_40px_rgba(82,49,33,0.12)] min-[1100px]:ml-[85px]">
+                <div className="la-hero-media relative mx-auto max-w-[860px] min-[1100px]:mr-0">
+                  <div className="la-hero-media__main relative overflow-hidden border border-[rgba(197,155,85,0.16)] bg-white/70 shadow-[0_20px_40px_rgba(82,49,33,0.12)] min-[1100px]:ml-[85px]">
                     <div
                       className="relative"
                       style={{ aspectRatio: "0.94 / 1" }}
@@ -92,7 +98,7 @@ export default function NewsPage({ seoRestaurantData = null }) {
                     </div>
                   </div>
 
-                  <div className="mt-5 grid gap-5 min-[720px]:grid-cols-2 min-[1100px]:mt-0">
+                  <div className="la-hero-media__thumbs mt-5 grid gap-5 min-[720px]:grid-cols-2 min-[1100px]:mt-0">
                     <div className="la-home__overlay-photo relative overflow-hidden bg-white min-[1100px]:absolute min-[1100px]:bottom-[70px] min-[1100px]:left-[-24px] min-[1100px]:w-[230px]">
                       <div
                         className="relative"

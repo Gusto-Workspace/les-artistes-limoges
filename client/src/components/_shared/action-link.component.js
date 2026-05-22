@@ -5,6 +5,7 @@ export default function ActionLinkComponent({
   children,
   secondary = false,
   className = "",
+  ...props
 }) {
   const classes = [
     "la-button",
@@ -21,7 +22,7 @@ export default function ActionLinkComponent({
     href.startsWith("https://")
   ) {
     return (
-      <a href={href} className={classes}>
+      <a href={href} className={classes} {...props}>
         {children}
       </a>
     );
@@ -29,14 +30,14 @@ export default function ActionLinkComponent({
 
   if (href.startsWith("#")) {
     return (
-      <a href={href} className={classes}>
+      <a href={href} className={classes} {...props}>
         {children}
       </a>
     );
   }
 
   return (
-    <Link href={href} className={classes}>
+    <Link href={href} className={classes} {...props}>
       {children}
     </Link>
   );

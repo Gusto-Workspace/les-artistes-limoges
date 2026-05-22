@@ -164,14 +164,15 @@ export function buildSiteContactSummary(restaurant) {
   const email =
     contactByKey.email?.value && contactByKey.email.value !== "-"
       ? contactByKey.email.value
-      : "contact@lesartistes-limoges.fr";
+      : "contact@brasserielesartistes.fr";
 
   return {
     address,
     phone,
     phoneHref: contactByKey.phone?.href || "tel:0555341243",
     email,
-    emailHref: contactByKey.email?.href || "mailto:contact@lesartistes-limoges.fr",
+    emailHref:
+      contactByKey.email?.href || "mailto:contact@brasserielesartistes.fr",
   };
 }
 

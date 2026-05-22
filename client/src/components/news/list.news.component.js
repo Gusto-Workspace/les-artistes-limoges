@@ -202,11 +202,10 @@ export default function ListNewsComponent({
       <section className="la-shell py-10 tablet:py-12 desktop:py-14">
         <div className="la-home__framed-section la-home__framed-section--title-absolute la-home__framed-section--experience">
           <div className="la-home__framed-heading la-home__framed-heading--absolute la-home__framed-heading--with-description text-center">
-            <p className="la-home__eyebrow">Actualités</p>
             <div className="la-home__framed-title-row la-home__framed-title-row--with-lines">
               <h2 className="la-home__section-title">Nouveautés du moment</h2>
             </div>
-            <p className="mt-4 max-w-[620px] text-[18px] leading-[1.42] text-[rgba(86,57,44,0.82)]">
+            <p className="mt-4 max-w-[620px] text-[18px] leading-[1.42] text-[rgba(86,57,44,0.82)] text-balance">
               Les temps forts du restaurant, les annonces de service et les
               prochains rendez-vous aux Artistes.
             </p>

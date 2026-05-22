@@ -1,9 +1,25 @@
-import { getRestaurantDisplayName, getSocialLinks } from "./site-display.utils";
+import {
+  getRestaurantDisplayName,
+  getSocialLinks,
+  getVisibleDishCategories,
+  getVisibleMenuCategories,
+} from "./site-display.utils";
 
 export const DEFAULT_SITE_NAME = "Les Artistes";
-export const DEFAULT_SITE_URL = "http://localhost:8003";
+export const DEFAULT_SITE_URL = "https://brasserielesartistes.fr";
 export const DEFAULT_SOCIAL_IMAGE = "/img/brand/og-les-artistes.svg";
-export const DEFAULT_LOGO_IMAGE = "/img/brand/les-artistes-mark.svg";
+export const DEFAULT_LOGO_IMAGE = "/img/logo.png";
+
+const DEFAULT_RESTAURANT = {
+  phone: "05 55 34 12 43",
+  email: "contact@brasserielesartistes.fr",
+  address: {
+    line1: "4 rue Fitz-James",
+    zipCode: "87000",
+    city: "Limoges",
+    country: "FR",
+  },
+};
 
 const schemaDayByKey = {
   lundi: "Monday",
@@ -24,6 +40,15 @@ const schemaDayByKey = {
 
 function normalizeText(value) {
   return String(value || "").trim();
+}
+
+function firstText(...values) {
+  return values.map(normalizeText).find(Boolean) || "";
+}
+
+function toFiniteNumber(value) {
+  const numericValue = Number(value);
+  return Number.isFinite(numericValue) ? numericValue : null;
 }
 
 function normalizeDayKey(value) {
@@ -85,9 +110,22 @@ function toSchemaPostalAddress(address) {
     return null;
   }
 
-  const streetAddress = normalizeText(address.line1);
-  const postalCode = normalizeText(address.zipCode);
-  const addressLocality = normalizeText(address.city);
+  const streetAddress = firstText(
+    address.line1,
+    address.streetAddress,
+    address.street,
+    address.address,
+  );
+  const postalCode = firstText(
+    address.zipCode,
+    address.postalCode,
+    address.zip,
+  );
+  const addressLocality = firstText(
+    address.city,
+    address.addressLocality,
+    address.locality,
+  );
   const addressCountry = normalizeText(address.country) || "FR";
   const addressRegion = normalizeText(address.region || address.state);
 
@@ -107,9 +145,9 @@ function toSchemaPostalAddress(address) {
 
 function toMapUrl(address, businessName) {
   const query = [
-    normalizeText(address?.line1),
-    normalizeText(address?.zipCode),
-    normalizeText(address?.city),
+    firstText(address?.line1, address?.streetAddress, address?.street),
+    firstText(address?.zipCode, address?.postalCode, address?.zip),
+    firstText(address?.city, address?.addressLocality, address?.locality),
     normalizeText(address?.country),
   ]
     .filter(Boolean)
@@ -125,7 +163,11 @@ function toMapUrl(address, businessName) {
 }
 
 function toAreaServed(address) {
-  const city = normalizeText(address?.city);
+  const city = firstText(
+    address?.city,
+    address?.addressLocality,
+    address?.locality,
+  );
   const region = normalizeText(address?.region || address?.state);
   const country = normalizeText(address?.country) || "France";
 
@@ -149,6 +191,38 @@ function toAreaServed(address) {
         }
       : null,
   ]);
+}
+
+function toGeoCoordinates(restaurant) {
+  const latitude = toFiniteNumber(
+    restaurant?.geo?.latitude ??
+      restaurant?.geo?.lat ??
+      restaurant?.latitude ??
+      restaurant?.lat ??
+      restaurant?.address?.latitude ??
+      restaurant?.address?.lat,
+  );
+  const longitude = toFiniteNumber(
+    restaurant?.geo?.longitude ??
+      restaurant?.geo?.lng ??
+      restaurant?.geo?.lon ??
+      restaurant?.longitude ??
+      restaurant?.lng ??
+      restaurant?.lon ??
+      restaurant?.address?.longitude ??
+      restaurant?.address?.lng ??
+      restaurant?.address?.lon,
+  );
+
+  if (latitude === null || longitude === null) {
+    return null;
+  }
+
+  return {
+    "@type": "GeoCoordinates",
+    latitude,
+    longitude,
+  };
 }
 
 function toContactPoint({ phone, email, baseUrl }) {
@@ -209,6 +283,65 @@ function toOpeningHoursSpecification(openingHours) {
   });
 }
 
+function toSchemaPrice(value) {
+  const rawValue = normalizeText(value)
+    .replace(/\s/g, "")
+    .replace("€", "")
+    .replace(",", ".");
+  const numericValue = Number(rawValue);
+
+  if (!Number.isFinite(numericValue) || numericValue <= 0) {
+    return "";
+  }
+
+  return numericValue.toFixed(2);
+}
+
+function toMenuSchema({ restaurant, baseUrl, restaurantId }) {
+  const categories = [
+    ...getVisibleMenuCategories(restaurant),
+    ...getVisibleDishCategories(restaurant),
+  ];
+
+  if (!categories.length) {
+    return null;
+  }
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "Menu",
+    "@id": `${baseUrl}/menus#menu`,
+    name: `Carte et menus - ${getRestaurantDisplayName()}`,
+    url: buildAbsoluteUrl(baseUrl, "/menus"),
+    inLanguage: "fr-FR",
+    provider: {
+      "@id": restaurantId,
+    },
+    hasMenuSection: categories.map((category) => ({
+      "@type": "MenuSection",
+      name: category.title,
+      description: category.description || undefined,
+      hasMenuItem: category.items.map((item) => {
+        const price = toSchemaPrice(item.price);
+
+        return {
+          "@type": "MenuItem",
+          name: item.name,
+          description: item.description || undefined,
+          offers: price
+            ? {
+                "@type": "Offer",
+                price,
+                priceCurrency: "EUR",
+                availability: "https://schema.org/InStock",
+              }
+            : undefined,
+        };
+      }),
+    })),
+  };
+}
+
 function compactObject(value) {
   if (Array.isArray(value)) {
     return value
@@ -228,7 +361,9 @@ function compactObject(value) {
           return entryValue.length > 0;
         }
 
-        return entryValue !== null && entryValue !== undefined && entryValue !== "";
+        return (
+          entryValue !== null && entryValue !== undefined && entryValue !== ""
+        );
       }),
   );
 }
@@ -258,21 +393,36 @@ export function buildSeoSchemas({
   canonicalUrl,
   imageUrl,
   breadcrumbs = [],
+  pageSchemaType = "WebPage",
 }) {
+  const restaurantData = {
+    ...DEFAULT_RESTAURANT,
+    ...(restaurant || {}),
+    address: {
+      ...DEFAULT_RESTAURANT.address,
+      ...(restaurant?.address || {}),
+    },
+  };
   const siteName = getRestaurantDisplayName();
-  const socialLinks = getSocialLinks(restaurant).map((item) => item.href);
+  const socialLinks = getSocialLinks(restaurantData).map((item) => item.href);
   const websiteId = `${baseUrl}/#website`;
   const organizationId = `${baseUrl}/#organization`;
   const restaurantId = `${baseUrl}/#restaurant`;
-  const address = toSchemaPostalAddress(restaurant?.address);
+  const address = toSchemaPostalAddress(restaurantData.address);
   const logoUrl = buildAbsoluteUrl(baseUrl, DEFAULT_LOGO_IMAGE);
   const contactPoint = toContactPoint({
-    phone: restaurant?.phone,
-    email: restaurant?.email,
+    phone: restaurantData.phone,
+    email: restaurantData.email,
     baseUrl,
   });
-  const hasMap = toMapUrl(restaurant?.address, siteName);
-  const areaServed = toAreaServed(restaurant?.address);
+  const hasMap = toMapUrl(restaurantData.address, siteName);
+  const areaServed = toAreaServed(restaurantData.address);
+  const geo = toGeoCoordinates(restaurantData);
+  const menuSchema = toMenuSchema({
+    restaurant: restaurantData,
+    baseUrl,
+    restaurantId,
+  });
 
   const schemas = [
     {
@@ -302,7 +452,7 @@ export function buildSeoSchemas({
     },
     {
       "@context": "https://schema.org",
-      "@type": "WebPage",
+      "@type": pageSchemaType,
       "@id": `${canonicalUrl}#webpage`,
       url: canonicalUrl,
       name: title,
@@ -345,7 +495,51 @@ export function buildSeoSchemas({
         "@id": organizationId,
       },
     },
+    {
+      "@context": "https://schema.org",
+      "@type": "SiteNavigationElement",
+      name: ["Accueil", "Carte & Menus", "Réservations", "Contact"],
+      url: [
+        baseUrl,
+        buildAbsoluteUrl(baseUrl, "/menus"),
+        buildAbsoluteUrl(baseUrl, "/reservations"),
+        buildAbsoluteUrl(baseUrl, "/contact"),
+      ],
+    },
   ];
+
+  schemas[3] = compactObject({
+    ...schemas[3],
+    servesCuisine: ["Cuisine française", "Brasserie", "Bar", "Glacier"],
+    priceRange: "€€",
+    paymentAccepted: ["Cash", "Credit Card"],
+    geo,
+    hasMenu: menuSchema
+      ? {
+          "@id": `${baseUrl}/menus#menu`,
+        }
+      : undefined,
+    potentialAction: {
+      "@type": "ReserveAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: buildAbsoluteUrl(baseUrl, "/reservations"),
+        inLanguage: "fr-FR",
+        actionPlatform: [
+          "https://schema.org/DesktopWebPlatform",
+          "https://schema.org/MobileWebPlatform",
+        ],
+      },
+      result: {
+        "@type": "Reservation",
+        name: `Réservation ${siteName}`,
+      },
+    },
+  });
+
+  if (menuSchema) {
+    schemas.push(menuSchema);
+  }
 
   if (breadcrumbs.length) {
     schemas.push({

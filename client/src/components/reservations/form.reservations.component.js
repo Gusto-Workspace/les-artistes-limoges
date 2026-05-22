@@ -788,40 +788,45 @@ export default function FormReservationComponent({
                   </FieldGroup>
 
                   <FieldGroup label="B. Date" invalid={false}>
-                    <div className="la-reservation__date-rail custom-scrollbar">
-                      {quickDateOptions.map((date) => {
-                        const optionKey = formatReservationDateForApi(date);
-                        const isActive = optionKey === selectedDateKey;
+                    <HorizontalChoiceScroller
+                      arrowLabel="Voir plus de dates"
+                      watchKey={`${quickDateOptions.map(formatReservationDateForApi).join("|")}|${selectedDateKey}|${isCustomDateSelection}`}
+                    >
+                      <div className="la-reservation__date-rail">
+                        {quickDateOptions.map((date) => {
+                          const optionKey = formatReservationDateForApi(date);
+                          const isActive = optionKey === selectedDateKey;
 
-                        return (
-                          <button
-                            key={optionKey}
-                            type="button"
-                            onClick={() => handleDateChange(date)}
-                            aria-pressed={isActive}
-                            className={`la-reservation__choice-chip la-reservation__choice-chip--date ${isActive ? "is-active" : ""}`}
-                          >
-                            {getQuickDateChipLabel(date, today)}
-                          </button>
-                        );
-                      })}
+                          return (
+                            <button
+                              key={optionKey}
+                              type="button"
+                              onClick={() => handleDateChange(date)}
+                              aria-pressed={isActive}
+                              className={`la-reservation__choice-chip la-reservation__choice-chip--date ${isActive ? "is-active" : ""}`}
+                            >
+                              {getQuickDateChipLabel(date, today)}
+                            </button>
+                          );
+                        })}
 
-                      <button
-                        type="button"
-                        onClick={() => setShowCalendarModal(true)}
-                        className={`la-reservation__calendar-trigger ${isCustomDateSelection ? "is-active" : ""}`}
-                        aria-label="Choisir une autre date"
-                      >
-                        <Image
-                          src="/img/pictos/17.png"
-                          alt=""
-                          aria-hidden="true"
-                          width={18}
-                          height={18}
-                          className="h-[18px] w-[18px] shrink-0"
-                        />
-                      </button>
-                    </div>
+                        <button
+                          type="button"
+                          onClick={() => setShowCalendarModal(true)}
+                          className={`la-reservation__calendar-trigger ${isCustomDateSelection ? "is-active" : ""}`}
+                          aria-label="Choisir une autre date"
+                        >
+                          <Image
+                            src="/img/pictos/17.png"
+                            alt=""
+                            aria-hidden="true"
+                            width={18}
+                            height={18}
+                            className="h-[18px] w-[18px] shrink-0"
+                          />
+                        </button>
+                      </div>
+                    </HorizontalChoiceScroller>
                     {isCustomDateSelection ? (
                       <p className="la-reservation__helper">
                         Date choisie : {formattedDateSecondary}
@@ -836,9 +841,7 @@ export default function FormReservationComponent({
                     <HorizontalChoiceScroller
                       invalid={invalidFields.reservationTime}
                       arrowLabel="Voir plus d'horaires"
-                      showArrow={
-                        !isTimesLoading && availableTimes.length > 0
-                      }
+                      showArrow={!isTimesLoading && availableTimes.length > 0}
                       watchKey={`${availableTimes.join("|")}|${isTimesLoading}|${showDelayedTimeLoading}`}
                     >
                       {isTimesLoading ? (
@@ -1257,9 +1260,7 @@ function getSummaryDateLabel(value) {
   const parsedDate = parseReservationDateValue(value);
   if (!parsedDate) return "À sélectionner";
 
-  return capitalizeFirstLetter(
-    format(parsedDate, "EEE d MMM", { locale: fr }),
-  );
+  return capitalizeFirstLetter(format(parsedDate, "EEE d MMM", { locale: fr }));
 }
 
 function getQuickDateChipLabel(value, today) {
@@ -1280,8 +1281,7 @@ function getQuickDateOptions(selectedDate, today) {
       ? today
       : parsedSelectedDate;
   const selectedOffset = differenceInCalendarDays(safeSelectedDate, today);
-  const startDate =
-    selectedOffset <= 2 ? today : addDays(safeSelectedDate, -2);
+  const startDate = selectedOffset <= 2 ? today : addDays(safeSelectedDate, -2);
 
   return Array.from({ length: 5 }, (_, index) => addDays(startDate, index));
 }

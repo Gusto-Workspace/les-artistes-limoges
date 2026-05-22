@@ -203,6 +203,10 @@ a {
   background: none;
 }
 
+.la-nav {
+  margin-bottom: 0;
+}
+
 .la-home main > section:first-child .la-home__eyebrow,
 .la-home main > section:first-child .la-home__display,
 .la-home main > section:first-child .la-button,
@@ -362,6 +366,110 @@ a {
 
 .la-home__overlay-photo:hover img {
   transform: scale(1.035);
+}
+
+@media (max-width: 1099px) {
+  .la-nav {
+    margin-bottom: clamp(22px, 6vw, 42px);
+  }
+
+  .la-hero-media {
+    width: min(100%, 720px);
+    padding-bottom: clamp(96px, 19vw, 150px);
+  }
+
+  .la-hero-media__main {
+    width: min(90%, 620px);
+    margin-left: auto;
+  }
+
+  .la-hero-media__main > .relative {
+    aspect-ratio: 1.08 / 1 !important;
+  }
+
+  .la-hero-media__thumbs {
+    position: absolute;
+    z-index: 4;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: grid;
+    width: min(86%, 560px);
+    grid-template-columns: minmax(0, 0.86fr) minmax(0, 1fr);
+    align-items: end;
+    gap: clamp(10px, 2.6vw, 18px);
+    margin: 0 auto;
+  }
+
+  .la-hero-media__thumbs > :first-child {
+    transform: translateY(-8px) rotate(-1.4deg);
+  }
+
+  .la-hero-media__thumbs > :last-child {
+    transform: translateY(18px) rotate(1.2deg);
+  }
+
+  .la-hero-media__thumbs > :first-child:hover {
+    transform: translateY(-11px) rotate(-1.4deg);
+  }
+
+  .la-hero-media__thumbs > :last-child:hover {
+    transform: translateY(15px) rotate(1.2deg);
+  }
+
+  .la-hero-media__thumbs .la-home__overlay-photo {
+    padding: clamp(6px, 1.5vw, 10px);
+    box-shadow: 0 18px 34px rgba(74, 45, 31, 0.18);
+  }
+
+  .la-hero-media__thumbs .la-home__overlay-photo > .relative {
+    aspect-ratio: 1.22 / 0.78 !important;
+  }
+
+  .la-hero-media__thumbs > :not(.la-home__overlay-photo) {
+    min-height: clamp(120px, 20vw, 168px);
+  }
+}
+
+@media (max-width: 560px) {
+  .la-nav {
+    margin-bottom: 34px;
+  }
+
+  .la-hero-media {
+    padding-bottom: 92px;
+  }
+
+  .la-hero-media__main {
+    width: 94%;
+  }
+
+  .la-hero-media__main > .relative {
+    aspect-ratio: 0.98 / 1 !important;
+  }
+
+  .la-hero-media__thumbs {
+    width: 94%;
+    grid-template-columns: minmax(0, 0.82fr) minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .la-hero-media__thumbs .la-home__overlay-photo {
+    padding: 6px;
+  }
+
+  .la-hero-media__thumbs .la-home__overlay-photo > .relative {
+    aspect-ratio: 1.05 / 0.76 !important;
+  }
+
+  .la-hero-media__thumbs > :not(.la-home__overlay-photo) {
+    min-height: 118px;
+    padding: 18px;
+  }
+
+  .la-hero-media__thumbs .la-home__display {
+    font-size: 56px;
+  }
 }
 
 .la-home__framed-section,
@@ -527,6 +635,28 @@ a {
 
 .la-home__reservation-frame--tall {
   inset: 0 14px;
+}
+
+.la-reservation-cta__content {
+  text-align: left;
+}
+
+.la-reservation-cta__button {
+  width: fit-content;
+}
+
+.la-reservation-cta__phone {
+  word-break: break-word;
+}
+
+.la-venue__title {
+  max-width: min(760px, 82vw);
+  text-wrap: balance;
+}
+
+.la-venue__item-title {
+  line-height: 1.05;
+  text-wrap: balance;
 }
 
 .la-home__corner {
@@ -706,6 +836,13 @@ a {
   );
 }
 
+.la-contact__panel > *,
+.la-contact__panel form,
+.la-contact__panel form > *,
+.la-contact__panel [class*="grid"] > * {
+  min-width: 0;
+}
+
 .la-contact__panel::before {
   content: "";
   position: absolute;
@@ -758,12 +895,13 @@ a {
   color: rgba(86, 57, 44, 0.9);
   font-size: 18px;
   line-height: 1.5;
+  overflow-wrap: anywhere;
 }
 
 .la-contact__hours-list {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8px;
 }
 
 .la-contact__hours-row {
@@ -886,6 +1024,7 @@ a {
 .la-contact__input,
 .la-contact__textarea {
   width: 100%;
+  max-width: 100%;
   border: 1px solid rgba(197, 155, 85, 0.5);
   border-radius: 4px;
   background: rgba(255, 255, 255, 0.56);
@@ -1134,6 +1273,12 @@ a {
     rgba(255, 255, 255, 0.44),
     rgba(255, 255, 255, 0.18)
   );
+}
+
+.la-reservation__panel > *,
+.la-reservation__panel form,
+.la-reservation__panel form > * {
+  min-width: 0;
 }
 
 .la-reservation__panel::before {
@@ -2039,6 +2184,324 @@ a {
 
   .la-reservation__calendar-shell {
     padding: 30px 28px 26px;
+  }
+}
+
+@media (max-width: 899px) {
+  .la-contact__panel {
+    padding-left: clamp(16px, 4.6vw, 28px) !important;
+    padding-right: clamp(16px, 4.6vw, 28px) !important;
+  }
+
+  .la-contact__panel-title {
+    max-width: 100%;
+    font-size: clamp(2.35rem, 8vw, 3.1rem);
+    text-align: center;
+    text-wrap: balance;
+  }
+
+  .la-contact__practical-row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(12px, 3.4vw, 18px);
+    text-align: center;
+  }
+
+  .la-contact__practical-icon {
+    margin-top: 0;
+  }
+
+  .la-contact__practical-copy {
+    align-items: center;
+  }
+
+  .la-contact__practical-label {
+    font-size: clamp(1.55rem, 6.3vw, 2rem);
+  }
+
+  .la-contact__practical-value,
+  .la-contact__hours-day,
+  .la-contact__hours-time {
+    font-size: clamp(1.05rem, 4.6vw, 1.38rem);
+    line-height: 1.42;
+  }
+
+  .la-contact__hours-row {
+    grid-template-columns: 1fr;
+    row-gap: 0;
+    justify-items: center;
+  }
+
+  .la-contact__hours-time {
+    overflow-wrap: anywhere;
+  }
+
+  .la-contact__opera-box {
+    width: 100%;
+    max-width: none;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .la-contact__submit-button {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .la-reservation__choice-row {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .la-reservation__choice-viewport {
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .la-reservation__choice-rail,
+  .la-reservation__date-rail {
+    min-width: max-content;
+  }
+
+  .la-reservation__choice-chip,
+  .la-reservation__calendar-trigger {
+    flex: 0 0 auto;
+  }
+
+  .la-home__framed-section--title-absolute {
+    --la-frame-line-top: 48px;
+    --la-frame-heading-top: 0px;
+    --la-frame-section-padding-top: 172px;
+  }
+
+  .la-home__framed-section--experience {
+    --la-frame-line-top: 48px;
+    --la-frame-heading-top: 0px;
+    --la-frame-section-padding-top: 216px;
+  }
+
+  .la-home__framed-heading {
+    width: min(100% - 16px, 680px);
+    max-width: none;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .la-home__framed-title-row {
+    width: 100%;
+    max-width: none;
+    padding-left: 12px;
+    padding-right: 12px;
+    text-align: center;
+  }
+
+  .la-home__framed-title-row .la-home__section-title {
+    width: 100%;
+    text-align: center;
+    text-wrap: balance;
+  }
+
+  .la-home__framed-title-row--with-lines::before,
+  .la-home__framed-title-row--with-lines::after {
+    --la-title-line-width: clamp(24px, 7vw, 58px);
+  }
+
+  .la-home__section-title {
+    font-size: clamp(2.25rem, 7.2vw, 3.6rem);
+    line-height: 0.96;
+  }
+
+  .la-home__framed-heading--with-description > p {
+    max-width: 420px;
+    font-size: clamp(1rem, 3.6vw, 1.15rem);
+    line-height: 1.35;
+  }
+
+  .la-reservation-cta {
+    padding: clamp(34px, 7vw, 54px) clamp(22px, 5vw, 38px);
+    text-align: center;
+  }
+
+  .la-reservation-cta__visual {
+    display: block;
+  }
+
+  .la-reservation-cta__visual > div {
+    max-width: min(260px, 58vw);
+  }
+
+  .la-reservation-cta__content {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .la-reservation-cta__title {
+    font-size: clamp(2.45rem, 10vw, 3.7rem);
+    line-height: 0.95;
+    width: 100%;
+    max-width: 520px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center !important;
+  }
+
+  .la-reservation-cta__button {
+    width: min(100%, 360px);
+    min-width: 0;
+  }
+
+  .la-reservation-cta__phone {
+    justify-content: center;
+    gap: 12px;
+    font-size: clamp(1.85rem, 7.5vw, 2.65rem);
+    width: 100%;
+    text-align: center;
+  }
+
+  .la-reservation-cta__phone img {
+    width: clamp(22px, 6vw, 30px);
+    height: clamp(22px, 6vw, 30px);
+  }
+
+  .la-reservation-cta__note {
+    max-width: 460px;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: clamp(1rem, 3.9vw, 1.22rem);
+    line-height: 1.5;
+    text-align: center;
+  }
+
+  .la-venue__title {
+    max-width: min(620px, 92vw);
+    font-size: clamp(2.25rem, 7.2vw, 3.6rem);
+  }
+
+  .la-venue__item-title {
+    font-size: clamp(1.8rem, 7vw, 2.45rem) !important;
+    letter-spacing: 0.06em;
+  }
+}
+
+@media (max-width: 560px) {
+  .la-contact__panel::before {
+    inset: 8px;
+  }
+
+  .la-contact__panel-title {
+    font-size: clamp(2rem, 10vw, 2.85rem);
+    letter-spacing: -0.05em;
+  }
+
+  .la-contact__panel .text-\[18px\] {
+    font-size: clamp(1rem, 4.5vw, 1.18rem);
+    line-height: 1.45;
+  }
+
+  .la-contact__input {
+    height: 50px;
+    padding-left: 12px;
+    padding-right: 12px;
+    font-size: 16px;
+  }
+
+  .la-contact__textarea {
+    min-height: 230px;
+    padding: 12px;
+    font-size: 16px;
+  }
+
+  .la-contact__checkbox {
+    font-size: 15px;
+    line-height: 1.42;
+  }
+
+  .la-contact__opera-box {
+    align-items: center;
+    padding: 16px;
+  }
+
+  .la-reservation__choice-row {
+    gap: 8px;
+  }
+
+  .la-reservation__choice-rail,
+  .la-reservation__date-rail {
+    gap: 8px;
+  }
+
+  .la-reservation__choice-chip,
+  .la-reservation__calendar-trigger {
+    height: 44px;
+  }
+
+  .la-reservation__choice-chip {
+    min-width: 56px;
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .la-reservation__choice-chip--date {
+    min-width: 88px;
+  }
+
+  .la-reservation__choice-chip--time {
+    min-width: 72px;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .la-reservation__scroll-arrow {
+    width: 40px;
+    height: 40px;
+  }
+
+  .la-home__framed-section--title-absolute {
+    --la-frame-line-top: 42px;
+    --la-frame-section-padding-top: 104px;
+  }
+
+  .la-home__framed-section--experience {
+    --la-frame-line-top: 42px;
+    --la-frame-section-padding-top: 148px;
+  }
+
+  .la-home__framed-title-row {
+    width: 100%;
+    max-width: none;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .la-home__framed-title-row--with-lines::before,
+  .la-home__framed-title-row--with-lines::after {
+    --la-title-line-width: clamp(16px, 5vw, 32px);
+  }
+
+  .la-home__section-title,
+  .la-venue__title {
+    font-size: clamp(2.1rem, 8.6vw, 3.05rem);
+  }
+
+  .la-reservation-cta {
+    padding: 34px 20px 38px;
+  }
+
+  .la-reservation-cta__grid {
+    gap: 18px;
+  }
+
+  .la-reservation-cta__visual > div {
+    max-width: 190px;
+  }
+
+  .la-reservation-cta__title {
+    font-size: clamp(2.25rem, 11vw, 3.05rem);
   }
 }
 

@@ -123,8 +123,6 @@ export default function HomePageComponent() {
                 coupe glacée, un moment avant ou après le spectacle.
               </p>
 
-              
-
               <div className="mt-9 flex flex-col gap-4 min-[560px]:flex-row">
                 <ActionLinkComponent
                   href="/reservations"
@@ -147,8 +145,8 @@ export default function HomePageComponent() {
                 <HeroOrnamentComponent />
               </div>
 
-              <div className="relative mx-auto max-w-[860px] min-[1100px]:mr-0">
-                <div className="relative overflow-hidden border border-[rgba(197,155,85,0.16)] bg-white/70 shadow-[0_20px_40px_rgba(82,49,33,0.12)] min-[1100px]:ml-[85px]">
+              <div className="la-hero-media relative mx-auto max-w-[860px] min-[1100px]:mr-0">
+                <div className="la-hero-media__main relative overflow-hidden border border-[rgba(197,155,85,0.16)] bg-white/70 shadow-[0_20px_40px_rgba(82,49,33,0.12)] min-[1100px]:ml-[85px]">
                   <div className="relative" style={{ aspectRatio: "0.94 / 1" }}>
                     <Image
                       src="/img/hero/1.png"
@@ -161,7 +159,7 @@ export default function HomePageComponent() {
                   </div>
                 </div>
 
-                <div className="mt-5 grid gap-5 min-[720px]:grid-cols-2 min-[1100px]:mt-0">
+                <div className="la-hero-media__thumbs mt-5 grid gap-5 min-[720px]:grid-cols-2 min-[1100px]:mt-0">
                   <div className="la-home__overlay-photo relative overflow-hidden bg-white min-[1100px]:absolute min-[1100px]:left-0 min-[1100px]:top-[300px] min-[1100px]:w-[220px]">
                     <div
                       className="relative"
@@ -261,7 +259,7 @@ export default function HomePageComponent() {
           title="Une expérience conviviale"
           description="Trois ambiances, une même envie : vous faire passer un bon moment."
           items={ambienceItems}
-          sectionClassName="la-shell pb-10 pt-2 tablet:pb-12 desktop:pb-14"
+          sectionClassName="la-shell pb-10 pt-12 tablet:pt-2 tablet:pb-12 desktop:pb-14"
           headingClassName="la-home__framed-heading--experience"
         />
 

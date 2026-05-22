@@ -730,11 +730,11 @@ export default function MenusPageComponent({ initialRestaurantData = null }) {
                 <HeroOrnamentComponent />
               </div>
 
-              <div className="relative mx-auto max-w-[860px] min-[1100px]:mr-0">
-                <div className="relative overflow-hidden border border-[rgba(197,155,85,0.16)] bg-white/70 shadow-[0_20px_40px_rgba(82,49,33,0.12)] min-[1100px]:ml-[85px]">
+              <div className="la-hero-media relative mx-auto max-w-[860px] min-[1100px]:mr-0">
+                <div className="la-hero-media__main relative overflow-hidden border border-[rgba(197,155,85,0.16)] bg-white/70 shadow-[0_20px_40px_rgba(82,49,33,0.12)] min-[1100px]:ml-[85px]">
                   <div className="relative" style={{ aspectRatio: "0.94 / 1" }}>
                     <Image
-                      src="/img/photos/floor-1/1.png"
+                      src="/img/hero/1.png"
                       alt="Le bar des Artistes"
                       fill
                       sizes="(max-width: 1099px) 100vw, 720px"
@@ -744,32 +744,32 @@ export default function MenusPageComponent({ initialRestaurantData = null }) {
                   </div>
                 </div>
 
-                <div className="mt-5 grid gap-5 min-[720px]:grid-cols-2 min-[1100px]:mt-0">
-                  <div className="la-home__overlay-photo relative overflow-hidden bg-white min-[1100px]:absolute min-[1100px]:right-[-28px] min-[1100px]:top-[214px] min-[1100px]:w-[232px]">
+                <div className="la-hero-media__thumbs mt-5 grid gap-5 min-[720px]:grid-cols-2 min-[1100px]:mt-0">
+                  <div className="la-home__overlay-photo relative overflow-hidden bg-white min-[1100px]:absolute min-[1100px]:left-0 min-[1100px]:top-[290px] min-[1100px]:w-[214px]">
                     <div
                       className="relative"
                       style={{ aspectRatio: "0.82 / 1" }}
                     >
                       <Image
-                        src="/img/photos/floor-1/2.png"
-                        alt="L'étage des Artistes"
+                        src="/img/dishes/1.png"
+                        alt="Suggestion de carpaccio"
                         fill
-                        sizes="(max-width: 719px) 100vw, 232px"
+                        sizes="(max-width: 719px) 100vw, 214px"
                         className="object-cover"
                       />
                     </div>
                   </div>
 
-                  <div className="la-home__overlay-photo relative overflow-hidden bg-white min-[1100px]:absolute min-[1100px]:bottom-[34px] min-[1100px]:left-[-34px] min-[1100px]:w-[250px]">
+                  <div className="la-home__overlay-photo relative overflow-hidden bg-white min-[1100px]:absolute min-[1100px]:bottom-[14px] min-[1100px]:right-[-18px] min-[1100px]:w-[248px]">
                     <div
                       className="relative"
                       style={{ aspectRatio: "0.84 / 1" }}
                     >
                       <Image
-                        src="/img/photos/outside/1.png"
-                        alt="L'entrée des Artistes"
+                        src="/img/hero/2.png"
+                        alt="Façade des Artistes"
                         fill
-                        sizes="(max-width: 719px) 100vw, 250px"
+                        sizes="(max-width: 719px) 100vw, 248px"
                         className="object-cover"
                       />
                     </div>
@@ -784,7 +784,7 @@ export default function MenusPageComponent({ initialRestaurantData = null }) {
           id="menu-categories"
           className="la-shell pb-10 pt-7 tablet:pb-12 desktop:pb-14"
         >
-          <div className="la-menu__category-grid">
+          <div className="la-menu__category-grid custom-scrollbar">
             {categoryTabs.map((item) => (
               <MenuCategoryTab key={item.id} item={item} />
             ))}

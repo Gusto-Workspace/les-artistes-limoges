@@ -108,8 +108,8 @@ export default function LegalDocumentPageComponent({
                 <HeroOrnamentComponent />
               </div>
 
-              <div className="relative mx-auto max-w-[860px] min-[1100px]:mr-0">
-                <div className="relative overflow-hidden border border-[rgba(197,155,85,0.16)] bg-white/70 shadow-[0_20px_40px_rgba(82,49,33,0.12)] min-[1100px]:ml-[85px]">
+              <div className="la-hero-media relative mx-auto max-w-[860px] min-[1100px]:mr-0">
+                <div className="la-hero-media__main relative overflow-hidden border border-[rgba(197,155,85,0.16)] bg-white/70 shadow-[0_20px_40px_rgba(82,49,33,0.12)] min-[1100px]:ml-[85px]">
                   <div className="relative" style={{ aspectRatio: "0.94 / 1" }}>
                     <Image
                       src="/img/photos/floor-0/3.png"
@@ -122,7 +122,7 @@ export default function LegalDocumentPageComponent({
                   </div>
                 </div>
 
-                <div className="mt-5 grid gap-5 min-[720px]:grid-cols-2 min-[1100px]:mt-0">
+                <div className="la-hero-media__thumbs mt-5 grid gap-5 min-[720px]:grid-cols-2 min-[1100px]:mt-0">
                   <div className="la-home__overlay-photo relative overflow-hidden bg-white min-[1100px]:absolute min-[1100px]:right-[-18px] min-[1100px]:top-[260px] min-[1100px]:w-[220px]">
                     <div
                       className="relative"
