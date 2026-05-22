@@ -228,7 +228,7 @@ export default function PolicyPage({ seoRestaurantData = null }) {
         title="Les Artistes | Politique de confidentialité"
         description="Consultez la politique de confidentialité du site Les Artistes : données traitées, finalités, conservation et droits associés."
         path="/policy"
-        image="/img/brand/og-les-artistes.svg"
+        image="/img/brand/og-les-artistes.jpg"
         breadcrumbs={[
           { name: "Accueil", path: "/" },
           { name: "Politique de confidentialité", path: "/policy" },

@@ -8,7 +8,7 @@ export default function ReservationResumePage({ reservationId }) {
         title="Les Artistes | Suivi de réservation"
         description="Consultez le suivi de votre réservation Les Artistes."
         path={reservationId ? `/reservations/${reservationId}` : "/reservations"}
-        image="/img/brand/og-les-artistes.svg"
+        image="/img/brand/og-les-artistes.jpg"
         noIndex={true}
       />
 

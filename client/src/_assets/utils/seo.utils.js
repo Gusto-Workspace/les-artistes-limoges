@@ -7,7 +7,7 @@ import {
 
 export const DEFAULT_SITE_NAME = "Les Artistes";
 export const DEFAULT_SITE_URL = "https://brasserielesartistes.fr";
-export const DEFAULT_SOCIAL_IMAGE = "/img/brand/og-les-artistes.svg";
+export const DEFAULT_SOCIAL_IMAGE = "/img/brand/og-les-artistes.jpg";
 export const DEFAULT_LOGO_IMAGE = "/img/logo.png";
 
 const DEFAULT_RESTAURANT = {

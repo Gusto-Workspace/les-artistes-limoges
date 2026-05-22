@@ -9,7 +9,7 @@ export default function HomePage({ seoRestaurantData = null }) {
         title="Les Artistes | Brasserie, bar & glacier à Limoges"
         description="Les Artistes à Limoges : brasserie, bar et glacier près de l’Opéra. Cuisine maison, terrasse, carte de saison et réservation de table en ligne."
         path="/"
-        image="/img/brand/og-les-artistes.svg"
+        image="/img/brand/og-les-artistes.jpg"
         breadcrumbs={[{ name: "Accueil", path: "/" }]}
         keywords={[
           "terrasse Limoges",

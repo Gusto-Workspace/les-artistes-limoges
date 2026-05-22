@@ -9,7 +9,7 @@ export default function ReservationsPage({ seoRestaurantData = null }) {
         title="Réserver une table | Les Artistes Limoges"
         description="Réservez votre table aux Artistes à Limoges : choisissez le nombre de convives, la date et l’horaire pour votre repas en brasserie."
         path="/reservations"
-        image="/img/brand/og-les-artistes.svg"
+        image="/img/brand/og-les-artistes.jpg"
         keywords={[
           "réservation restaurant Limoges",
           "réserver brasserie Limoges",

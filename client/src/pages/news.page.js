@@ -24,7 +24,7 @@ export default function NewsPage({ seoRestaurantData = null }) {
         title="Actualités | Les Artistes Limoges"
         description="Retrouvez les actualités des Artistes à Limoges : annonces de service, nouveautés de la carte, événements et prochains rendez-vous."
         path="/news"
-        image="/img/brand/og-les-artistes.svg"
+        image="/img/brand/og-les-artistes.jpg"
         pageSchemaType="CollectionPage"
         keywords={[
           "actualités Les Artistes Limoges",

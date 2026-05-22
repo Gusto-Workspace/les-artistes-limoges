@@ -26,7 +26,7 @@ export default function SeoHead({
   const baseUrl = normalizeBaseUrl(process.env.NEXT_PUBLIC_BASE_URL);
   const canonicalUrl = buildAbsoluteUrl(baseUrl, path);
   const resolvedImage =
-    image === "/img/brand/og-les-artistes.svg" ? DEFAULT_SOCIAL_IMAGE : image;
+    image === "/img/brand/og-les-artistes.jpg" ? DEFAULT_SOCIAL_IMAGE : image;
   const imageUrl = buildAbsoluteUrl(baseUrl, resolvedImage);
   const city = restaurantSeoData?.address?.city || "Limoges";
   const region = restaurantSeoData?.address?.region || "Nouvelle-Aquitaine";

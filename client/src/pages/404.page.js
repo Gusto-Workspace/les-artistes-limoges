@@ -72,7 +72,7 @@ export default function NotFoundPage() {
         title="Les Artistes | Page introuvable"
         description="La page demandée est introuvable. Revenez à l’accueil ou utilisez les accès principaux du site Les Artistes."
         path="/404"
-        image="/img/brand/og-les-artistes.svg"
+        image="/img/brand/og-les-artistes.jpg"
         noIndex
       />
 

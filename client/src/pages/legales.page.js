@@ -166,7 +166,7 @@ export default function LegalesPage({ seoRestaurantData = null }) {
         title="Les Artistes | Mentions légales"
         description="Consultez les mentions légales du site Les Artistes : édition, hébergement, propriété intellectuelle et cadre d’utilisation."
         path="/legales"
-        image="/img/brand/og-les-artistes.svg"
+        image="/img/brand/og-les-artistes.jpg"
         breadcrumbs={[
           { name: "Accueil", path: "/" },
           { name: "Mentions légales", path: "/legales" },

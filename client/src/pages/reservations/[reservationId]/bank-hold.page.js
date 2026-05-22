@@ -12,7 +12,7 @@ export default function ReservationBankHoldPage({ reservationId }) {
             ? `/reservations/${reservationId}/bank-hold`
             : "/reservations"
         }
-        image="/img/brand/og-les-artistes.svg"
+        image="/img/brand/og-les-artistes.jpg"
         noIndex={true}
       />
 

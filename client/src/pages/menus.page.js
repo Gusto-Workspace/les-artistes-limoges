@@ -9,7 +9,7 @@ export default function MenusPage({ seoRestaurantData = null }) {
         title="Carte & menus | Les Artistes Limoges"
         description="Consultez la carte des Artistes à Limoges : cuisine de brasserie, plats maison, suggestions de saison, desserts et formules du moment."
         path="/menus"
-        image="/img/brand/og-les-artistes.svg"
+        image="/img/brand/og-les-artistes.jpg"
         pageSchemaType="WebPage"
         keywords={[
           "carte restaurant Limoges",

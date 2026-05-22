@@ -9,7 +9,7 @@ export default function ContactPage({ seoRestaurantData = null }) {
         title="Contact & accès | Les Artistes Limoges"
         description="Contactez Les Artistes à Limoges : adresse près de l’Opéra, téléphone, horaires, formulaire de contact, accès et informations pratiques."
         path="/contact"
-        image="/img/brand/og-les-artistes.svg"
+        image="/img/brand/og-les-artistes.jpg"
         pageSchemaType="ContactPage"
         keywords={[
           "contact Les Artistes Limoges",
