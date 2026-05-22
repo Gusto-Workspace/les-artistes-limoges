@@ -9,7 +9,6 @@ import {
   Cormorant_Garamond,
   Sora,
 } from "next/font/google";
-import { Analytics } from "@vercel/analytics/next";
 import { appWithTranslation } from "next-i18next";
 import { GlobalProvider } from "@/contexts/global.context";
 
@@ -131,11 +130,6 @@ function ScrollRevealController() {
 }
 
 function App({ Component, pageProps }) {
-  const shouldRenderVercelAnalytics =
-    process.env.NEXT_PUBLIC_VERCEL_ENV ||
-    process.env.VERCEL ||
-    process.env.VERCEL_ENV;
-
   return (
     <div
       className={`${sora.variable} ${bricolageGrotesque.variable} ${cormorantGaramond.variable} font-root`}
@@ -144,7 +138,6 @@ function App({ Component, pageProps }) {
         <TrackVisits />
         <ScrollRevealController />
         <Component {...pageProps} />
-        {shouldRenderVercelAnalytics ? <Analytics /> : null}
       </GlobalProvider>
     </div>
   );
