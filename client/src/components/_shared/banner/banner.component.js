@@ -1,5 +1,3 @@
-import RevealOnScrollComponent from "../motion/reveal-on-scroll.component";
-
 export default function BannerComponent({
   title,
   eyebrow = "Découvrez",
@@ -15,53 +13,31 @@ export default function BannerComponent({
 
       <div className="relative mx-auto grid w-full max-w-[1500px] gap-10 desktop:grid-cols-[1.05fr_0.95fr] desktop:items-end">
         <div className="max-w-[840px]">
-          <RevealOnScrollComponent
-            as="p"
-            variant="up"
-            className="nav-font text-[11px] uppercase tracking-[0.32em] text-[rgba(245,239,231,0.62)]"
-          >
+          <p className="nav-font text-[11px] uppercase tracking-[0.32em] text-[rgba(245,239,231,0.62)]">
             {eyebrow}
-          </RevealOnScrollComponent>
+          </p>
 
-          <RevealOnScrollComponent
-            as="h1"
-            delay={90}
-            variant="up"
-            className="yeseva-one-regular mt-5 max-w-[860px] text-balance text-[52px] leading-[0.9] text-[var(--site-cream)] tablet:text-[74px] desktop:text-[98px]"
-          >
+          <h1 className="yeseva-one-regular mt-5 max-w-[860px] text-balance text-[52px] leading-[0.9] text-[var(--site-cream)] tablet:text-[74px] desktop:text-[98px]">
             {title}
-          </RevealOnScrollComponent>
+          </h1>
 
           {description ? (
-            <RevealOnScrollComponent
-              as="p"
-              delay={180}
-              variant="soft"
-              className="mt-7 max-w-[640px] text-[17px] leading-[1.9] text-[var(--site-cream-soft)] tablet:text-[19px]"
-            >
+            <p className="mt-7 max-w-[640px] text-[17px] leading-[1.9] text-[var(--site-cream-soft)] tablet:text-[19px]">
               {description}
-            </RevealOnScrollComponent>
+            </p>
           ) : null}
 
-          <RevealOnScrollComponent
-            delay={260}
-            variant="soft"
-            className="mt-8 flex flex-wrap gap-3"
-          >
+          <div className="mt-8 flex flex-wrap gap-3">
             <span className="rounded-full border border-[rgba(245,239,231,0.16)] bg-white/8 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[rgba(245,239,231,0.82)]">
               Design remis à plat
             </span>
             <span className="rounded-full border border-[rgba(245,239,231,0.16)] bg-white/8 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[rgba(245,239,231,0.82)]">
               Base fonctionnelle conservée
             </span>
-          </RevealOnScrollComponent>
+          </div>
         </div>
 
-        <RevealOnScrollComponent
-          delay={180}
-          variant="zoom"
-          className="hidden desktop:flex desktop:justify-end"
-        >
+        <div className="hidden desktop:flex desktop:justify-end">
           <div className="site-soft-card max-w-[420px] rounded-[34px] border border-[rgba(245,239,231,0.14)] px-7 py-7">
             <p className="nav-font text-[10px] uppercase text-[rgba(245,239,231,0.58)]">
               Les Artistes
@@ -74,7 +50,7 @@ export default function BannerComponent({
               éditorial pour accueillir les prochains contenus du site.
             </p>
           </div>
-        </RevealOnScrollComponent>
+        </div>
       </div>
     </section>
   );
