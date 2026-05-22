@@ -149,7 +149,7 @@ export default function NotFoundPage() {
                   </div>
 
                   <div className="mt-5 grid gap-5 min-[720px]:grid-cols-2 min-[1100px]:mt-0">
-                    <div className="la-home__overlay-photo relative overflow-hidden bg-white min-[1100px]:absolute min-[1100px]:left-0 min-[1100px]:top-[300px] min-[1100px]:w-[220px]">
+                    <div className="la-home__overlay-photo relative overflow-hidden bg-white min-[1100px]:absolute min-[1100px]:right-[-24px] min-[1100px]:top-[250px] min-[1100px]:w-[224px]">
                       <div
                         className="relative"
                         style={{ aspectRatio: "0.82 / 1" }}
@@ -158,13 +158,13 @@ export default function NotFoundPage() {
                           src="/img/photos/outside/5.png"
                           alt="La terrasse des Artistes"
                           fill
-                          sizes="(max-width: 719px) 100vw, 220px"
+                          sizes="(max-width: 719px) 100vw, 224px"
                           className="object-cover"
                         />
                       </div>
                     </div>
 
-                    <div className="relative overflow-hidden border border-[rgba(197,155,85,0.22)] bg-[var(--la-burgundy)] px-7 py-8 text-[#fbf4ea] shadow-[0_18px_36px_rgba(74,45,31,0.16)] min-[1100px]:absolute min-[1100px]:bottom-[22px] min-[1100px]:right-[-18px] min-[1100px]:w-[252px]">
+                    <div className="relative overflow-hidden border border-[rgba(197,155,85,0.22)] bg-[var(--la-burgundy)] px-7 py-8 text-[#fbf4ea] shadow-[0_18px_36px_rgba(74,45,31,0.16)] min-[1100px]:absolute min-[1100px]:bottom-[24px] min-[1100px]:left-[18px] min-[1100px]:w-[252px]">
                       <p className="la-home__eyebrow text-[rgba(251,244,234,0.72)]">
                         Introuvable
                       </p>

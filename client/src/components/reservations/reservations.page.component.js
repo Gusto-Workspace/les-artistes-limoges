@@ -129,7 +129,7 @@ export default function ReservationsPageComponent() {
                 </div>
 
                 <div className="mt-5 grid gap-5 min-[720px]:grid-cols-2 min-[1100px]:mt-0">
-                  <div className="la-home__overlay-photo relative overflow-hidden bg-white min-[1100px]:absolute min-[1100px]:left-0 min-[1100px]:top-[300px] min-[1100px]:w-[220px]">
+                  <div className="la-home__overlay-photo relative overflow-hidden bg-white min-[1100px]:absolute min-[1100px]:right-[-28px] min-[1100px]:top-[246px] min-[1100px]:w-[228px]">
                     <div
                       className="relative"
                       style={{ aspectRatio: "0.82 / 1" }}
@@ -138,13 +138,13 @@ export default function ReservationsPageComponent() {
                         src="/img/photos/outside/5.png"
                         alt="La façade des Artistes"
                         fill
-                        sizes="(max-width: 719px) 100vw, 220px"
+                        sizes="(max-width: 719px) 100vw, 228px"
                         className="object-cover"
                       />
                     </div>
                   </div>
 
-                  <div className="la-home__overlay-photo relative overflow-hidden bg-white min-[1100px]:absolute min-[1100px]:bottom-[22px] min-[1100px]:right-[-18px] min-[1100px]:w-[252px]">
+                  <div className="la-home__overlay-photo relative overflow-hidden bg-white min-[1100px]:absolute min-[1100px]:bottom-[24px] min-[1100px]:left-[24px] min-[1100px]:w-[238px]">
                     <div
                       className="relative"
                       style={{ aspectRatio: "0.84 / 1" }}
@@ -153,7 +153,7 @@ export default function ReservationsPageComponent() {
                         src="/img/photos/floor-1/3.png"
                         alt="La salle des Artistes"
                         fill
-                        sizes="(max-width: 719px) 100vw, 252px"
+                        sizes="(max-width: 719px) 100vw, 238px"
                         className="object-cover"
                       />
                     </div>

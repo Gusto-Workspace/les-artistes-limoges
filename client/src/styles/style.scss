@@ -227,6 +227,21 @@ a {
   animation-delay: 170ms;
 }
 
+.la-scroll-reveal {
+  opacity: 0;
+  transform: translate3d(0, 22px, 0);
+  transition:
+    opacity 760ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 760ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--la-reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+.la-scroll-reveal.is-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
 .la-shell {
   position: relative;
   z-index: 1;
@@ -2191,6 +2206,7 @@ a {
   .la-home main > section:first-child .la-button,
   .la-home main > section:first-child p:not(.la-home__eyebrow),
   .la-home main > section:first-child img,
+  .la-scroll-reveal,
   .la-home__overlay-photo,
   .la-home__overlay-photo img,
   .la-home__dish-image,
@@ -2201,6 +2217,11 @@ a {
   .la-ornament__center {
     animation: none;
     transition: none;
+  }
+
+  .la-scroll-reveal {
+    opacity: 1;
+    transform: none;
   }
 
   .la-ornament__arc {

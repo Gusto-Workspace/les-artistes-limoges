@@ -146,7 +146,7 @@ export default function ContactPageComponent() {
                 </div>
 
                 <div className="mt-5 grid gap-5 min-[720px]:grid-cols-2 min-[1100px]:mt-0">
-                  <div className="la-home__overlay-photo relative overflow-hidden bg-white min-[1100px]:absolute min-[1100px]:right-[18px] min-[1100px]:top-[286px] min-[1100px]:w-[224px]">
+                  <div className="la-home__overlay-photo relative overflow-hidden bg-white min-[1100px]:absolute min-[1100px]:left-[-34px] min-[1100px]:top-[230px] min-[1100px]:w-[212px]">
                     <div
                       className="relative"
                       style={{ aspectRatio: "0.82 / 1" }}
@@ -155,13 +155,13 @@ export default function ContactPageComponent() {
                         src="/img/photos/outside/2.png"
                         alt="La façade des Artistes"
                         fill
-                        sizes="(max-width: 719px) 100vw, 224px"
+                        sizes="(max-width: 719px) 100vw, 212px"
                         className="object-cover"
                       />
                     </div>
                   </div>
 
-                  <div className="la-home__overlay-photo relative overflow-hidden bg-white min-[1100px]:absolute min-[1100px]:bottom-[20px] min-[1100px]:left-[-10px] min-[1100px]:w-[238px]">
+                  <div className="la-home__overlay-photo relative overflow-hidden bg-white min-[1100px]:absolute min-[1100px]:bottom-[44px] min-[1100px]:right-[-22px] min-[1100px]:w-[250px]">
                     <div
                       className="relative"
                       style={{ aspectRatio: "0.84 / 1" }}
@@ -170,7 +170,7 @@ export default function ContactPageComponent() {
                         src="/img/photos/floor-1/3.png"
                         alt="L'étage des Artistes"
                         fill
-                        sizes="(max-width: 719px) 100vw, 238px"
+                        sizes="(max-width: 719px) 100vw, 250px"
                         className="object-cover"
                       />
                     </div>

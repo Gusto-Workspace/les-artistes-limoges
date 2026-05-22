@@ -169,14 +169,12 @@ const fallbackCardSections = [
       {
         name: "Hamburger poulet",
         price: "17,50 €",
-        details:
-          "Pain maison, tenders, tomates, oignons, cheddar, salade.",
+        details: "Pain maison, tenders, tomates, oignons, cheddar, salade.",
       },
       {
         name: "Hamburger fish",
         price: "19,50 €",
-        details:
-          "Pain maison, fish pané, tomates, oignons, cheddar, salade.",
+        details: "Pain maison, fish pané, tomates, oignons, cheddar, salade.",
       },
       { name: "Croque-monsieur", price: "9,50 €" },
       { name: "Croque-madame", price: "10,00 €" },
@@ -213,8 +211,7 @@ const fallbackCardSections = [
       {
         name: "Salade César",
         price: "15,00 €",
-        details:
-          "Poulet pané, oeuf, tomates, croûtons, parmesan, sauce César.",
+        details: "Poulet pané, oeuf, tomates, croûtons, parmesan, sauce César.",
       },
       {
         name: "Salade de fruits de mer",
@@ -230,7 +227,8 @@ const fallbackCardSections = [
       {
         name: "Salade rustique",
         price: "15,50 €",
-        details: "Jambon de pays, tomates, camembert pané, oeuf, oignons rouges.",
+        details:
+          "Jambon de pays, tomates, camembert pané, oeuf, oignons rouges.",
       },
     ],
     showOrnament: true,
@@ -274,8 +272,7 @@ const fallbackCardSections = [
       {
         name: "À ajouter au dessert",
         price: "2,60 €",
-        details:
-          "Chantilly, caramel, chocolat, coulis fruit, sauce café.",
+        details: "Chantilly, caramel, chocolat, coulis fruit, sauce café.",
       },
     ],
     showOrnament: false,
@@ -285,25 +282,29 @@ const fallbackCardSections = [
 const qualityItems = [
   {
     title: "Cuisine maison",
-    description: "Des plats faits maison à partir de produits frais et de saison.",
+    description:
+      "Des plats faits maison à partir de produits frais et de saison.",
     iconSrc: "/img/pictos/6.png",
     iconAlt: "Pictogramme cuisine maison",
   },
   {
     title: "Service de brasserie",
-    description: "Une équipe attentionnée pour un service chaleureux et efficace.",
+    description:
+      "Une équipe attentionnée pour un service chaleureux et efficace.",
     iconSrc: "/img/pictos/10.png",
     iconAlt: "Pictogramme service de brasserie",
   },
   {
     title: "Terrasse animée",
-    description: "Profitez de notre terrasse ensoleillée, à deux pas de l’Opéra.",
+    description:
+      "Profitez de notre terrasse ensoleillée, à deux pas de l’Opéra.",
     iconSrc: "/img/pictos/2.png",
     iconAlt: "Pictogramme terrasse",
   },
   {
     title: "Salle cosy à l’étage",
-    description: "Un espace confortable pour vos repas de groupe ou en toute intimité.",
+    description:
+      "Un espace confortable pour vos repas de groupe ou en toute intimité.",
     iconSrc: "/img/pictos/4.png",
     iconAlt: "Pictogramme salle cosy",
   },
@@ -362,7 +363,8 @@ const lunchFormulaItems = [
     price: "15,10 €",
   },
   {
-    description: "Entrée du jour, plat du jour ou plat du jour et dessert du jour",
+    description:
+      "Entrée du jour, plat du jour ou plat du jour et dessert du jour",
     price: "12,50 €",
   },
   {
@@ -435,14 +437,16 @@ function buildMenuOfferItemsFromBlocks(blocks = []) {
 
       const hasReadableLines = lines.some((line) => !line.isSeparator);
       const showTitle =
-        !block.price && String(block.title || "").trim() && block.title !== "Sélection";
+        !block.price &&
+        String(block.title || "").trim() &&
+        block.title !== "Sélection";
 
       return {
         id: block.id,
         title:
-          ((!block.price || !hasReadableLines) &&
-            String(block.title || "").trim() &&
-            block.title !== "Sélection")
+          (!block.price || !hasReadableLines) &&
+          String(block.title || "").trim() &&
+          block.title !== "Sélection"
             ? block.title
             : "",
         lines,
@@ -556,7 +560,10 @@ function FormulaStrip({ id, title, subtitle, items }) {
       <div className="la-menu__formula-list">
         {items.map((item) => (
           <div
-            key={item.id || `${title}-${item.title || item.description}-${item.price}`}
+            key={
+              item.id ||
+              `${title}-${item.title || item.description}-${item.price}`
+            }
             className="la-menu__formula-row"
           >
             <div className="la-menu__formula-copy">
@@ -585,7 +592,9 @@ function FormulaStrip({ id, title, subtitle, items }) {
                   )}
                 </div>
               ) : item.description ? (
-                <p className="la-menu__formula-description">{item.description}</p>
+                <p className="la-menu__formula-description">
+                  {item.description}
+                </p>
               ) : null}
             </div>
 
@@ -669,7 +678,8 @@ function QualityCard({ item, index }) {
 
 export default function MenusPageComponent({ initialRestaurantData = null }) {
   const { restaurantContext } = useContext(GlobalContext);
-  const restaurantData = restaurantContext?.restaurantData || initialRestaurantData;
+  const restaurantData =
+    restaurantContext?.restaurantData || initialRestaurantData;
   const { address, phone, phoneHref } = buildSiteContactSummary(restaurantData);
   const cardSections = buildRuntimeCardSections(restaurantData);
   const menuOffers = buildRuntimeMenuOffers(restaurantData);
@@ -690,15 +700,13 @@ export default function MenusPageComponent({ initialRestaurantData = null }) {
 
               <p className="mt-7 text-[18px] leading-[1.48] text-[rgba(86,57,44,0.88)] desktop:text-[19px]">
                 Une carte généreuse, fidèle à l’esprit brasserie. Des produits
-                de saison, des plats faits maison, des desserts gourmands et
-                nos glaces artisanales pour toutes vos envies.
+                de saison, des plats faits maison, des desserts gourmands et nos
+                glaces artisanales pour toutes vos envies.
               </p>
 
               <p className="mt-5 text-[18px] leading-[1.48] text-[rgba(86,57,44,0.88)] desktop:text-[19px]">
                 À deux pas de l’Opéra, au cœur de Limoges.
               </p>
-
-             
 
               <div className="mt-9 flex flex-col gap-4 min-[560px]:flex-row">
                 <ActionLinkComponent
@@ -737,7 +745,7 @@ export default function MenusPageComponent({ initialRestaurantData = null }) {
                 </div>
 
                 <div className="mt-5 grid gap-5 min-[720px]:grid-cols-2 min-[1100px]:mt-0">
-                  <div className="la-home__overlay-photo relative overflow-hidden bg-white min-[1100px]:absolute min-[1100px]:left-[12px] min-[1100px]:top-[258px] min-[1100px]:w-[210px]">
+                  <div className="la-home__overlay-photo relative overflow-hidden bg-white min-[1100px]:absolute min-[1100px]:right-[-28px] min-[1100px]:top-[214px] min-[1100px]:w-[232px]">
                     <div
                       className="relative"
                       style={{ aspectRatio: "0.82 / 1" }}
@@ -746,13 +754,13 @@ export default function MenusPageComponent({ initialRestaurantData = null }) {
                         src="/img/photos/floor-1/2.png"
                         alt="L'étage des Artistes"
                         fill
-                        sizes="(max-width: 719px) 100vw, 210px"
+                        sizes="(max-width: 719px) 100vw, 232px"
                         className="object-cover"
                       />
                     </div>
                   </div>
 
-                  <div className="la-home__overlay-photo relative overflow-hidden bg-white min-[1100px]:absolute min-[1100px]:bottom-[28px] min-[1100px]:right-[-6px] min-[1100px]:w-[240px]">
+                  <div className="la-home__overlay-photo relative overflow-hidden bg-white min-[1100px]:absolute min-[1100px]:bottom-[34px] min-[1100px]:left-[-34px] min-[1100px]:w-[250px]">
                     <div
                       className="relative"
                       style={{ aspectRatio: "0.84 / 1" }}
@@ -761,7 +769,7 @@ export default function MenusPageComponent({ initialRestaurantData = null }) {
                         src="/img/photos/outside/1.png"
                         alt="L'entrée des Artistes"
                         fill
-                        sizes="(max-width: 719px) 100vw, 240px"
+                        sizes="(max-width: 719px) 100vw, 250px"
                         className="object-cover"
                       />
                     </div>

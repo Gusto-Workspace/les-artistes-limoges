@@ -13,6 +13,7 @@ const defaultItems = [
 ];
 
 const newsItem = { label: "Actualités", href: "/news" };
+let hasPlayedInitialNavReveal = false;
 
 function buildVisibleItems(items, showNews) {
   const itemsWithoutNews = items.filter((item) => item.href !== newsItem.href);
@@ -79,7 +80,10 @@ export default function NavComponent({
   const restaurantDataLoading = restaurantContext?.dataLoading;
   const [hasStartedNewsVisibilityCheck, setHasStartedNewsVisibilityCheck] =
     useState(false);
-  const [newsVisibilityResolved, setNewsVisibilityResolved] = useState(false);
+  const [newsVisibilityResolved, setNewsVisibilityResolved] = useState(
+    hasPlayedInitialNavReveal,
+  );
+  const [shouldAnimateNav] = useState(!hasPlayedInitialNavReveal);
   const visibleItems = useMemo(
     () =>
       buildVisibleItems(
@@ -102,6 +106,7 @@ export default function NavComponent({
 
     if (restaurantData) {
       const frame = window.requestAnimationFrame(() => {
+        hasPlayedInitialNavReveal = true;
         setNewsVisibilityResolved(true);
       });
 
@@ -110,6 +115,7 @@ export default function NavComponent({
 
     if (hasStartedNewsVisibilityCheck && !restaurantDataLoading) {
       const frame = window.requestAnimationFrame(() => {
+        hasPlayedInitialNavReveal = true;
         setNewsVisibilityResolved(true);
       });
 
@@ -117,6 +123,7 @@ export default function NavComponent({
     }
 
     const fallback = window.setTimeout(() => {
+      hasPlayedInitialNavReveal = true;
       setNewsVisibilityResolved(true);
     }, 500);
 
@@ -130,8 +137,12 @@ export default function NavComponent({
 
   return (
     <header
-      className={`la-shell pt-7 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] tablet:pt-8 desktop:pt-10 ${
-        newsVisibilityResolved
+      className={`la-shell pt-7 tablet:pt-8 desktop:pt-10 ${
+        shouldAnimateNav
+          ? "transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
+          : "transition-none"
+      } ${
+        newsVisibilityResolved || !shouldAnimateNav
           ? "pointer-events-auto translate-y-0 opacity-100"
           : "pointer-events-none -translate-y-6 opacity-0"
       }`}

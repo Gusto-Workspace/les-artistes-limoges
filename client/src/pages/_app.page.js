@@ -67,6 +67,69 @@ function TrackVisits() {
   return null;
 }
 
+function ScrollRevealController() {
+  const router = useRouter();
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return undefined;
+    }
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return undefined;
+    }
+
+    if (!("IntersectionObserver" in window)) {
+      return undefined;
+    }
+
+    const selectors = [
+      ".la-home main > section:not(:first-child)",
+      ".la-home__dish-card",
+      ".la-home__framed-content > .grid > article",
+      ".la-menu__category-link",
+      ".la-menu__offer-card",
+      ".la-menu__quality-item",
+      ".la-contact__access-item",
+      ".la-home__footer-badge",
+    ].join(",");
+
+    const elements = Array.from(document.querySelectorAll(selectors)).filter(
+      (element) =>
+        !element.closest(".la-home main > section:first-child") &&
+        !element.closest("#reservation") &&
+        !element.closest("#cuisine"),
+    );
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) {
+            return;
+          }
+
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        });
+      },
+      {
+        threshold: 0.14,
+        rootMargin: "0px 0px -8% 0px",
+      },
+    );
+
+    elements.forEach((element, index) => {
+      element.classList.add("la-scroll-reveal");
+      element.style.setProperty("--la-reveal-delay", `${(index % 4) * 55}ms`);
+      observer.observe(element);
+    });
+
+    return () => observer.disconnect();
+  }, [router.asPath]);
+
+  return null;
+}
+
 function App({ Component, pageProps }) {
   const shouldRenderVercelAnalytics =
     process.env.NEXT_PUBLIC_VERCEL_ENV ||
@@ -79,6 +142,7 @@ function App({ Component, pageProps }) {
     >
       <GlobalProvider>
         <TrackVisits />
+        <ScrollRevealController />
         <Component {...pageProps} />
         {shouldRenderVercelAnalytics ? <Analytics /> : null}
       </GlobalProvider>

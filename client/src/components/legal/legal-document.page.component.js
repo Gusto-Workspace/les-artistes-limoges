@@ -123,7 +123,7 @@ export default function LegalDocumentPageComponent({
                 </div>
 
                 <div className="mt-5 grid gap-5 min-[720px]:grid-cols-2 min-[1100px]:mt-0">
-                  <div className="la-home__overlay-photo relative overflow-hidden bg-white min-[1100px]:absolute min-[1100px]:left-0 min-[1100px]:top-[300px] min-[1100px]:w-[220px]">
+                  <div className="la-home__overlay-photo relative overflow-hidden bg-white min-[1100px]:absolute min-[1100px]:right-[-18px] min-[1100px]:top-[260px] min-[1100px]:w-[220px]">
                     <div
                       className="relative"
                       style={{ aspectRatio: "0.82 / 1" }}
@@ -138,7 +138,7 @@ export default function LegalDocumentPageComponent({
                     </div>
                   </div>
 
-                  <div className="la-home__overlay-photo relative overflow-hidden bg-white min-[1100px]:absolute min-[1100px]:bottom-[22px] min-[1100px]:right-[-18px] min-[1100px]:w-[252px]">
+                  <div className="la-home__overlay-photo relative overflow-hidden bg-white min-[1100px]:absolute min-[1100px]:bottom-[32px] min-[1100px]:left-[-28px] min-[1100px]:w-[250px]">
                     <div
                       className="relative"
                       style={{ aspectRatio: "0.84 / 1" }}
@@ -147,7 +147,7 @@ export default function LegalDocumentPageComponent({
                         src="/img/photos/floor-1/2.png"
                         alt="La salle principale des Artistes"
                         fill
-                        sizes="(max-width: 719px) 100vw, 252px"
+                        sizes="(max-width: 719px) 100vw, 250px"
                         className="object-cover"
                       />
                     </div>
@@ -205,7 +205,9 @@ export default function LegalDocumentPageComponent({
                     <div className="space-y-4">
                       {summaryItems.map((item) => (
                         <div key={item.label} className="la-legal__summary-row">
-                          <p className="la-legal__summary-label">{item.label}</p>
+                          <p className="la-legal__summary-label">
+                            {item.label}
+                          </p>
                           <div className="la-legal__summary-value">
                             {item.value}
                           </div>
@@ -215,7 +217,10 @@ export default function LegalDocumentPageComponent({
                   </SummaryBlock>
 
                   <SummaryBlock title="Accès rapide">
-                    <nav className="la-legal__anchor-list" aria-label="Accès rapide">
+                    <nav
+                      className="la-legal__anchor-list"
+                      aria-label="Accès rapide"
+                    >
                       {sections.map((section) => (
                         <a
                           key={section.id}

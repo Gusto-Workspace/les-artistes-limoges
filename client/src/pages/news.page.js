@@ -39,8 +39,6 @@ export default function NewsPage({ seoRestaurantData = null }) {
           <section className="la-shell border-b border-[rgba(197,155,85,0.22)] pb-9 tablet:pb-10 desktop:pb-12">
             <div className="grid gap-12 min-[1100px]:grid-cols-[0.78fr_1.22fr] min-[1100px]:items-center">
               <div>
-                <p className="la-home__eyebrow">Le fil du lieu</p>
-
                 <h1 className="la-home__display mt-4 text-[58px] leading-[0.88] tracking-[-0.035em] text-[var(--la-burgundy)] tablet:text-[72px] desktop:text-[102px]">
                   Actualités
                   <br />
@@ -95,7 +93,7 @@ export default function NewsPage({ seoRestaurantData = null }) {
                   </div>
 
                   <div className="mt-5 grid gap-5 min-[720px]:grid-cols-2 min-[1100px]:mt-0">
-                    <div className="la-home__overlay-photo relative overflow-hidden bg-white min-[1100px]:absolute min-[1100px]:left-0 min-[1100px]:top-[300px] min-[1100px]:w-[220px]">
+                    <div className="la-home__overlay-photo relative overflow-hidden bg-white min-[1100px]:absolute min-[1100px]:bottom-[70px] min-[1100px]:left-[-24px] min-[1100px]:w-[230px]">
                       <div
                         className="relative"
                         style={{ aspectRatio: "0.82 / 1" }}
@@ -104,13 +102,13 @@ export default function NewsPage({ seoRestaurantData = null }) {
                           src="/img/photos/outside/5.png"
                           alt="La terrasse des Artistes"
                           fill
-                          sizes="(max-width: 719px) 100vw, 220px"
+                          sizes="(max-width: 719px) 100vw, 230px"
                           className="object-cover"
                         />
                       </div>
                     </div>
 
-                    <div className="la-home__overlay-photo relative overflow-hidden bg-white min-[1100px]:absolute min-[1100px]:bottom-[22px] min-[1100px]:right-[-18px] min-[1100px]:w-[252px]">
+                    <div className="la-home__overlay-photo relative overflow-hidden bg-white min-[1100px]:absolute min-[1100px]:right-[-30px] min-[1100px]:top-[255px] min-[1100px]:w-[238px]">
                       <div
                         className="relative"
                         style={{ aspectRatio: "0.84 / 1" }}
@@ -119,7 +117,7 @@ export default function NewsPage({ seoRestaurantData = null }) {
                           src="/img/photos/floor-0/4.png"
                           alt="La salle des Artistes"
                           fill
-                          sizes="(max-width: 719px) 100vw, 252px"
+                          sizes="(max-width: 719px) 100vw, 238px"
                           className="object-cover"
                         />
                       </div>
