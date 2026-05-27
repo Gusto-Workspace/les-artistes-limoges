@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { GlobalContext } from "@/contexts/global.context";
 import { buildSiteContactSummary } from "@/_assets/utils/contact.utils";
 import {
@@ -501,6 +501,32 @@ function buildCustomMenuOfferItems(menu, blocks, fallbackPrice) {
   ];
 }
 
+function splitMenuOffersIntoColumns(items = [], columnCount = 2) {
+  return items.reduce(
+    (columns, item, index) => {
+      columns[index % columnCount].push(item);
+      return columns;
+    },
+    Array.from({ length: columnCount }, () => []),
+  );
+}
+
+function useDesktopMenuOffersLayout() {
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(min-width: 900px)");
+    const updateLayout = () => setIsDesktop(mediaQuery.matches);
+
+    updateLayout();
+    mediaQuery.addEventListener("change", updateLayout);
+
+    return () => mediaQuery.removeEventListener("change", updateLayout);
+  }, []);
+
+  return isDesktop;
+}
+
 function buildRuntimeMenuOffers(restaurantData) {
   const apiMenus = getVisibleMenus(restaurantData).map((menu, index) => {
     const blocks = buildMenuBlocks(menu);
@@ -833,11 +859,15 @@ function QualityCard({ item, index }) {
 
 export default function MenusPageComponent({ initialRestaurantData = null }) {
   const { restaurantContext } = useContext(GlobalContext);
+  const useDesktopOffersLayout = useDesktopMenuOffersLayout();
   const restaurantData =
     restaurantContext?.restaurantData || initialRestaurantData;
   const { address, phone, phoneHref } = buildSiteContactSummary(restaurantData);
   const cardSections = buildRuntimeCardSections(restaurantData);
   const menuOffers = buildRuntimeMenuOffers(restaurantData);
+  const menuOfferColumns = useDesktopOffersLayout
+    ? splitMenuOffersIntoColumns(menuOffers)
+    : [menuOffers];
 
   return (
     <div className="la-home la-menu">
@@ -979,15 +1009,22 @@ export default function MenusPageComponent({ initialRestaurantData = null }) {
         <section className="la-shell pb-10 pt-1 tablet:pb-12 desktop:pb-14">
           <MenuSectionMarker eyebrow="Formules" title="Les menus" />
           <div className="la-menu__offers-grid">
-            {menuOffers.map((item) => (
-              <FormulaStrip
-                key={item.id}
-                id={item.id}
-                title={item.title}
-                subtitle={item.subtitle}
-                items={item.items}
-                variant={item.variant}
-              />
+            {menuOfferColumns.map((column, columnIndex) => (
+              <div
+                key={`menu-offer-column-${columnIndex}`}
+                className="la-menu__offers-column"
+              >
+                {column.map((item) => (
+                  <FormulaStrip
+                    key={item.id}
+                    id={item.id}
+                    title={item.title}
+                    subtitle={item.subtitle}
+                    items={item.items}
+                    variant={item.variant}
+                  />
+                ))}
+              </div>
             ))}
           </div>
         </section>

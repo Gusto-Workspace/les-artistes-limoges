@@ -2101,9 +2101,17 @@ a {
 }
 
 .la-menu__offers-grid {
+  --la-menu-offer-gap: 20px;
+
   display: grid;
-  gap: 20px;
+  gap: var(--la-menu-offer-gap);
   align-items: start;
+}
+
+.la-menu__offers-column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--la-menu-offer-gap);
 }
 
 .la-menu__formula-list {
@@ -2579,7 +2587,6 @@ a {
 
   .la-menu__offers-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    align-items: start;
   }
 
   .la-menu__list-items {
