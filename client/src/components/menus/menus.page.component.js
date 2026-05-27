@@ -509,6 +509,82 @@ function buildRuntimeMenuOffers(restaurantData) {
   return apiMenuCategories.length ? apiMenuCategories : fallbackMenuOffers;
 }
 
+function getFormulaItemChoiceLines(item) {
+  const lines = [];
+
+  if (item.title) {
+    lines.push({
+      value: item.title,
+      isSeparator: false,
+      isTitle: true,
+    });
+  }
+
+  if (item.lines?.length) {
+    lines.push(...item.lines);
+  } else if (item.description) {
+    lines.push({
+      value: item.description,
+      isSeparator: false,
+    });
+  }
+
+  return lines.filter((line) => String(line?.value || "").trim());
+}
+
+function mergeSamePriceFormulaItems(items = []) {
+  const priceCounts = items.reduce((counts, item) => {
+    const price = String(item?.price || "").trim();
+
+    if (!price) {
+      return counts;
+    }
+
+    counts.set(price, (counts.get(price) || 0) + 1);
+
+    return counts;
+  }, new Map());
+
+  const groupsByPrice = new Map();
+
+  return items.reduce((mergedItems, item) => {
+    const price = String(item?.price || "").trim();
+
+    if (!price || priceCounts.get(price) <= 1) {
+      mergedItems.push(item);
+      return mergedItems;
+    }
+
+    const choiceLines = getFormulaItemChoiceLines(item);
+    const existingGroup = groupsByPrice.get(price);
+
+    if (existingGroup) {
+      if (existingGroup.lines.length && choiceLines.length) {
+        existingGroup.lines.push({
+          value: "ou",
+          isSeparator: true,
+        });
+      }
+
+      existingGroup.lines.push(...choiceLines);
+      return mergedItems;
+    }
+
+    const nextGroup = {
+      id: `${item.id || "formula"}-same-price-${price}`,
+      title: "",
+      lines: choiceLines,
+      price: item.price,
+      hasReadableLines: choiceLines.some((line) => !line.isSeparator),
+    };
+
+    groupsByPrice.set(price, nextGroup);
+    mergedItems.push(nextGroup);
+
+    return mergedItems;
+  }, []);
+}
+
 function MenuCategoryTab({ item }) {
   return (
     <article className="la-menu__category-link">
@@ -546,6 +622,8 @@ function MenuSectionMarker({ eyebrow, title }) {
 }
 
 function FormulaStrip({ id, title, subtitle, items }) {
+  const displayItems = mergeSamePriceFormulaItems(items);
+
   return (
     <article id={id} className="la-menu__lunch-strip">
       <div>
@@ -558,7 +636,7 @@ function FormulaStrip({ id, title, subtitle, items }) {
       </div>
 
       <div className="la-menu__formula-list">
-        {items.map((item) => (
+        {displayItems.map((item) => (
           <div
             key={
               item.id ||
@@ -578,6 +656,13 @@ function FormulaStrip({ id, title, subtitle, items }) {
                       <p
                         key={`${item.id || title}-sep-${lineIndex}`}
                         className="la-menu__formula-separator"
+                      >
+                        {line.value}
+                      </p>
+                    ) : line.isTitle ? (
+                      <p
+                        key={`${item.id || title}-title-line-${lineIndex}`}
+                        className="la-menu__formula-item-title"
                       >
                         {line.value}
                       </p>

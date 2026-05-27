@@ -249,7 +249,10 @@ function toOpeningHoursSpecification(openingHours) {
   }
 
   return openingHours.flatMap((dayData) => {
-    const dayOfWeek = schemaDayByKey[normalizeDayKey(dayData?.day)];
+    const normalizedDayKey = normalizeDayKey(dayData?.day);
+    const dayKey = normalizedDayKey.split(".").pop();
+    const dayOfWeek =
+      schemaDayByKey[normalizedDayKey] || schemaDayByKey[dayKey];
 
     if (!dayOfWeek) {
       return [];
