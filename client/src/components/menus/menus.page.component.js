@@ -457,19 +457,67 @@ function buildMenuOfferItemsFromBlocks(blocks = []) {
     .filter((item) => item.title || item.lines.length || item.price);
 }
 
+function buildMenuOfferLinesFromBlocks(blocks = []) {
+  return blocks.reduce((offerLines, block) => {
+    const lines = (block.lines || [])
+      .filter((line) => !isMenuBlankLine(line))
+      .map((line) => ({
+        value: line,
+        isSeparator: isMenuSeparatorLabel(line),
+      }));
+
+    if (!lines.length) {
+      return offerLines;
+    }
+
+    if (offerLines.length) {
+      offerLines.push({
+        value: "et",
+        isSeparator: true,
+      });
+    }
+
+    offerLines.push(...lines);
+
+    return offerLines;
+  }, []);
+}
+
+function buildCustomMenuOfferItems(menu, blocks, fallbackPrice) {
+  const lines = buildMenuOfferLinesFromBlocks(blocks);
+
+  if (!lines.length && !fallbackPrice) {
+    return [];
+  }
+
+  return [
+    {
+      id: `${menu?._id || "menu-offer"}-composition`,
+      title: "",
+      lines,
+      price: fallbackPrice,
+      hasReadableLines: lines.some((line) => !line.isSeparator),
+    },
+  ];
+}
+
 function buildRuntimeMenuOffers(restaurantData) {
   const apiMenus = getVisibleMenus(restaurantData).map((menu, index) => {
     const blocks = buildMenuBlocks(menu);
-    const items = buildMenuOfferItemsFromBlocks(blocks);
     const fallbackPrice = getMenuPriceLabel(menu);
+    const isCustomMenu = menu?.type === "custom";
+    const items = isCustomMenu
+      ? buildCustomMenuOfferItems(menu, blocks, fallbackPrice)
+      : buildMenuOfferItemsFromBlocks(blocks);
     const fallbackDescription = String(menu?.description || "").trim();
 
     return {
       id: menu?._id || `menu-offer-${index + 1}`,
       title: getMenuTitle(menu, index),
       subtitle: fallbackDescription,
+      variant: isCustomMenu ? "custom" : "options",
       items:
-        items.length > 0
+        items.length > 0 || isCustomMenu
           ? items
           : [
               {
@@ -494,6 +542,7 @@ function buildRuntimeMenuOffers(restaurantData) {
       id: category?.id || `menu-category-offer-${index + 1}`,
       title: category.title,
       subtitle: category.description,
+      variant: "options",
       items: (category.items || []).map((item) => ({
         id: item.id,
         title: item.name,
@@ -621,74 +670,95 @@ function MenuSectionMarker({ eyebrow, title }) {
   );
 }
 
-function FormulaStrip({ id, title, subtitle, items }) {
+function FormulaStrip({ id, title, subtitle, items, variant = "options" }) {
   const displayItems = mergeSamePriceFormulaItems(items);
+  const isCustom = variant === "custom";
+  const customHeaderPrice = isCustom
+    ? displayItems.find((item) => item.price)?.price
+    : "";
+  const contentItems = isCustom
+    ? displayItems
+        .map((item) => ({
+          ...item,
+          price: "",
+        }))
+        .filter(
+          (item) => item.title || item.description || item.lines?.length,
+        )
+    : displayItems;
 
   return (
-    <article id={id} className="la-menu__lunch-strip">
-      <div>
+    <article id={id} className={`la-menu__lunch-strip is-${variant}`}>
+      <div className="la-menu__formula-header">
         <h2 className="la-contact__panel-title">{title}</h2>
+
         {subtitle ? (
-          <p className="mt-3 text-[17px] leading-[1.45] text-[rgba(86,57,44,0.86)]">
-            {subtitle}
+          <p className="la-menu__formula-subtitle">{subtitle}</p>
+        ) : null}
+
+        {customHeaderPrice ? (
+          <p className="la-menu__formula-price la-menu__formula-price--header">
+            {customHeaderPrice}
           </p>
         ) : null}
       </div>
 
-      <div className="la-menu__formula-list">
-        {displayItems.map((item) => (
-          <div
-            key={
-              item.id ||
-              `${title}-${item.title || item.description}-${item.price}`
-            }
-            className="la-menu__formula-row"
-          >
-            <div className="la-menu__formula-copy">
-              {item.title ? (
-                <p className="la-menu__formula-item-title">{item.title}</p>
-              ) : null}
+      {contentItems.length ? (
+        <div className="la-menu__formula-list">
+          {contentItems.map((item) => (
+            <div
+              key={
+                item.id ||
+                `${title}-${item.title || item.description}-${item.price}`
+              }
+              className="la-menu__formula-row"
+            >
+              <div className="la-menu__formula-copy">
+                {item.title ? (
+                  <p className="la-menu__formula-item-title">{item.title}</p>
+                ) : null}
 
-              {item.lines?.length ? (
-                <div className="la-menu__formula-lines">
-                  {item.lines.map((line, lineIndex) =>
-                    line.isSeparator ? (
-                      <p
-                        key={`${item.id || title}-sep-${lineIndex}`}
-                        className="la-menu__formula-separator"
-                      >
-                        {line.value}
-                      </p>
-                    ) : line.isTitle ? (
-                      <p
-                        key={`${item.id || title}-title-line-${lineIndex}`}
-                        className="la-menu__formula-item-title"
-                      >
-                        {line.value}
-                      </p>
-                    ) : (
-                      <p
-                        key={`${item.id || title}-line-${lineIndex}`}
-                        className="la-menu__formula-description"
-                      >
-                        {line.value}
-                      </p>
-                    ),
-                  )}
-                </div>
-              ) : item.description ? (
-                <p className="la-menu__formula-description">
-                  {item.description}
-                </p>
+                {item.lines?.length ? (
+                  <div className="la-menu__formula-lines">
+                    {item.lines.map((line, lineIndex) =>
+                      line.isSeparator ? (
+                        <p
+                          key={`${item.id || title}-sep-${lineIndex}`}
+                          className="la-menu__formula-separator"
+                        >
+                          {line.value}
+                        </p>
+                      ) : line.isTitle ? (
+                        <p
+                          key={`${item.id || title}-title-line-${lineIndex}`}
+                          className="la-menu__formula-item-title"
+                        >
+                          {line.value}
+                        </p>
+                      ) : (
+                        <p
+                          key={`${item.id || title}-line-${lineIndex}`}
+                          className="la-menu__formula-description"
+                        >
+                          {line.value}
+                        </p>
+                      ),
+                    )}
+                  </div>
+                ) : item.description ? (
+                  <p className="la-menu__formula-description">
+                    {item.description}
+                  </p>
+                ) : null}
+              </div>
+
+              {item.price ? (
+                <p className="la-menu__formula-price">{item.price}</p>
               ) : null}
             </div>
-
-            {item.price ? (
-              <p className="la-menu__formula-price">{item.price}</p>
-            ) : null}
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      ) : null}
     </article>
   );
 }
@@ -916,6 +986,7 @@ export default function MenusPageComponent({ initialRestaurantData = null }) {
                 title={item.title}
                 subtitle={item.subtitle}
                 items={item.items}
+                variant={item.variant}
               />
             ))}
           </div>

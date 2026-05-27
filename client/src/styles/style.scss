@@ -1981,6 +1981,7 @@ a {
   color: rgba(86, 57, 44, 0.76);
   font-size: 16px;
   line-height: 1.4;
+  white-space: pre-line;
 }
 
 .la-menu__list-items {
@@ -2020,6 +2021,7 @@ a {
   color: rgba(86, 57, 44, 0.78);
   font-size: 15px;
   line-height: 1.45;
+  white-space: pre-line;
 }
 
 .la-menu__list-note {
@@ -2027,6 +2029,7 @@ a {
   color: var(--la-gold-deep);
   font-size: 16px;
   line-height: 1.5;
+  white-space: pre-line;
   font-style: italic;
 }
 
@@ -2039,6 +2042,62 @@ a {
   border: 1px solid rgba(197, 155, 85, 0.3);
   background: rgba(255, 255, 255, 0.2);
   padding: 26px 24px;
+}
+
+.la-menu__formula-header {
+  text-align: center;
+}
+
+.la-menu__formula-subtitle {
+  margin: 12px 0 0;
+  color: rgba(86, 57, 44, 0.86);
+  font-size: 17px;
+  line-height: 1.45;
+  white-space: pre-line;
+}
+
+.la-menu__lunch-strip.is-custom {
+  align-items: center;
+  text-align: center;
+}
+
+.la-menu__lunch-strip.is-custom .la-menu__formula-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.la-menu__lunch-strip.is-custom .la-menu__formula-subtitle {
+  margin: 0;
+}
+
+.la-menu__lunch-strip.is-custom .la-menu__formula-list {
+  width: 100%;
+  align-items: center;
+}
+
+.la-menu__lunch-strip.is-custom .la-menu__formula-row {
+  width: 100%;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  row-gap: 14px;
+}
+
+.la-menu__lunch-strip.is-custom .la-menu__formula-copy,
+.la-menu__lunch-strip.is-custom .la-menu__formula-lines {
+  align-items: center;
+}
+
+.la-menu__lunch-strip.is-custom .la-menu__formula-price {
+  justify-self: center;
+  text-align: center;
+}
+
+.la-menu__formula-price--header {
+  margin-top: 18px;
+  justify-self: center;
+  text-align: center;
 }
 
 .la-menu__offers-grid {
@@ -2073,6 +2132,7 @@ a {
   color: rgba(86, 57, 44, 0.92);
   font-size: 18px;
   line-height: 1.45;
+  white-space: pre-line;
 }
 
 .la-menu__formula-copy {

@@ -1,7 +1,11 @@
 const MENU_BLANK_LINE_TOKEN = "__MENU_BLANK_LINE__";
 
 function toFiniteNumber(value) {
-  const numericValue = Number(value);
+  const normalizedValue =
+    typeof value === "string"
+      ? value.replace(/\s/g, "").replace("€", "").replace(",", ".")
+      : value;
+  const numericValue = Number(normalizedValue);
 
   return Number.isFinite(numericValue) ? numericValue : null;
 }
@@ -9,7 +13,11 @@ function toFiniteNumber(value) {
 export function formatMenuPrice(value) {
   const numericValue = toFiniteNumber(value);
 
-  if (numericValue === null || numericValue <= 0) {
+  if (numericValue === null) {
+    return value ? String(value).trim() : "";
+  }
+
+  if (numericValue <= 0) {
     return "";
   }
 
@@ -163,10 +171,10 @@ function buildCustomBlocks(menu) {
     return customGroups
       .map((group, index) => ({
         id: `${menu?._id || "menu"}-group-${index}`,
-        title: String(group?.categoryName || "").trim() || `Choix ${index + 1}`,
+        title: "",
         lines: buildCustomGroupLines(group),
       }))
-      .filter((group) => group.title);
+      .filter((group) => group.lines.length);
   }
 
   const fallbackLines = (menu?.dishes || [])
@@ -180,7 +188,7 @@ function buildCustomBlocks(menu) {
   return [
     {
       id: `${menu?._id || "menu"}-selection`,
-      title: "Sélection",
+      title: "",
       lines: fallbackLines,
     },
   ];
