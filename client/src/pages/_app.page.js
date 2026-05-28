@@ -87,17 +87,30 @@ function ScrollRevealController() {
       ".la-home__dish-card",
       ".la-home__framed-content > .grid > article",
       ".la-menu__category-link",
-      ".la-menu__offer-card",
+      ".la-menu__list-card",
+      ".la-menu__lunch-strip",
       ".la-menu__quality-item",
       ".la-contact__access-item",
       ".la-home__footer-badge",
     ].join(",");
 
+    const viewportHeight =
+      window.innerHeight || document.documentElement.clientHeight || 0;
+
     const elements = Array.from(document.querySelectorAll(selectors)).filter(
-      (element) =>
-        !element.closest(".la-home main > section:first-child") &&
-        !element.closest("#reservation") &&
-        !element.closest("#cuisine"),
+      (element) => {
+        const isLargeSection =
+          element.matches(".la-home main > section:not(:first-child)") &&
+          viewportHeight > 0 &&
+          element.scrollHeight > viewportHeight * 1.6;
+
+        return (
+          !isLargeSection &&
+          !element.closest(".la-home main > section:first-child") &&
+          !element.closest("#reservation") &&
+          !element.closest("#cuisine")
+        );
+      },
     );
 
     const observer = new IntersectionObserver(
@@ -112,7 +125,7 @@ function ScrollRevealController() {
         });
       },
       {
-        threshold: 0.14,
+        threshold: 0.08,
         rootMargin: "0px 0px -8% 0px",
       },
     );
