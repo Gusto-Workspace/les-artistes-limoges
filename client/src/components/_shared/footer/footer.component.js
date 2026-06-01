@@ -142,7 +142,17 @@ export default function FooterComponent({ links = defaultLinks }) {
 
       <div className="bg-[var(--la-burgundy)] text-[#fbf4ea]">
         <div className="la-shell flex flex-col gap-3 py-4 text-center min-[960px]:flex-row min-[960px]:items-center min-[960px]:justify-center min-[960px]:gap-14">
-          <p className="text-[15px]">© Les Artistes - Limoges</p>
+          <p className="text-[15px]">
+            © Les Artistes - Limoges •{" "}
+            <a
+              href="https://gusto-manager.com"
+              target="_blank"
+              rel="noreferrer"
+              className="transition hover:text-white"
+            >
+              Propulsé par Gusto Manager
+            </a>
+          </p>
           <Link
             href="/legales"
             className="text-[15px] transition-opacity hover:opacity-72"
