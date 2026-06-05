@@ -278,6 +278,7 @@ export function getAvailableReservationTimes({
   restaurant,
   reservationsList = [],
   manualTimes = null,
+  excludeReservationId = null,
 }) {
   const parsedDate = parseReservationDateValue(reservationDate);
   if (!restaurant?._id || !parsedDate) return [];
@@ -354,6 +355,13 @@ export function getAvailableReservationTimes({
 
   const formattedSelectedDate = formatReservationDateForApi(parsedDate);
   const dayReservations = reservationsList.filter((reservation) => {
+    if (
+      excludeReservationId &&
+      String(reservation?._id || "") === String(excludeReservationId)
+    ) {
+      return false;
+    }
+
     return (
       formatReservationDateForApi(reservation?.reservationDate) ===
         formattedSelectedDate && isBlockingReservation(reservation)
@@ -382,6 +390,11 @@ export function getAvailableReservationTimes({
     const conflicts = dayReservations.filter((reservation) => {
       if (!reservation?.table) return false;
 
+      const reservationTableIds = Array.isArray(reservation?.table?.tableIds)
+        ? reservation.table.tableIds
+            .map((value) => String(value || "").trim())
+            .filter(Boolean)
+        : [];
       const reservationTableId = reservation?.table?._id
         ? String(reservation.table._id)
         : null;
@@ -389,6 +402,10 @@ export function getAvailableReservationTimes({
 
       const matchesEligibleTable = availableEligibleTables.some((table) => {
         const tableId = table?._id ? String(table._id) : null;
+
+        if (tableId && reservationTableIds.length > 0) {
+          return reservationTableIds.includes(tableId);
+        }
 
         if (tableId && reservationTableId) {
           return tableId === reservationTableId;
@@ -421,4 +438,22 @@ export function getAvailableReservationTimes({
 
     return conflicts.length < availableEligibleTables.length;
   });
+}
+
+export function getReservationStatusLabel(status) {
+  const normalizedStatus = String(status || "").trim();
+
+  const labels = {
+    AwaitingBankHold: "En attente de validation carte",
+    Pending: "En attente de confirmation",
+    Confirmed: "Confirmée",
+    Active: "En cours",
+    Late: "En retard",
+    Finished: "Terminée",
+    Canceled: "Annulée",
+    Rejected: "Refusée",
+    NoShow: "Non honorée",
+  };
+
+  return labels[normalizedStatus] || "Statut inconnu";
 }
