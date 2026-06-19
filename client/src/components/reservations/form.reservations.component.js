@@ -15,6 +15,7 @@ import { buildContactInfos } from "@/_assets/utils/contact.utils";
 import {
   formatReservationDateForApi,
   getAvailableReservationTimes,
+  getReservationTimeOptions,
   isReservationDateClosed,
   parseReservationDateValue,
 } from "@/utils/reservations";
@@ -50,6 +51,7 @@ export default function FormReservationComponent({
     [reservationData.reservationDate, today],
   );
   const [availableTimes, setAvailableTimes] = useState([]);
+  const [timeOptions, setTimeOptions] = useState([]);
   const [
     resolvedAvailabilitySelectionKey,
     setResolvedAvailabilitySelectionKey,
@@ -237,6 +239,7 @@ export default function FormReservationComponent({
   useEffect(() => {
     if (!restaurant?._id || !reservationData.reservationDate || dataLoading) {
       setAvailableTimes([]);
+      setTimeOptions([]);
       setResolvedAvailabilitySelectionKey("");
       setIsLoading(Boolean(dataLoading));
       return;
@@ -253,8 +256,15 @@ export default function FormReservationComponent({
     });
 
     setIsLoading(true);
-    setAvailableTimes(
-      getAvailableReservationTimes({
+    const nextAvailableTimes = getAvailableReservationTimes({
+      reservationDate: reservationData.reservationDate,
+      numberOfGuests: reservationData.numberOfGuests,
+      restaurant,
+      reservationsList,
+    });
+    setAvailableTimes(nextAvailableTimes);
+    setTimeOptions(
+      getReservationTimeOptions({
         reservationDate: reservationData.reservationDate,
         numberOfGuests: reservationData.numberOfGuests,
         restaurant,
@@ -293,7 +303,7 @@ export default function FormReservationComponent({
       return;
     }
 
-    if (availableTimes.includes(pendingPrefilledTime)) {
+    if (timeOptions.some((option) => option.time === pendingPrefilledTime)) {
       setInvalidFields((prev) => {
         if (!prev.reservationTime) return prev;
 
@@ -318,7 +328,7 @@ export default function FormReservationComponent({
     );
     setPendingPrefilledTime("");
   }, [
-    availableTimes,
+    timeOptions,
     dataLoading,
     isLoading,
     pendingPrefilledTime,
@@ -401,6 +411,7 @@ export default function FormReservationComponent({
     setError(null);
     setSuccessMessage("");
     setAvailableTimes([]);
+    setTimeOptions([]);
     setResolvedAvailabilitySelectionKey("");
     setIsLoading(true);
     setReservationData((prev) => ({
@@ -420,6 +431,7 @@ export default function FormReservationComponent({
     setError(null);
     setSuccessMessage("");
     setAvailableTimes([]);
+    setTimeOptions([]);
     setResolvedAvailabilitySelectionKey("");
     setIsLoading(true);
     setReservationData((prev) => ({
@@ -503,12 +515,17 @@ export default function FormReservationComponent({
       return;
     }
 
-    if (!availableTimes.includes(reservationData.reservationTime)) {
+    const selectedTimeOption = timeOptions.find(
+      (option) => option.time === reservationData.reservationTime,
+    );
+    const isWaitlistRequest = selectedTimeOption?.type === "waitlist";
+
+    if (!selectedTimeOption) {
       setInvalidFields((prev) => ({
         ...prev,
         reservationTime: true,
       }));
-      setError("Veuillez sélectionner un horaire disponible.");
+      setError("Veuillez sélectionner un horaire proposé.");
       return;
     }
 
@@ -541,14 +558,14 @@ export default function FormReservationComponent({
     };
 
     try {
-      const res = await fetch(
-        `${apiBaseUrl}/restaurants/${restaurant._id}/reservations`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        },
-      );
+      const endpoint = isWaitlistRequest
+        ? `${apiBaseUrl}/restaurants/${restaurant._id}/reservations/waitlist`
+        : `${apiBaseUrl}/restaurants/${restaurant._id}/reservations`;
+      const res = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
 
       if (!res.ok) {
         const json = await res.json().catch(() => ({}));
@@ -588,7 +605,9 @@ export default function FormReservationComponent({
       }));
       setInvalidFields({});
       setSuccessMessage(
-        "Votre réservation a bien été enregistrée. Nous avons bien reçu votre demande.",
+        isWaitlistRequest
+          ? "Votre demande a été ajoutée à la liste d’attente. Vous recevrez un email si une place se libère."
+          : "Votre réservation a bien été enregistrée. Nous avons bien reçu votre demande.",
       );
 
       if (router.query.reservationDate || router.query.reservationTime) {
@@ -609,6 +628,10 @@ export default function FormReservationComponent({
   const summaryTime = reservationData.reservationTime
     ? formatTimeDisplay(reservationData.reservationTime)
     : "À sélectionner";
+  const selectedTimeOption = timeOptions.find(
+    (option) => option.time === reservationData.reservationTime,
+  );
+  const isWaitlistSelection = selectedTimeOption?.type === "waitlist";
   const isTimesLoading = isLoading || reservationsListLoading;
   const selectedDateKey = reservationData.reservationDate
     ? formatReservationDateForApi(reservationData.reservationDate)
@@ -841,8 +864,8 @@ export default function FormReservationComponent({
                     <HorizontalChoiceScroller
                       invalid={invalidFields.reservationTime}
                       arrowLabel="Voir plus d'horaires"
-                      showArrow={!isTimesLoading && availableTimes.length > 0}
-                      watchKey={`${availableTimes.join("|")}|${isTimesLoading}|${showDelayedTimeLoading}`}
+                      showArrow={!isTimesLoading && timeOptions.length > 0}
+                      watchKey={`${timeOptions.map((option) => `${option.time}:${option.type}`).join("|")}|${isTimesLoading}|${showDelayedTimeLoading}`}
                     >
                       {isTimesLoading ? (
                         <div
@@ -854,9 +877,11 @@ export default function FormReservationComponent({
                         </div>
                       ) : (
                         <div className="la-reservation__choice-rail">
-                          {availableTimes.map((time) => {
+                          {timeOptions.map((option) => {
+                            const time = option.time;
                             const isActive =
                               reservationData.reservationTime === time;
+                            const isWaitlist = option.type === "waitlist";
 
                             return (
                               <button
@@ -864,18 +889,35 @@ export default function FormReservationComponent({
                                 type="button"
                                 onClick={() => handleTimeSelect(time)}
                                 aria-pressed={isActive}
-                                className={`la-reservation__choice-chip la-reservation__choice-chip--time ${isActive ? "is-active" : ""}`}
+                                className={`la-reservation__choice-chip la-reservation__choice-chip--time ${isActive ? "is-active" : ""} ${isWaitlist ? "border-dashed opacity-75" : ""}`}
+                                aria-label={
+                                  isWaitlist
+                                    ? `${formatTimeDisplay(time)} complet, liste d’attente`
+                                    : formatTimeDisplay(time)
+                                }
                               >
                                 {formatTimeDisplay(time)}
+                                {isWaitlist ? (
+                                  <span className="ml-2 text-[10px] uppercase tracking-[0.12em]">
+                                    Complet
+                                  </span>
+                                ) : null}
                               </button>
                             );
                           })}
                         </div>
                       )}
                     </HorizontalChoiceScroller>
-                    {!isTimesLoading && !availableTimes.length ? (
+                    {!isTimesLoading && !timeOptions.length ? (
                       <p className="la-reservation__helper h-[46px] flex flex-col justify-center">
                         Aucun créneau disponible pour cette date.
+                      </p>
+                    ) : null}
+                    {isWaitlistSelection ? (
+                      <p className="la-reservation__helper">
+                        Ce créneau est complet. Vous pouvez vous inscrire en
+                        liste d’attente et nous vous préviendrons si une place
+                        se libère.
                       </p>
                     ) : null}
                   </FieldGroup>
@@ -959,8 +1001,10 @@ export default function FormReservationComponent({
                       {isSubmitting ? (
                         <span className="flex items-center gap-2">
                           <Loader2 size={18} className="animate-spin" />
-                          Envoi...
+                          {isWaitlistSelection ? "Inscription..." : "Envoi..."}
                         </span>
+                      ) : isWaitlistSelection ? (
+                        "S’inscrire en liste d’attente"
                       ) : (
                         "Confirmer la réservation"
                       )}
