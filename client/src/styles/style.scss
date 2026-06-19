@@ -650,7 +650,7 @@ a {
 }
 
 .la-venue__title {
-  max-width: min(760px, 82vw);
+
   text-wrap: balance;
 }
 
@@ -2343,13 +2343,11 @@ a {
   .la-home__framed-section--title-absolute {
     --la-frame-line-top: 48px;
     --la-frame-heading-top: 0px;
-    --la-frame-section-padding-top: 172px;
   }
 
   .la-home__framed-section--experience {
     --la-frame-line-top: 48px;
     --la-frame-heading-top: 0px;
-    --la-frame-section-padding-top: 216px;
   }
 
   .la-home__framed-heading {
@@ -2446,7 +2444,6 @@ a {
   }
 
   .la-venue__title {
-    max-width: min(620px, 92vw);
     font-size: clamp(2.25rem, 7.2vw, 3.6rem);
   }
 

@@ -14,12 +14,12 @@ export default function VenueShowcaseComponent({
     <section id={sectionId} className={`la-venue-showcase ${sectionClassName}`}>
       <div className={`la-venue-showcase__frame ${framedSectionClassName}`}>
         <div
-          className={`la-venue-showcase__heading la-home__framed-heading la-home__framed-heading--absolute text-center ${
+          className={`la-venue-showcase__heading la-home__framed-heading la-home__framed-heading--absolute bg-[#f8f2e9] text-center ${
             description ? "la-home__framed-heading--with-description" : ""
           } ${headingClassName}`.trim()}
         >
           <div className="la-home__framed-title-row la-home__framed-title-row--with-lines">
-            <h2 className="la-home__section-title la-venue__title">{title}</h2>
+            <h2 className="la-home__section-title la-venue__title text-nowrap">{title}</h2>
           </div>
           {description ? (
             <p className="mt-2 text-[18px] leading-[1.45] text-[rgba(86,57,44,0.88)] text-balance">
