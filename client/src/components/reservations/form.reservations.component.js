@@ -63,6 +63,7 @@ export default function FormReservationComponent({
   const [successMessage, setSuccessMessage] = useState("");
   const [invalidFields, setInvalidFields] = useState({});
   const [reservationsList, setReservationsList] = useState([]);
+  const [slotCoverUsage, setSlotCoverUsage] = useState([]);
   const [reservationsListLoading, setReservationsListLoading] = useState(false);
   const [hasAppliedQueryPrefill, setHasAppliedQueryPrefill] = useState(false);
   const [pendingPrefilledTime, setPendingPrefilledTime] = useState("");
@@ -102,6 +103,7 @@ export default function FormReservationComponent({
   const fetchReservationsList = useCallback(async () => {
     if (!apiBaseUrl || !restaurant?._id) {
       setReservationsList([]);
+      setSlotCoverUsage([]);
       return [];
     }
 
@@ -121,11 +123,16 @@ export default function FormReservationComponent({
       const nextReservations = Array.isArray(data?.reservations)
         ? data.reservations
         : [];
+      const nextSlotCoverUsage = Array.isArray(data?.slotCoverUsage)
+        ? data.slotCoverUsage
+        : [];
       setReservationsList(nextReservations);
+      setSlotCoverUsage(nextSlotCoverUsage);
       return nextReservations;
     } catch (fetchError) {
       console.error("[fetchReservationsList]", fetchError);
       setReservationsList([]);
+      setSlotCoverUsage([]);
       return [];
     } finally {
       setReservationsListLoading(false);
@@ -261,6 +268,7 @@ export default function FormReservationComponent({
       numberOfGuests: reservationData.numberOfGuests,
       restaurant,
       reservationsList,
+      slotCoverUsage,
     });
     setAvailableTimes(nextAvailableTimes);
     setTimeOptions(
@@ -269,6 +277,7 @@ export default function FormReservationComponent({
         numberOfGuests: reservationData.numberOfGuests,
         restaurant,
         reservationsList,
+        slotCoverUsage,
       }),
     );
     setResolvedAvailabilitySelectionKey(nextSelectionKey);
@@ -279,6 +288,7 @@ export default function FormReservationComponent({
     reservationData.numberOfGuests,
     reservationData.reservationDate,
     reservationsList,
+    slotCoverUsage,
     reservationsListLoading,
   ]);
 
