@@ -320,28 +320,46 @@ function toMenuSchema({ restaurant, baseUrl, restaurantId }) {
     provider: {
       "@id": restaurantId,
     },
-    hasMenuSection: categories.map((category) => ({
-      "@type": "MenuSection",
-      name: category.title,
-      description: category.description || undefined,
-      hasMenuItem: category.items.map((item) => {
-        const price = toSchemaPrice(item.price);
+    hasMenuSection: categories.flatMap((category) => {
+      const sections = [];
+      if (category.items.length > 0) {
+        sections.push({
+          title: category.title,
+          description: category.description,
+          items: category.items,
+        });
+      }
+      for (const subCategory of category.subCategories || []) {
+        sections.push({
+          title: `${category.title} — ${subCategory.title}`,
+          description: category.description,
+          items: subCategory.items,
+        });
+      }
 
-        return {
-          "@type": "MenuItem",
-          name: item.name,
-          description: item.description || undefined,
-          offers: price
-            ? {
-                "@type": "Offer",
-                price,
-                priceCurrency: "EUR",
-                availability: "https://schema.org/InStock",
-              }
-            : undefined,
-        };
-      }),
-    })),
+      return sections.map((section) => ({
+        "@type": "MenuSection",
+        name: section.title,
+        description: section.description || undefined,
+        hasMenuItem: section.items.map((item) => {
+          const price = toSchemaPrice(item.price);
+
+          return {
+            "@type": "MenuItem",
+            name: item.name,
+            description: item.description || undefined,
+            offers: price
+              ? {
+                  "@type": "Offer",
+                  price,
+                  priceCurrency: "EUR",
+                  availability: "https://schema.org/InStock",
+                }
+              : undefined,
+          };
+        }),
+      }));
+    }),
   };
 }
 

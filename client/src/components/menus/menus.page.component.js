@@ -418,6 +418,15 @@ function buildRuntimeCardSections(restaurantData) {
         details: item.description,
         price: item.price,
       })),
+      subCategories: (category.subCategories || []).map((subCategory) => ({
+        id: subCategory.id,
+        title: subCategory.title,
+        items: (subCategory.items || []).map((item) => ({
+          name: item.name,
+          details: item.description,
+          price: item.price,
+        })),
+      })),
       showOrnament: true,
     }),
   );
@@ -569,7 +578,12 @@ function buildRuntimeMenuOffers(restaurantData) {
       title: category.title,
       subtitle: category.description,
       variant: "options",
-      items: (category.items || []).map((item) => ({
+      items: [
+        ...(category.items || []),
+        ...(category.subCategories || []).flatMap(
+          (subCategory) => subCategory.items || [],
+        ),
+      ].map((item) => ({
         id: item.id,
         title: item.name,
         lines: item.description
@@ -708,9 +722,7 @@ function FormulaStrip({ id, title, subtitle, items, variant = "options" }) {
           ...item,
           price: "",
         }))
-        .filter(
-          (item) => item.title || item.description || item.lines?.length,
-        )
+        .filter((item) => item.title || item.description || item.lines?.length)
     : displayItems;
 
   return (
@@ -801,22 +813,48 @@ function MenuListCard({ column }) {
           ) : null}
         </div>
 
-        <div className="la-menu__list-items">
-          {column.items.map((item) => (
-            <div
-              key={`${column.title}-${item.name}`}
-              className="la-menu__list-item"
-            >
-              <div>
-                <p className="la-menu__list-name">{item.name}</p>
-                {item.details ? (
-                  <p className="la-menu__list-details">{item.details}</p>
-                ) : null}
+        {column.items.length > 0 ? (
+          <div className="la-menu__list-items">
+            {column.items.map((item) => (
+              <div
+                key={`${column.title}-${item.name}`}
+                className="la-menu__list-item"
+              >
+                <div>
+                  <p className="la-menu__list-name">{item.name}</p>
+                  {item.details ? (
+                    <p className="la-menu__list-details">{item.details}</p>
+                  ) : null}
+                </div>
+                <span className="la-menu__list-price">{item.price}</span>
               </div>
-              <span className="la-menu__list-price">{item.price}</span>
+            ))}
+          </div>
+        ) : null}
+
+        {(column.subCategories || []).map((subCategory) => (
+          <section key={subCategory.id} className="mt-8 first:mt-0">
+            <h4 className="mb-4 text-center font-semibold uppercase tracking-[0.12em] text-[var(--la-burgundy)]">
+              {subCategory.title}
+            </h4>
+            <div className="la-menu__list-items">
+              {subCategory.items.map((item) => (
+                <div
+                  key={`${subCategory.title}-${item.name}`}
+                  className="la-menu__list-item"
+                >
+                  <div>
+                    <p className="la-menu__list-name">{item.name}</p>
+                    {item.details ? (
+                      <p className="la-menu__list-details">{item.details}</p>
+                    ) : null}
+                  </div>
+                  <span className="la-menu__list-price">{item.price}</span>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </section>
+        ))}
 
         {column.note ? (
           <p className="la-menu__list-note">{column.note}</p>
