@@ -691,7 +691,7 @@ function MenuCategoryTab({ item }) {
 
 function MenuSectionMarker({ eyebrow, title }) {
   return (
-    <div className="la-menu__section-marker">
+    <div className="la-menu__section-marker" data-print-section-title>
       <Image
         src="/img/pictos/5.png"
         alt=""
@@ -726,18 +726,29 @@ function FormulaStrip({ id, title, subtitle, items, variant = "options" }) {
     : displayItems;
 
   return (
-    <article id={id} className={`la-menu__lunch-strip is-${variant}`}>
+    <article
+      id={id}
+      className={`la-menu__lunch-strip is-${variant}`}
+      data-print-menu
+    >
       <div className="la-menu__formula-header">
-        <h2 className="la-contact__panel-title">{title}</h2>
+        <div data-print-title-price-row>
+          <h2 className="la-contact__panel-title" data-print-title>
+            {title}
+          </h2>
+
+          {customHeaderPrice ? (
+            <p
+              className="la-menu__formula-price la-menu__formula-price--header"
+              data-print-price
+            >
+              {customHeaderPrice}
+            </p>
+          ) : null}
+        </div>
 
         {subtitle ? (
           <p className="la-menu__formula-subtitle">{subtitle}</p>
-        ) : null}
-
-        {customHeaderPrice ? (
-          <p className="la-menu__formula-price la-menu__formula-price--header">
-            {customHeaderPrice}
-          </p>
         ) : null}
       </div>
 
@@ -745,6 +756,7 @@ function FormulaStrip({ id, title, subtitle, items, variant = "options" }) {
         <div className="la-menu__formula-list">
           {contentItems.map((item) => (
             <div
+              data-print-dish
               key={
                 item.id ||
                 `${title}-${item.title || item.description}-${item.price}`
@@ -801,59 +813,97 @@ function FormulaStrip({ id, title, subtitle, items, variant = "options" }) {
   );
 }
 
+function MenuListItem({ item }) {
+  return (
+    <div data-print-dish className="la-menu__list-item">
+      <div>
+        <p className="la-menu__list-name">{item.name}</p>
+        {item.details ? (
+          <p className="la-menu__list-details">{item.details}</p>
+        ) : null}
+      </div>
+      <span className="la-menu__list-price">{item.price}</span>
+    </div>
+  );
+}
+
+function MenuSubCategory({ subCategory }) {
+  const firstItem = subCategory.items[0];
+
+  return (
+    <section className="mt-8 first:mt-0">
+      <div data-print-subcategory-first-chunk>
+        <h4
+          className="mb-4 text-center font-semibold uppercase tracking-[0.12em] text-[var(--la-burgundy)]"
+          data-print-subcategory-title
+        >
+          {subCategory.title}
+        </h4>
+        {firstItem ? (
+          <div className="la-menu__list-items">
+            <MenuListItem item={firstItem} />
+          </div>
+        ) : null}
+      </div>
+      {subCategory.items.length > 1 ? (
+        <div className="la-menu__list-items la-menu__list-items--continuation">
+          {subCategory.items.slice(1).map((item) => (
+            <MenuListItem
+              key={`${subCategory.title}-${item.name}`}
+              item={item}
+            />
+          ))}
+        </div>
+      ) : null}
+    </section>
+  );
+}
+
 function MenuListCard({ column }) {
+  const firstItems = column.items.slice(0, 2);
+  const remainingItems = column.items.slice(2);
+
   return (
     <article id={column.id} className="la-menu__list-card">
       <div className="px-5 pb-6 pt-7 tablet:px-7 desktop:px-9">
-        <div className="la-menu__list-header">
-          <h3 className="la-menu__list-heading">{column.title}</h3>
+        <div
+          data-print-category-first-chunk
+          data-print-category-without-dishes={
+            column.items.length ? undefined : "true"
+          }
+        >
+          <div className="la-menu__list-header">
+            <h3 className="la-menu__list-heading" data-print-category-title>
+              {column.title}
+            </h3>
 
-          {column.intro ? (
-            <p className="la-menu__list-intro">{column.intro}</p>
+            {column.intro ? (
+              <p className="la-menu__list-intro">{column.intro}</p>
+            ) : null}
+          </div>
+
+          {firstItems.length > 0 ? (
+            <div className="la-menu__list-items">
+              {firstItems.map((item) => (
+                <MenuListItem
+                  key={`${column.title}-${item.name}`}
+                  item={item}
+                />
+              ))}
+            </div>
           ) : null}
         </div>
 
-        {column.items.length > 0 ? (
-          <div className="la-menu__list-items">
-            {column.items.map((item) => (
-              <div
-                key={`${column.title}-${item.name}`}
-                className="la-menu__list-item"
-              >
-                <div>
-                  <p className="la-menu__list-name">{item.name}</p>
-                  {item.details ? (
-                    <p className="la-menu__list-details">{item.details}</p>
-                  ) : null}
-                </div>
-                <span className="la-menu__list-price">{item.price}</span>
-              </div>
+        {remainingItems.length > 0 ? (
+          <div className="la-menu__list-items la-menu__list-items--continuation">
+            {remainingItems.map((item) => (
+              <MenuListItem key={`${column.title}-${item.name}`} item={item} />
             ))}
           </div>
         ) : null}
 
         {(column.subCategories || []).map((subCategory) => (
-          <section key={subCategory.id} className="mt-8 first:mt-0">
-            <h4 className="mb-4 text-center font-semibold uppercase tracking-[0.12em] text-[var(--la-burgundy)]">
-              {subCategory.title}
-            </h4>
-            <div className="la-menu__list-items">
-              {subCategory.items.map((item) => (
-                <div
-                  key={`${subCategory.title}-${item.name}`}
-                  className="la-menu__list-item"
-                >
-                  <div>
-                    <p className="la-menu__list-name">{item.name}</p>
-                    {item.details ? (
-                      <p className="la-menu__list-details">{item.details}</p>
-                    ) : null}
-                  </div>
-                  <span className="la-menu__list-price">{item.price}</span>
-                </div>
-              ))}
-            </div>
-          </section>
+          <MenuSubCategory key={subCategory.id} subCategory={subCategory} />
         ))}
 
         {column.note ? (
@@ -895,7 +945,10 @@ function QualityCard({ item, index }) {
   );
 }
 
-export default function MenusPageComponent({ initialRestaurantData = null }) {
+export default function MenusPageComponent({
+  initialRestaurantData = null,
+  printMode = false,
+}) {
   const { restaurantContext } = useContext(GlobalContext);
   const useDesktopOffersLayout = useDesktopMenuOffersLayout();
   const restaurantData =
@@ -903,116 +956,139 @@ export default function MenusPageComponent({ initialRestaurantData = null }) {
   const { address, phone, phoneHref } = buildSiteContactSummary(restaurantData);
   const cardSections = buildRuntimeCardSections(restaurantData);
   const menuOffers = buildRuntimeMenuOffers(restaurantData);
-  const menuOfferColumns = useDesktopOffersLayout
-    ? splitMenuOffersIntoColumns(menuOffers)
-    : [menuOffers];
+  const firstMenuOffer = menuOffers[0] || null;
+  const remainingMenuOffers = menuOffers.slice(1);
+  const menuOfferColumns =
+    !printMode && useDesktopOffersLayout
+      ? splitMenuOffersIntoColumns(menuOffers)
+      : [menuOffers];
 
   return (
     <div className="la-home la-menu">
-      <NavComponent items={navigationItems} />
+      {!printMode ? <NavComponent items={navigationItems} /> : null}
 
       <main>
         <section className="la-shell border-b border-[rgba(197,155,85,0.22)] pb-9 tablet:pb-10 desktop:pb-12">
-          <div className="grid gap-12 min-[1100px]:grid-cols-[0.78fr_1.22fr] min-[1100px]:items-center">
+          <div
+            className="grid gap-12 min-[1100px]:grid-cols-[0.78fr_1.22fr] min-[1100px]:items-center"
+            data-print-menu-intro
+          >
             <div>
-              <h1 className="la-home__display text-[58px] leading-[0.88] tracking-[-0.035em] text-[var(--la-burgundy)] tablet:text-[72px] desktop:text-[102px]">
-                Carte &
-                <br />
+              <h1
+                className="la-home__display text-[58px] leading-[0.88] tracking-[-0.035em] text-[var(--la-burgundy)] tablet:text-[72px] desktop:text-[102px]"
+                data-print-menu-heading
+              >
+                Carte & {!printMode ? <br /> : null}
                 <span className="text-[var(--la-gold)]">Menus</span>
               </h1>
 
-              <p className="mt-7 text-[18px] leading-[1.48] text-[rgba(86,57,44,0.88)] desktop:text-[19px]">
+              <p
+                className="mt-7 text-[18px] leading-[1.48] text-[rgba(86,57,44,0.88)] desktop:text-[19px]"
+                data-print-menu-intro-copy
+              >
                 Une carte généreuse, fidèle à l’esprit brasserie. Des produits
                 de saison, des plats faits maison, des desserts gourmands et nos
                 glaces artisanales pour toutes vos envies.
               </p>
 
-              <p className="mt-5 text-[18px] leading-[1.48] text-[rgba(86,57,44,0.88)] desktop:text-[19px]">
+              <p
+                className="mt-5 text-[18px] leading-[1.48] text-[rgba(86,57,44,0.88)] desktop:text-[19px]"
+                data-print-menu-intro-copy
+              >
                 À deux pas de l’Opéra, au cœur de Limoges.
               </p>
 
-              <div className="mt-9 flex flex-col gap-4 min-[560px]:flex-row">
-                <ActionLinkComponent
-                  href="/reservations"
-                  className="min-[560px]:min-w-[220px]"
-                >
-                  Réserver une table
-                </ActionLinkComponent>
-                <ActionLinkComponent
-                  href="#menu-categories"
-                  secondary
-                  className="min-[560px]:min-w-[220px]"
-                >
-                  Voir les suggestions
-                </ActionLinkComponent>
-              </div>
+              {!printMode ? (
+                <div className="mt-9 flex flex-col gap-4 min-[560px]:flex-row">
+                  <ActionLinkComponent
+                    href="/reservations"
+                    className="min-[560px]:min-w-[220px]"
+                  >
+                    Réserver une table
+                  </ActionLinkComponent>
+                  <ActionLinkComponent
+                    href="#menu-categories"
+                    secondary
+                    className="min-[560px]:min-w-[220px]"
+                  >
+                    Voir les suggestions
+                  </ActionLinkComponent>
+                </div>
+              ) : null}
             </div>
 
-            <div className="relative min-[1100px]:pl-10">
-              <div className="absolute right-0 top-0 hidden h-[170px] w-[160px] desktop:block">
-                <HeroOrnamentComponent />
-              </div>
-
-              <div className="la-hero-media relative mx-auto max-w-[860px] min-[1100px]:mr-0">
-                <div className="la-hero-media__main relative overflow-hidden border border-[rgba(197,155,85,0.16)] bg-white/70 shadow-[0_20px_40px_rgba(82,49,33,0.12)] min-[1100px]:ml-[85px]">
-                  <div className="relative" style={{ aspectRatio: "0.94 / 1" }}>
-                    <Image
-                      src="/img/hero/1.png"
-                      alt="Le bar des Artistes"
-                      fill
-                      sizes="(max-width: 1099px) 100vw, 720px"
-                      className="object-cover"
-                      priority
-                    />
-                  </div>
+            {!printMode ? (
+              <div className="relative min-[1100px]:pl-10">
+                <div className="absolute right-0 top-0 hidden h-[170px] w-[160px] desktop:block">
+                  <HeroOrnamentComponent />
                 </div>
 
-                <div className="la-hero-media__thumbs mt-5 grid gap-5 min-[720px]:grid-cols-2 min-[1100px]:mt-0">
-                  <div className="la-home__overlay-photo relative overflow-hidden bg-white min-[1100px]:absolute min-[1100px]:left-0 min-[1100px]:top-[290px] min-[1100px]:w-[214px]">
+                <div className="la-hero-media relative mx-auto max-w-[860px] min-[1100px]:mr-0">
+                  <div className="la-hero-media__main relative overflow-hidden border border-[rgba(197,155,85,0.16)] bg-white/70 shadow-[0_20px_40px_rgba(82,49,33,0.12)] min-[1100px]:ml-[85px]">
                     <div
                       className="relative"
-                      style={{ aspectRatio: "0.82 / 1" }}
+                      style={{ aspectRatio: "0.94 / 1" }}
                     >
                       <Image
-                        src="/img/dishes/1.png"
-                        alt="Suggestion de carpaccio"
+                        src="/img/hero/1.png"
+                        alt="Le bar des Artistes"
                         fill
-                        sizes="(max-width: 719px) 100vw, 214px"
+                        sizes="(max-width: 1099px) 100vw, 720px"
                         className="object-cover"
+                        priority
                       />
                     </div>
                   </div>
 
-                  <div className="la-home__overlay-photo relative overflow-hidden bg-white min-[1100px]:absolute min-[1100px]:bottom-[14px] min-[1100px]:right-[-18px] min-[1100px]:w-[248px]">
-                    <div
-                      className="relative"
-                      style={{ aspectRatio: "0.84 / 1" }}
-                    >
-                      <Image
-                        src="/img/hero/2.png"
-                        alt="Façade des Artistes"
-                        fill
-                        sizes="(max-width: 719px) 100vw, 248px"
-                        className="object-cover"
-                      />
+                  <div className="la-hero-media__thumbs mt-5 grid gap-5 min-[720px]:grid-cols-2 min-[1100px]:mt-0">
+                    <div className="la-home__overlay-photo relative overflow-hidden bg-white min-[1100px]:absolute min-[1100px]:left-0 min-[1100px]:top-[290px] min-[1100px]:w-[214px]">
+                      <div
+                        className="relative"
+                        style={{ aspectRatio: "0.82 / 1" }}
+                      >
+                        <Image
+                          src="/img/dishes/1.png"
+                          alt="Suggestion de carpaccio"
+                          fill
+                          sizes="(max-width: 719px) 100vw, 214px"
+                          className="object-cover"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="la-home__overlay-photo relative overflow-hidden bg-white min-[1100px]:absolute min-[1100px]:bottom-[14px] min-[1100px]:right-[-18px] min-[1100px]:w-[248px]">
+                      <div
+                        className="relative"
+                        style={{ aspectRatio: "0.84 / 1" }}
+                      >
+                        <Image
+                          src="/img/hero/2.png"
+                          alt="Façade des Artistes"
+                          fill
+                          sizes="(max-width: 719px) 100vw, 248px"
+                          className="object-cover"
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
+            ) : null}
           </div>
         </section>
 
-        <section
-          id="menu-categories"
-          className="la-shell pb-10 pt-7 tablet:pb-12 desktop:pb-14"
-        >
-          <div className="la-menu__category-grid custom-scrollbar">
-            {categoryTabs.map((item) => (
-              <MenuCategoryTab key={item.id} item={item} />
-            ))}
-          </div>
-        </section>
+        {!printMode ? (
+          <section
+            id="menu-categories"
+            className="la-shell pb-10 pt-7 tablet:pb-12 desktop:pb-14"
+          >
+            <div className="la-menu__category-grid custom-scrollbar">
+              {categoryTabs.map((item) => (
+                <MenuCategoryTab key={item.id} item={item} />
+              ))}
+            </div>
+          </section>
+        ) : null}
 
         {/* <section
           id="menu-highlights"
@@ -1045,57 +1121,100 @@ export default function MenusPageComponent({ initialRestaurantData = null }) {
         </section>
 
         <section className="la-shell pb-10 pt-1 tablet:pb-12 desktop:pb-14">
-          <MenuSectionMarker eyebrow="Formules" title="Les menus" />
-          <div className="la-menu__offers-grid">
-            {menuOfferColumns.map((column, columnIndex) => (
-              <div
-                key={`menu-offer-column-${columnIndex}`}
-                className="la-menu__offers-column"
-              >
-                {column.map((item) => (
-                  <FormulaStrip
-                    key={item.id}
-                    id={item.id}
-                    title={item.title}
-                    subtitle={item.subtitle}
-                    items={item.items}
-                    variant={item.variant}
-                  />
+          {printMode ? (
+            <>
+              <div data-print-section-first-chunk>
+                <MenuSectionMarker eyebrow="Formules" title="Les menus" />
+                {firstMenuOffer ? (
+                  <div className="la-menu__offers-grid">
+                    <div className="la-menu__offers-column">
+                      <FormulaStrip
+                        id={firstMenuOffer.id}
+                        title={firstMenuOffer.title}
+                        subtitle={firstMenuOffer.subtitle}
+                        items={firstMenuOffer.items}
+                        variant={firstMenuOffer.variant}
+                      />
+                    </div>
+                  </div>
+                ) : null}
+              </div>
+              {remainingMenuOffers.length ? (
+                <div className="la-menu__offers-grid mt-5">
+                  <div className="la-menu__offers-column">
+                    {remainingMenuOffers.map((item) => (
+                      <FormulaStrip
+                        key={item.id}
+                        id={item.id}
+                        title={item.title}
+                        subtitle={item.subtitle}
+                        items={item.items}
+                        variant={item.variant}
+                      />
+                    ))}
+                  </div>
+                </div>
+              ) : null}
+            </>
+          ) : (
+            <>
+              <MenuSectionMarker eyebrow="Formules" title="Les menus" />
+              <div className="la-menu__offers-grid">
+                {menuOfferColumns.map((column, columnIndex) => (
+                  <div
+                    key={`menu-offer-column-${columnIndex}`}
+                    className="la-menu__offers-column"
+                  >
+                    {column.map((item) => (
+                      <FormulaStrip
+                        key={item.id}
+                        id={item.id}
+                        title={item.title}
+                        subtitle={item.subtitle}
+                        items={item.items}
+                        variant={item.variant}
+                      />
+                    ))}
+                  </div>
                 ))}
               </div>
-            ))}
-          </div>
+            </>
+          )}
         </section>
 
-        <section className="la-shell pb-10 pt-1 tablet:pb-12 desktop:pb-14">
-          <div className="la-home__framed-section la-home__framed-section--title-absolute la-menu__qualities-frame">
-            <div className="la-home__framed-heading la-home__framed-heading--absolute la-menu__title-band">
-              <div className="la-home__framed-title-row la-home__framed-title-row--with-lines la-menu__title-band">
-                <h2 className="la-home__section-title la-menu__qualities-title">
-                  L’esprit brasserie, tout simplement
-                </h2>
+        {!printMode ? (
+          <section className="la-shell pb-10 pt-1 tablet:pb-12 desktop:pb-14">
+            <div className="la-home__framed-section la-home__framed-section--title-absolute la-menu__qualities-frame">
+              <div className="la-home__framed-heading la-home__framed-heading--absolute la-menu__title-band">
+                <div className="la-home__framed-title-row la-home__framed-title-row--with-lines la-menu__title-band">
+                  <h2 className="la-home__section-title la-menu__qualities-title">
+                    L’esprit brasserie, tout simplement
+                  </h2>
+                </div>
+              </div>
+
+              <div className="la-home__framed-content px-4 pb-4 pt-4 tablet:px-6 desktop:px-8">
+                <div className="grid min-[900px]:grid-cols-4">
+                  {qualityItems.map((item, index) => (
+                    <QualityCard key={item.title} item={item} index={index} />
+                  ))}
+                </div>
               </div>
             </div>
+          </section>
+        ) : null}
 
-            <div className="la-home__framed-content px-4 pb-4 pt-4 tablet:px-6 desktop:px-8">
-              <div className="grid min-[900px]:grid-cols-4">
-                {qualityItems.map((item, index) => (
-                  <QualityCard key={item.title} item={item} index={index} />
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <ReservationCtaComponent
-          phone={phone}
-          phoneHref={phoneHref}
-          buttonLabel="Réserver une table"
-          note="Réservation conseillée, notamment le week-end et les soirs de spectacle."
-        />
+        {!printMode ? (
+          <ReservationCtaComponent
+            phone={phone}
+            phoneHref={phoneHref}
+            buttonLabel="Réserver une table"
+            note="Réservation conseillée, notamment le week-end et les soirs de spectacle."
+          />
+        ) : null}
       </main>
 
-      <FooterComponent />
+      {!printMode ? <FooterComponent /> : null}
     </div>
   );
 }

@@ -650,7 +650,6 @@ a {
 }
 
 .la-venue__title {
-
   text-wrap: balance;
 }
 
@@ -1988,6 +1987,10 @@ a {
   display: grid;
   gap: 16px;
   margin-top: 28px;
+}
+
+.la-menu__list-items--continuation {
+  margin-top: 16px;
 }
 
 .la-menu__list-item {

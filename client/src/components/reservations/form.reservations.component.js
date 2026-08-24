@@ -617,7 +617,9 @@ export default function FormReservationComponent({
       setSuccessMessage(
         isWaitlistRequest
           ? "Votre demande a été ajoutée à la liste d’attente. Vous recevrez un email si une place se libère."
-          : "Votre réservation a bien été enregistrée. Nous avons bien reçu votre demande.",
+          : Boolean(restaurant?.reservationsSettings?.auto_accept)
+            ? "Votre réservation est confirmée. Pour la modifier ou l’annuler, contactez directement le restaurant ou utilisez le lien présent dans l’e-mail de confirmation."
+            : "Votre demande de réservation est en attente de confirmation. Dès qu’elle sera confirmée, vous pourrez la modifier ou l’annuler en contactant directement le restaurant ou en utilisant le lien présent dans l’e-mail de confirmation.",
       );
 
       if (router.query.reservationDate || router.query.reservationTime) {
@@ -1088,7 +1090,7 @@ function FieldGroup({ label, invalid = false, children }) {
   );
 }
 
-function HorizontalChoiceScroller({
+export function HorizontalChoiceScroller({
   children,
   invalid = false,
   arrowLabel,

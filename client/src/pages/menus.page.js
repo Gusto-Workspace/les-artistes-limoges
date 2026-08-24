@@ -1,8 +1,22 @@
+import { useContext } from "react";
 import SeoHeadComponent from "@/components/_shared/seo/seo-head.component";
 import MenusPageComponent from "@/components/menus/menus.page.component";
 import { buildStaticPageProps } from "@/_assets/utils/page-props.utils";
+import { GlobalContext } from "@/contexts/global.context";
+import GustoPrintComponent, {
+  useGustoPrintMode,
+} from "@/components/_shared/gusto-print/gusto-print.component";
 
 export default function MenusPage({ seoRestaurantData = null }) {
+  const { restaurantContext } = useContext(GlobalContext);
+  const { printMode, autoPrint } = useGustoPrintMode();
+  const restaurantData = restaurantContext.restaurantData || seoRestaurantData;
+  const menuContent = (
+    <MenusPageComponent
+      initialRestaurantData={seoRestaurantData}
+      printMode={printMode}
+    />
+  );
   return (
     <>
       <SeoHeadComponent
@@ -23,7 +37,18 @@ export default function MenusPage({ seoRestaurantData = null }) {
         restaurantData={seoRestaurantData}
       />
 
-      <MenusPageComponent initialRestaurantData={seoRestaurantData} />
+      {printMode ? (
+        <GustoPrintComponent
+          autoPrint={autoPrint}
+          restaurant={restaurantData}
+          dataLoading={restaurantContext.dataLoading && !seoRestaurantData}
+          dataError={restaurantContext.dataError && !seoRestaurantData}
+        >
+          {menuContent}
+        </GustoPrintComponent>
+      ) : (
+        menuContent
+      )}
     </>
   );
 }
