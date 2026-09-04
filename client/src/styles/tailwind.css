@@ -49,6 +49,20 @@
 .gusto-print-mode .la-menu__offers-grid {
   grid-template-columns: minmax(0, 1fr) !important;
 }
+.gusto-print-mode .la-menu__list-card > div {
+  padding-top: 20px !important;
+  padding-bottom: 20px !important;
+}
+.gusto-print-mode .la-menu__list-items {
+  gap: 10px !important;
+  margin-top: 18px !important;
+}
+.gusto-print-mode .la-menu__list-items--continuation {
+  margin-top: 10px !important;
+}
+.gusto-print-mode .la-menu__list-item {
+  padding-bottom: 8px !important;
+}
 .gusto-print-mode [data-print-menu-intro] {
   grid-template-columns: minmax(0, 1fr) !important;
 }
