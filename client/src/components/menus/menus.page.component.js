@@ -1120,7 +1120,10 @@ export default function MenusPageComponent({
           </div>
         </section>
 
-        <section className="la-shell pb-10 pt-1 tablet:pb-12 desktop:pb-14">
+        <section
+          className="la-shell pb-10 pt-1 tablet:pb-12 desktop:pb-14"
+          data-print-menus-section={printMode ? "true" : undefined}
+        >
           {printMode ? (
             <>
               <div data-print-section-first-chunk>
