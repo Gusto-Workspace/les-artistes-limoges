@@ -58,18 +58,31 @@ const qualityItems = [
   },
 ];
 
-const formulaCategoryTab = {
-  id: "formules",
-  label: "Formules",
-  iconSrc: "/img/pictos/37.png",
-  iconAlt: "Pictogramme formules",
-};
-
-const cardCategoryIcons = [
-  "/img/pictos/38.png",
-  "/img/pictos/34.png",
-  "/img/pictos/35.png",
-  "/img/pictos/36.png",
+const categoryTabs = [
+  {
+    id: "formules",
+    label: "Nos formules",
+    iconSrc: "/img/pictos/37.png",
+    iconAlt: "Pictogramme cloche de service",
+  },
+  {
+    id: "partager",
+    label: "À partager",
+    iconSrc: "/img/pictos/38.png",
+    iconAlt: "Pictogramme plats à partager",
+  },
+  {
+    id: "incontournables",
+    label: "Les incontournables",
+    iconSrc: "/img/pictos/34.png",
+    iconAlt: "Pictogramme viande et poisson",
+  },
+  {
+    id: "gourmand",
+    label: "Côté gourmand",
+    iconSrc: "/img/pictos/12.png",
+    iconAlt: "Pictogramme glace",
+  },
 ];
 
 const lunchFormulaItems = [
@@ -676,15 +689,6 @@ export default function MenusPageComponent({
   const { address, phone, phoneHref } = buildSiteContactSummary(restaurantData);
   const cardSections = buildRuntimeCardSections(restaurantData);
   const menuOffers = buildRuntimeMenuOffers(restaurantData);
-  const categoryTabs = [
-    formulaCategoryTab,
-    ...cardSections.map((section, index) => ({
-      id: section.id,
-      label: section.title,
-      iconSrc: cardCategoryIcons[index % cardCategoryIcons.length],
-      iconAlt: `Pictogramme ${section.title}`,
-    })),
-  ];
   const firstMenuOffer = menuOffers[0] || null;
   const remainingMenuOffers = menuOffers.slice(1);
   const menuOfferColumns =
