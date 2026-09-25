@@ -26,258 +26,6 @@ const navigationItems = [
   { label: "Contact", href: "/contact" },
 ];
 
-const fallbackCardSections = [
-  {
-    id: "menu-section-partager",
-    title: "En entrée ou à partager",
-    items: [
-      {
-        name: "Planche des artistes",
-        price: "17,00 €",
-        details:
-          "Jambon de pays, rosette, terrine de campagne, salade, emmental, chèvre et roquefort.",
-      },
-      {
-        name: "Planche de bouchées croustillantes",
-        price: "17,00 €",
-        details:
-          "Accras de morue, oignons rings, beignets de calamar, crevettes panées, mozzarella sticks, légumes tempura.",
-      },
-      {
-        name: "Planchette de charcuterie",
-        price: "13,00 €",
-        details: "Terrine, jambon de pays, rosette.",
-      },
-      {
-        name: "Planche de saumon",
-        price: "19,00 €",
-        details: "Club saumon, rillette et saumon gravlax.",
-      },
-      { name: "Le fuet", price: "8,00 €" },
-      {
-        name: "Club saumon",
-        price: "14,50 €",
-        details: "Saumon gravlax, tomates, concombre pickles, fromage frais.",
-      },
-      {
-        name: "Camembert rôti",
-        price: "16,50 €",
-        details: "Miel-romarin, jambon cru, noix, frites.",
-      },
-      { name: "Terrine de campagne", price: "6,50 €" },
-      { name: "Saumon gravlax", price: "14,00 €" },
-      {
-        name: "Salade de chèvre",
-        price: "8 €",
-        details: "Palet de chèvre, miel, tomates, oeufs, noix, lardons.",
-      },
-      { name: "Oeufs mimosas", price: "7,00 €" },
-      { name: "Beignets de calamar", price: "10,00 €" },
-      { name: "Rillettes poisson", price: "8,50 €" },
-    ],
-    showOrnament: true,
-  },
-  {
-    id: "menu-section-tartines",
-    title: "Nos tartines traditionnelles",
-    intro: "Pain boulanger aillé et persillé.",
-    items: [
-      {
-        name: "Tartine italienne",
-        price: "13,00 €",
-        details: "Jambon de pays, tomates, mozzarella, pesto.",
-      },
-      {
-        name: "Tartine norvégienne",
-        price: "13,50 €",
-        details: "Saumon fumé, crème, mozzarella.",
-      },
-      {
-        name: "Tartine berrichonne",
-        price: "12,50 €",
-        details: "Chèvre, mozzarella, tomates, crème, miel.",
-      },
-      {
-        name: "Tartine fromagère",
-        price: "13,00 €",
-        details: "Roquefort, mozzarella chèvre, tomates.",
-      },
-    ],
-    showOrnament: true,
-  },
-  {
-    id: "menu-section-viandes",
-    title: "Sélection de viandes",
-    items: [
-      { name: "Entrecôte limousine", price: "27,50 €" },
-      { name: "Pièce du boucher limousine", price: "21,50 €" },
-      { name: "Demi magret de canard ou entier", price: "21,50 € / 30,00 €" },
-      { name: "Steack haché limousin à cheval", price: "17,00 €" },
-      {
-        name: "Andouillette grillée",
-        price: "17,50 €",
-        details: "Ferme de Mont Vert, sauce moutarde.",
-      },
-      { name: "Confit de canard", price: "18,00 €" },
-      {
-        name: "Escalope de volaille à la crème",
-        price: "16,00 €",
-        details: "À la crème et ses champignons.",
-      },
-      {
-        name: "Tartare de boeuf limousin",
-        price: "18,00 €",
-        details: "Préparé ou poêlé à la demande.",
-      },
-      { name: "Carpaccio de boeuf", price: "15,50 €" },
-    ],
-    note: "Tous nos plats sont accompagnés de : frites, salade, riz ou légumes.",
-    showOrnament: true,
-  },
-  {
-    id: "menu-section-mer",
-    title: "Mer & traditions",
-    items: [
-      { name: "Gambas persillade", price: "20,00 €" },
-      { name: "Noix de saint-jacques persillade", price: "23,50 €" },
-      { name: "Pavé de saumon", price: "17,50 €" },
-      { name: "Fish and chips sauce tartare", price: "16,50 €" },
-      {
-        name: "Farandole marine",
-        price: "29,00 €",
-        details: "Noix de St Jacques, gambas, pavé saumon, sauce tartare.",
-      },
-    ],
-    showOrnament: true,
-  },
-  {
-    id: "menu-section-burgers",
-    title: "Burgers & petits creux",
-    items: [
-      {
-        name: "Cheesebacon",
-        price: "18,50 €",
-        details:
-          "Pain maison, steak haché, cheddar, bacon, tomates, oignons, salade.",
-      },
-      {
-        name: "Maxi hamburger",
-        price: "23,00 €",
-        details:
-          "Pain maison, deux steak haché, cheddar, tomates, oignons, salade.",
-      },
-      {
-        name: "Hamburger poulet",
-        price: "17,50 €",
-        details: "Pain maison, tenders, tomates, oignons, cheddar, salade.",
-      },
-      {
-        name: "Hamburger fish",
-        price: "19,50 €",
-        details: "Pain maison, fish pané, tomates, oignons, cheddar, salade.",
-      },
-      { name: "Croque-monsieur", price: "9,50 €" },
-      { name: "Croque-madame", price: "10,00 €" },
-      { name: "Croque-monsieur au chèvre", price: "10,50 €" },
-      { name: "Croque-monsieur au roquefort", price: "10,50 €" },
-      {
-        name: "Croque fromager",
-        price: "12,00 €",
-        details: "Chèvre et roquefort.",
-      },
-    ],
-    showOrnament: true,
-  },
-  {
-    id: "menu-section-salades",
-    title: "Salades maisons & traditions",
-    items: [
-      {
-        name: "Salade des artistes",
-        price: "18,50 €",
-        details:
-          "Gésiers, manchons de canard, magret séché, tomates, oeuf, noix, croûtons.",
-      },
-      {
-        name: "Salade chèvre chaud et miel sur toast",
-        price: "15,00 €",
-        details: "Palet de chèvre, miel, tomates, oeuf, noix, lardons.",
-      },
-      {
-        name: "Salade parisienne",
-        price: "13,50 €",
-        details: "Jambon blanc, tomates, oeuf, emmental.",
-      },
-      {
-        name: "Salade César",
-        price: "15,00 €",
-        details: "Poulet pané, oeuf, tomates, croûtons, parmesan, sauce César.",
-      },
-      {
-        name: "Salade de fruits de mer",
-        price: "17,00 €",
-        details: "Gambas, saumon gravlax, agrumes, oeuf, tapenade, tomates.",
-      },
-      {
-        name: "Salade italienne",
-        price: "15,00 €",
-        details:
-          "Jambon de pays, tomates confites, mozzarella, olives, oignons rouges, pesto.",
-      },
-      {
-        name: "Salade rustique",
-        price: "15,50 €",
-        details:
-          "Jambon de pays, tomates, camembert pané, oeuf, oignons rouges.",
-      },
-    ],
-    showOrnament: true,
-  },
-  {
-    id: "menu-section-desserts",
-    title: "Le côté gourmand",
-    items: [
-      { name: "Assiette de fruits frais", price: "7,00 €" },
-      { name: "Crème brûlée", price: "7,00 €" },
-      { name: "Tiramisu", price: "7,00 €" },
-      { name: "Mousse au chocolat", price: "6,00 €" },
-      { name: "Moelleux au chocolat", price: "8,00 €" },
-      { name: "Profiterole chantilly", price: "7,50 €" },
-      { name: "Café gourmand", price: "9,00 €" },
-      { name: "Thé gourmand", price: "9,50 €" },
-      { name: "Baba au rhum", price: "8,00 €" },
-      { name: "Gaufre au sucre", price: "4,50 €" },
-      { name: "Gaufre Nutella ou caramel", price: "5,50 €" },
-      { name: "Crêpe sucre", price: "4,00 €" },
-      { name: "Crêpe Nutella ou caramel", price: "5,50 €" },
-      { name: "Fromage blanc coulis au choix", price: "6,00 €" },
-    ],
-    showOrnament: true,
-  },
-  {
-    id: "menu-section-supplements",
-    title: "Suppléments & accompagnements",
-    items: [
-      {
-        name: "Sauce",
-        price: "2,00 €",
-        details: "Roquefort, poivre, moutarde, échalote, tartare.",
-      },
-      {
-        name: "Petit plus",
-        price: "5,00 €",
-        details:
-          "Assiette de frites, assiette de légumes, assiette de riz ou salade verte.",
-      },
-      {
-        name: "À ajouter au dessert",
-        price: "2,60 €",
-        details: "Chantilly, caramel, chocolat, coulis fruit, sauce café.",
-      },
-    ],
-    showOrnament: false,
-  },
-];
 
 const qualityItems = [
   {
@@ -310,51 +58,18 @@ const qualityItems = [
   },
 ];
 
-const categoryTabs = [
-  {
-    id: "formules",
-    label: "Formules",
-    iconSrc: "/img/pictos/37.png",
-    iconAlt: "Pictogramme formules",
-    href: "#menu-formule",
-    sectionIds: ["menu-formule", "menu-bambino"],
-  },
-  {
-    id: "entrees",
-    label: "Entrées & à partager",
-    iconSrc: "/img/pictos/38.png",
-    iconAlt: "Pictogramme entrées et à partager",
-    href: "#menu-section-partager",
-    sectionIds: ["menu-section-partager"],
-  },
-  {
-    id: "brasserie",
-    label: "Viandes & mer",
-    iconSrc: "/img/pictos/34.png",
-    iconAlt: "Pictogramme viandes et mer",
-    href: "#menu-section-viandes",
-    sectionIds: ["menu-section-viandes", "menu-section-mer"],
-  },
-  {
-    id: "snacking",
-    label: "Burgers & salades",
-    iconSrc: "/img/pictos/35.png",
-    iconAlt: "Pictogramme burgers et salades",
-    href: "#menu-section-tartines",
-    sectionIds: [
-      "menu-section-tartines",
-      "menu-section-burgers",
-      "menu-section-salades",
-    ],
-  },
-  {
-    id: "desserts",
-    label: "Desserts & douceurs",
-    iconSrc: "/img/pictos/36.png",
-    iconAlt: "Pictogramme desserts et douceurs",
-    href: "#menu-section-desserts",
-    sectionIds: ["menu-section-desserts", "menu-section-supplements"],
-  },
+const formulaCategoryTab = {
+  id: "formules",
+  label: "Formules",
+  iconSrc: "/img/pictos/37.png",
+  iconAlt: "Pictogramme formules",
+};
+
+const cardCategoryIcons = [
+  "/img/pictos/38.png",
+  "/img/pictos/34.png",
+  "/img/pictos/35.png",
+  "/img/pictos/36.png",
 ];
 
 const lunchFormulaItems = [
@@ -431,7 +146,7 @@ function buildRuntimeCardSections(restaurantData) {
     }),
   );
 
-  return apiSections.length ? apiSections : fallbackCardSections;
+  return apiSections;
 }
 
 function buildMenuOfferItemsFromBlocks(blocks = []) {
@@ -440,7 +155,8 @@ function buildMenuOfferItemsFromBlocks(blocks = []) {
       const lines = (block.lines || [])
         .filter((line) => !isMenuBlankLine(line))
         .map((line) => ({
-          value: line,
+          value: line?.name || line,
+          description: line?.description || "",
           isSeparator: isMenuSeparatorLabel(line),
         }));
 
@@ -471,7 +187,8 @@ function buildMenuOfferLinesFromBlocks(blocks = []) {
     const lines = (block.lines || [])
       .filter((line) => !isMenuBlankLine(line))
       .map((line) => ({
-        value: line,
+        value: line?.name || line,
+        description: line?.description || "",
         isSeparator: isMenuSeparatorLabel(line),
       }));
 
@@ -791,6 +508,9 @@ function FormulaStrip({ id, title, subtitle, items, variant = "options" }) {
                           className="la-menu__formula-description"
                         >
                           {line.value}
+                          {line.description ? (
+                            <span className="block text-[0.85em] opacity-70">{line.description}</span>
+                          ) : null}
                         </p>
                       ),
                     )}
@@ -956,6 +676,15 @@ export default function MenusPageComponent({
   const { address, phone, phoneHref } = buildSiteContactSummary(restaurantData);
   const cardSections = buildRuntimeCardSections(restaurantData);
   const menuOffers = buildRuntimeMenuOffers(restaurantData);
+  const categoryTabs = [
+    formulaCategoryTab,
+    ...cardSections.map((section, index) => ({
+      id: section.id,
+      label: section.title,
+      iconSrc: cardCategoryIcons[index % cardCategoryIcons.length],
+      iconAlt: `Pictogramme ${section.title}`,
+    })),
+  ];
   const firstMenuOffer = menuOffers[0] || null;
   const remainingMenuOffers = menuOffers.slice(1);
   const menuOfferColumns =
@@ -1113,11 +842,17 @@ export default function MenusPageComponent({
 
         <section className="la-shell pb-8 pt-1 tablet:pb-10 desktop:pb-12">
           <MenuSectionMarker eyebrow="Brasserie" title="La carte" />
-          <div className="la-menu__sections-stack">
-            {cardSections.map((column) => (
-              <MenuListCard key={column.id} column={column} />
-            ))}
-          </div>
+          {cardSections.length ? (
+            <div className="la-menu__sections-stack">
+              {cardSections.map((column) => (
+                <MenuListCard key={column.id} column={column} />
+              ))}
+            </div>
+          ) : (
+            <p className="py-8 text-center text-[16px] text-[rgba(86,57,44,0.86)]">
+              La carte est en cours de création
+            </p>
+          )}
         </section>
 
         <section
