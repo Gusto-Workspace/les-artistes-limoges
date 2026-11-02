@@ -1,3 +1,4 @@
+import StaticPhoto from "@/components/_shared/static-photo.component";
 import Image from "next/image";
 import { useContext } from "react";
 import { GlobalContext } from "@/contexts/global.context";
@@ -111,11 +112,10 @@ export default function LegalDocumentPageComponent({
               <div className="la-hero-media relative mx-auto max-w-[860px] min-[1100px]:mr-0">
                 <div className="la-hero-media__main relative overflow-hidden border border-[rgba(197,155,85,0.16)] bg-white/70 shadow-[0_20px_40px_rgba(82,49,33,0.12)] min-[1100px]:ml-[85px]">
                   <div className="relative" style={{ aspectRatio: "0.94 / 1" }}>
-                    <Image
-                      src="/img/photos/floor-0/3.png"
+                    <StaticPhoto
+                      src="/img/photos/floor-0/3-768.webp"
                       alt="Le bar des Artistes"
-                      fill
-                      sizes="(max-width: 1099px) 100vw, 720px"
+                      sizes="(max-width: 1099px) 150vw, 1000px"
                       className="object-cover"
                       priority
                     />
@@ -128,10 +128,9 @@ export default function LegalDocumentPageComponent({
                       className="relative"
                       style={{ aspectRatio: "0.82 / 1" }}
                     >
-                      <Image
-                        src="/img/photos/outside/2.png"
+                      <StaticPhoto
+                        src="/img/photos/outside/2-768.webp"
                         alt="La façade des Artistes"
-                        fill
                         sizes="(max-width: 719px) 100vw, 220px"
                         className="object-cover"
                       />
@@ -143,10 +142,9 @@ export default function LegalDocumentPageComponent({
                       className="relative"
                       style={{ aspectRatio: "0.84 / 1" }}
                     >
-                      <Image
-                        src="/img/photos/floor-1/2.png"
+                      <StaticPhoto
+                        src="/img/photos/floor-1/2-768.webp"
                         alt="La salle principale des Artistes"
-                        fill
                         sizes="(max-width: 719px) 100vw, 250px"
                         className="object-cover"
                       />

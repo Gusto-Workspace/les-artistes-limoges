@@ -1,4 +1,4 @@
-import Image from "next/image";
+import StaticPhoto from "@/components/_shared/static-photo.component";
 import { useContext } from "react";
 import { GlobalContext } from "@/contexts/global.context";
 import ActionLinkComponent from "@/components/_shared/action-link.component";
@@ -87,11 +87,10 @@ export default function NewsPage({ seoRestaurantData = null }) {
                       className="relative"
                       style={{ aspectRatio: "0.94 / 1" }}
                     >
-                      <Image
-                        src="/img/photos/floor-1/2.png"
+                      <StaticPhoto
+                        src="/img/photos/floor-1/2-768.webp"
                         alt="L'étage cosy des Artistes"
-                        fill
-                        sizes="(max-width: 1099px) 100vw, 720px"
+                        sizes="(max-width: 1099px) 150vw, 1000px"
                         className="object-cover"
                         priority
                       />
@@ -104,10 +103,9 @@ export default function NewsPage({ seoRestaurantData = null }) {
                         className="relative"
                         style={{ aspectRatio: "0.82 / 1" }}
                       >
-                        <Image
-                          src="/img/photos/outside/5.png"
+                        <StaticPhoto
+                          src="/img/photos/outside/5-768.webp"
                           alt="La terrasse des Artistes"
-                          fill
                           sizes="(max-width: 719px) 100vw, 230px"
                           className="object-cover"
                         />
@@ -119,10 +117,9 @@ export default function NewsPage({ seoRestaurantData = null }) {
                         className="relative"
                         style={{ aspectRatio: "0.84 / 1" }}
                       >
-                        <Image
-                          src="/img/photos/floor-0/4.png"
+                        <StaticPhoto
+                          src="/img/photos/floor-0/4-768.webp"
                           alt="La salle des Artistes"
-                          fill
                           sizes="(max-width: 719px) 100vw, 238px"
                           className="object-cover"
                         />

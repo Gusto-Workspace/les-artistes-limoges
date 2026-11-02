@@ -1,4 +1,4 @@
-import Image from "next/image";
+import StaticPhoto from "@/components/_shared/static-photo.component";
 
 export default function VenueShowcaseComponent({
   sectionId,
@@ -36,10 +36,9 @@ export default function VenueShowcaseComponent({
                   className="relative overflow-hidden bg-white"
                   style={{ aspectRatio: "1.18 / 1" }}
                 >
-                  <Image
+                  <StaticPhoto
                     src={item.image}
                     alt={item.imageAlt}
-                    fill
                     sizes="(max-width: 1279px) 100vw, 33vw"
                     className="object-cover"
                   />

@@ -1,4 +1,4 @@
-import Image from "next/image";
+import StaticPhoto from "@/components/_shared/static-photo.component";
 import { useContext } from "react";
 import { GlobalContext } from "@/contexts/global.context";
 import { buildSiteContactSummary } from "@/_assets/utils/contact.utils";
@@ -48,19 +48,19 @@ const venueItems = [
   {
     title: "La terrasse",
     description: "Pour un déjeuner au soleil ou un apéritif en ville.",
-    image: "/img/photos/outside/5.png",
+    image: "/img/photos/outside/5-768.webp",
     imageAlt: "La terrasse des Artistes",
   },
   {
     title: "La salle principale",
     description: "L’ambiance brasserie, vivante et accueillante.",
-    image: "/img/photos/floor-0/3.png",
+    image: "/img/photos/floor-0/3-768.webp",
     imageAlt: "La salle principale des Artistes",
   },
   {
     title: "L’étage cosy",
     description: "Une salle plus calme pour un repas en toute tranquillité.",
-    image: "/img/photos/floor-1/2.png",
+    image: "/img/photos/floor-1/2-768.webp",
     imageAlt: "L'étage cosy des Artistes",
   },
 ];
@@ -117,11 +117,10 @@ export default function ReservationsPageComponent() {
               <div className="la-hero-media relative mx-auto max-w-[860px] min-[1100px]:mr-0">
                 <div className="la-hero-media__main relative overflow-hidden border border-[rgba(197,155,85,0.16)] bg-white/70 shadow-[0_20px_40px_rgba(82,49,33,0.12)] min-[1100px]:ml-[85px]">
                   <div className="relative" style={{ aspectRatio: "0.94 / 1" }}>
-                    <Image
-                      src="/img/photos/floor-0/2.png"
+                    <StaticPhoto
+                      src="/img/photos/floor-0/2-768.webp"
                       alt="Le bar des Artistes"
-                      fill
-                      sizes="(max-width: 1099px) 100vw, 720px"
+                      sizes="(max-width: 1099px) 150vw, 1000px"
                       className="object-cover"
                       priority
                     />
@@ -134,10 +133,9 @@ export default function ReservationsPageComponent() {
                       className="relative"
                       style={{ aspectRatio: "0.82 / 1" }}
                     >
-                      <Image
-                        src="/img/photos/outside/5.png"
+                      <StaticPhoto
+                        src="/img/photos/outside/5-768.webp"
                         alt="La façade des Artistes"
-                        fill
                         sizes="(max-width: 719px) 100vw, 228px"
                         className="object-cover"
                       />
@@ -149,10 +147,9 @@ export default function ReservationsPageComponent() {
                       className="relative"
                       style={{ aspectRatio: "0.84 / 1" }}
                     >
-                      <Image
-                        src="/img/photos/floor-1/3.png"
+                      <StaticPhoto
+                        src="/img/photos/floor-1/3-768.webp"
                         alt="La salle des Artistes"
-                        fill
                         sizes="(max-width: 719px) 100vw, 238px"
                         className="object-cover"
                       />

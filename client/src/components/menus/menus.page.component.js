@@ -1,3 +1,4 @@
+import StaticPhoto from "@/components/_shared/static-photo.component";
 import Image from "next/image";
 import { useContext, useEffect, useState } from "react";
 import { GlobalContext } from "@/contexts/global.context";
@@ -762,10 +763,9 @@ export default function MenusPageComponent({
                       className="relative"
                       style={{ aspectRatio: "0.94 / 1" }}
                     >
-                      <Image
-                        src="/img/hero/1.png"
+                      <StaticPhoto
+                        src="/img/hero/1-768.webp"
                         alt="Le bar des Artistes"
-                        fill
                         sizes="(max-width: 1099px) 100vw, 720px"
                         className="object-cover"
                         priority
@@ -779,10 +779,9 @@ export default function MenusPageComponent({
                         className="relative"
                         style={{ aspectRatio: "0.82 / 1" }}
                       >
-                        <Image
-                          src="/img/dishes/1.png"
+                        <StaticPhoto
+                          src="/img/dishes/1-768.webp"
                           alt="Suggestion de carpaccio"
-                          fill
                           sizes="(max-width: 719px) 100vw, 214px"
                           className="object-cover"
                         />
@@ -794,10 +793,9 @@ export default function MenusPageComponent({
                         className="relative"
                         style={{ aspectRatio: "0.84 / 1" }}
                       >
-                        <Image
-                          src="/img/hero/2.png"
+                        <StaticPhoto
+                          src="/img/hero/2-768.webp"
                           alt="Façade des Artistes"
-                          fill
                           sizes="(max-width: 719px) 100vw, 248px"
                           className="object-cover"
                         />

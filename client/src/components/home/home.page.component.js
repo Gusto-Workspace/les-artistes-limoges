@@ -1,4 +1,4 @@
-import Image from "next/image";
+import StaticPhoto from "@/components/_shared/static-photo.component";
 import { useContext } from "react";
 import { MapPin } from "lucide-react";
 import { GlobalContext } from "@/contexts/global.context";
@@ -48,25 +48,25 @@ const dishItems = [
   {
     title: "Entrées & à partager",
     subtitle: "Planches, tartines & fraîcheur",
-    image: "/img/dishes/5.png",
+    image: "/img/dishes/5-768.webp",
     imageAlt: "Entrées et assiettes à partager",
   },
   {
     title: "Viandes de brasserie",
     subtitle: "Classiques maison & pièces",
-    image: "/img/dishes/2.png",
+    image: "/img/dishes/2-768.webp",
     imageAlt: "Viandes de brasserie",
   },
   {
     title: "Mer & traditions",
     subtitle: "Poissons, gambas & assiettes",
-    image: "/img/dishes/3.png",
+    image: "/img/dishes/3-768.webp",
     imageAlt: "Mer et traditions",
   },
   {
     title: "Desserts & glaces",
     subtitle: "Douceurs, gaufres & gourmandise",
-    image: "/img/dishes/4.png",
+    image: "/img/dishes/4-768.webp",
     imageAlt: "Desserts et glaces",
   },
 ];
@@ -76,20 +76,20 @@ const ambienceItems = [
     title: "La Terrasse",
     description:
       "Un coin de soleil en cœur de ville pour vos déjeuners et apéritifs.",
-    image: "/img/photos/outside/5.png",
+    image: "/img/photos/outside/5-768.webp",
     imageAlt: "La terrasse des Artistes",
   },
   {
     title: "La Salle Principale",
     description: "L’ambiance brasserie : vivante, accueillante et authentique.",
-    image: "/img/photos/floor-0/3.png",
+    image: "/img/photos/floor-0/3-768.webp",
     imageAlt: "La salle principale",
   },
   {
     title: "L’Étage Cosy",
     description:
       "À l’étage, une salle intime et chaleureuse pour vos repas en toute tranquillité.",
-    image: "/img/photos/floor-1/2.png",
+    image: "/img/photos/floor-1/2-768.webp",
     imageAlt: "La salle cosy à l'étage",
   },
 ];
@@ -148,10 +148,9 @@ export default function HomePageComponent() {
               <div className="la-hero-media relative mx-auto max-w-[860px] min-[1100px]:mr-0">
                 <div className="la-hero-media__main relative overflow-hidden border border-[rgba(197,155,85,0.16)] bg-white/70 shadow-[0_20px_40px_rgba(82,49,33,0.12)] min-[1100px]:ml-[85px]">
                   <div className="relative" style={{ aspectRatio: "0.94 / 1" }}>
-                    <Image
-                      src="/img/hero/1.png"
+                    <StaticPhoto
+                      src="/img/hero/1-768.webp"
                       alt="Le bar des Artistes"
-                      fill
                       sizes="(max-width: 1099px) 100vw, 720px"
                       className="object-cover"
                       priority
@@ -165,10 +164,9 @@ export default function HomePageComponent() {
                       className="relative"
                       style={{ aspectRatio: "0.82 / 1" }}
                     >
-                      <Image
-                        src="/img/photos/outside/5.png"
+                      <StaticPhoto
+                        src="/img/photos/outside/5-768.webp"
                         alt="La terrasse des Artistes"
-                        fill
                         sizes="(max-width: 719px) 100vw, 220px"
                         className="object-cover"
                       />
@@ -180,10 +178,9 @@ export default function HomePageComponent() {
                       className="relative"
                       style={{ aspectRatio: "0.84 / 1" }}
                     >
-                      <Image
-                        src="/img/photos/floor-0/3.png"
+                      <StaticPhoto
+                        src="/img/photos/floor-0/3-768.webp"
                         alt="La salle principale des Artistes"
-                        fill
                         sizes="(max-width: 719px) 100vw, 252px"
                         className="object-cover"
                       />
@@ -222,10 +219,9 @@ export default function HomePageComponent() {
                       className="la-home__dish-media relative overflow-hidden"
                       style={{ aspectRatio: "0.95 / 1" }}
                     >
-                      <Image
+                      <StaticPhoto
                         src={item.image}
                         alt={item.imageAlt}
-                        fill
                         sizes="(max-width: 639px) 100vw, (max-width: 1279px) 50vw, 25vw"
                         className="la-home__dish-image"
                       />
